@@ -7,6 +7,7 @@ import { GATE_DEFINITIONS, ROLE_GATE_PRESETS } from '../lib/gates';
 
 const CORE_GATE_IDS: GateName[] = ['integrity', 'accountability', 'harm_pattern', 'context_misalignment'];
 const OPTIONAL_GATE_IDS: GateName[] = ['financial_fluency', 'customer_orientation', 'people_judgment', 'decision_velocity', 'technical_depth'];
+const PSYCHOLOGICAL_GATE_IDS: GateName[] = ['covert_narcissism', 'overconfidence_bias', 'burnout_trajectory'];
 
 const ROLE_LEVELS = [
   { value: 'C-Suite', label: 'C-Suite', icon: '👑', description: 'CEO, CFO, CTO, COO' },
@@ -80,7 +81,13 @@ export function SetupPage() {
 
   const [optionalGates, setOptionalGates] = useState<Set<GateName>>(() => getDefaultOptionalGates(''));
 
-  const goNext = () => { setDirection(1); setCurrentStep(s => Math.min(s + 1, 6)); };
+  const goNext = () => {
+    if (currentStep === 1) {
+      setOptionalGates(getDefaultOptionalGates(formData.roleName));
+    }
+    setDirection(1);
+    setCurrentStep(s => Math.min(s + 1, 6));
+  };
   const goBack = () => {
     if (currentStep > 1) { setDirection(-1); setCurrentStep(s => s - 1); }
     else { navigate('/'); }
@@ -339,6 +346,50 @@ export function SetupPage() {
                         </div>
                         <div>
                           <div className="font-medium text-sm" style={headingStyle}>{GATE_DEFINITIONS[gateId]?.displayName}</div>
+                          <div className="text-xs mt-1" style={subStyle}>{GATE_DEFINITIONS[gateId]?.description}</div>
+                        </div>
+                      </div>
+                    </motion.button>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <h3 className="text-sm font-semibold mb-1 flex items-center gap-2" style={{ color: '#A78BFA' }}>
+                  🧠 Psychological Gates
+                </h3>
+                <p className="text-xs mb-3" style={subStyle}>Deep personality risk screening — automatically enabled based on role</p>
+                <div className="space-y-2">
+                  {PSYCHOLOGICAL_GATE_IDS.map(gateId => (
+                    <motion.button
+                      key={gateId}
+                      type="button"
+                      onClick={() => toggleGate(gateId)}
+                      className="w-full text-left glass rounded-lg p-3 border-2 transition-all"
+                      style={{
+                        borderColor: optionalGates.has(gateId) ? '#A78BFA' : 'rgba(255,255,255,0.06)',
+                        background: optionalGates.has(gateId) ? 'rgba(167,139,250,0.07)' : undefined,
+                      }}
+                      whileHover={{ x: 4 }}
+                    >
+                      <div className="flex items-start gap-3">
+                        <div className="mt-0.5 flex-shrink-0">
+                          {optionalGates.has(gateId) ? (
+                            <div className="w-5 h-5 rounded flex items-center justify-center" style={{ background: '#A78BFA' }}>
+                              <span className="text-xs font-bold" style={{ color: '#0D0D1A' }}>✓</span>
+                            </div>
+                          ) : (
+                            <div className="w-5 h-5 rounded border" style={{ borderColor: 'rgba(167,139,250,0.3)' }} />
+                          )}
+                        </div>
+                        <div>
+                          <div className="font-medium text-sm flex items-center gap-2" style={headingStyle}>
+                            {GATE_DEFINITIONS[gateId]?.displayName}
+                            {optionalGates.has(gateId) && (
+                              <span className="text-xs px-1.5 py-0.5 rounded font-medium" style={{ background: 'rgba(167,139,250,0.15)', color: '#A78BFA' }}>
+                                Active
+                              </span>
+                            )}
+                          </div>
                           <div className="text-xs mt-1" style={subStyle}>{GATE_DEFINITIONS[gateId]?.description}</div>
                         </div>
                       </div>
