@@ -47,6 +47,7 @@ function ElapsedTimer({ startedAt }: { startedAt: number }) {
 export function ProcessingPage() {
   const [, navigate] = useLocation();
   const { session, setReport, setError } = useAssayStore();
+  const prosodyData = useAssayStore(s => s.session?.prosodyData ?? null);
   const abortRef = useRef(false);
 
   const [assessorStatuses, setAssessorStatuses] = useState<Record<string, AssessorStatus>>(() =>
@@ -80,6 +81,7 @@ export function ProcessingPage() {
             setup: session.setup,
             observations: session.observations,
             sessionId: session.id,
+            prosodyData: prosodyData ?? undefined,
           }),
         });
       } catch (err) {

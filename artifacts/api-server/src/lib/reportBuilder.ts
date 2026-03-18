@@ -65,10 +65,11 @@ export interface BuildReportOptions {
   assessorVerdicts: any[];
   chairmanSynthesis: any;
   setup?: any;
+  prosodyData?: any;
 }
 
 export function buildReport(opts: BuildReportOptions) {
-  const { sessionId, candidateName, roleName, assessorVerdicts, chairmanSynthesis, setup } = opts;
+  const { sessionId, candidateName, roleName, assessorVerdicts, chairmanSynthesis, setup, prosodyData } = opts;
 
   const { overallStatus: gateStatus, evaluations: gateEvaluations } = evaluateGates(assessorVerdicts);
 
@@ -198,5 +199,6 @@ export function buildReport(opts: BuildReportOptions) {
 
     followUpQuestions,
     comparison: undefined,
+    prosodyData: prosodyData ?? undefined,
   };
 }

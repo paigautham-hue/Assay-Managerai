@@ -6,6 +6,7 @@ import sessionRouter from "./session.js";
 import sessionsRouter from "./sessions.js";
 import reportsRouter from "./reports.js";
 import authRouter from "./auth.js";
+import sentimentRouter from "./sentiment.js";
 import { authenticate } from "../middleware/auth.js";
 
 const router: IRouter = Router();
@@ -28,5 +29,6 @@ router.use(reportRouter);
 router.use(sessionRouter);
 router.use(sessionsRouter);
 router.use(reportsRouter);
+router.use(sentimentRouter);
 
 export default router;

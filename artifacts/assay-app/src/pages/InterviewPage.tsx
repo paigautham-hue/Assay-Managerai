@@ -5,16 +5,20 @@ import { VoiceVisualizer } from '../components/VoiceVisualizer';
 import { motion, AnimatePresence } from 'framer-motion';
 import { VoiceEngine } from '../lib/voiceEngine';
 import type { VoiceEngineCallbacks } from '../lib/voiceEngine';
+import { EmotionEngine } from '../lib/emotionEngine';
 import type { Observation } from '../types';
 
 type InterviewStatus = 'connecting' | 'idle' | 'ai_speaking' | 'listening' | 'processing';
 
 const VOICE_ENABLED = import.meta.env.VITE_VOICE_ENABLED === 'true';
+const HUME_API_KEY: string | null = import.meta.env.VITE_HUME_API_KEY || null;
+const BASE_URL: string = import.meta.env.BASE_URL || '/';
 
 export function InterviewPage() {
   const [, navigate] = useLocation();
-  const { session, addTranscriptEntry, updateSessionStatus, addObservation, setError } = useAssayStore();
+  const { session, addTranscriptEntry, updateSessionStatus, addObservation, setProsodyData, setError } = useAssayStore();
   const voiceEngineRef = useRef<VoiceEngine | null>(null);
+  const emotionEngineRef = useRef<EmotionEngine | null>(null);
 
   const [status, setStatus] = useState<InterviewStatus>('connecting');
   const [duration, setDuration] = useState(0);
@@ -29,6 +33,12 @@ export function InterviewPage() {
     }
 
     updateSessionStatus('active');
+
+    // Start EmotionEngine (Hume real-time prosody) — no-op if key not set
+    emotionEngineRef.current = new EmotionEngine(HUME_API_KEY, BASE_URL);
+    emotionEngineRef.current.connect().catch(() => {
+      // Hume connection failures are non-fatal
+    });
 
     if (VOICE_ENABLED) {
       const callbacks: VoiceEngineCallbacks = {
@@ -59,6 +69,8 @@ export function InterviewPage() {
     }
 
     return () => {
+      emotionEngineRef.current?.disconnect();
+      emotionEngineRef.current = null;
       if (voiceEngineRef.current) {
         voiceEngineRef.current.disconnect();
         voiceEngineRef.current = null;
@@ -113,6 +125,32 @@ export function InterviewPage() {
       if (voiceEngineRef.current) {
         await voiceEngineRef.current.disconnect();
         voiceEngineRef.current = null;
+      }
+
+      // Run post-interview sentiment analysis (AssemblyAI via backend)
+      // This is async but we don't block navigation on it if it takes too long
+      if (emotionEngineRef.current) {
+        const engine = emotionEngineRef.current;
+        emotionEngineRef.current = null;
+
+        try {
+          const prosody = await Promise.race([
+            engine.analyzeTranscriptSentiment(session.transcript),
+            new Promise<null>(resolve => setTimeout(() => resolve(null), 8000)),
+          ]);
+
+          if (!prosody) {
+            // Fall back to Hume timeline data only
+            const humeOnly = engine.getProsodyData();
+            if (humeOnly) setProsodyData(humeOnly);
+          } else {
+            setProsodyData(prosody);
+          }
+        } catch {
+          // Non-fatal: proceed without prosody data
+        } finally {
+          engine.disconnect();
+        }
       }
 
       // Mark session complete

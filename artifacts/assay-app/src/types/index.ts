@@ -117,6 +117,8 @@ export interface AssessorVerdict {
   dissent?: string;
 }
 
+export type { ProsodyData, ProsodyMetrics, EmotionDataPoint, SentimentSegment } from '../lib/emotionEngine';
+
 export type InterviewMode = 'active' | 'shadow';
 export type VoiceProvider = 'openai' | 'gemini' | 'xai';
 
@@ -140,6 +142,7 @@ export interface InterviewSession {
   transcript: TranscriptEntry[];
   observations: Observation[];
   voiceProvider: VoiceProvider;
+  prosodyData?: import('../lib/emotionEngine').ProsodyData;
 }
 
 export interface TranscriptEntry {
@@ -219,4 +222,6 @@ export interface AssayReport {
   comparison?: {
     candidates: { name: string; score: number; recommendation: string }[];
   };
+
+  prosodyData?: import('../lib/emotionEngine').ProsodyData;
 }

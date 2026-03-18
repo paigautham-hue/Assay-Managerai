@@ -319,7 +319,7 @@ router.post('/assess/stream', async (req: Request, res: Response) => {
   };
 
   try {
-    const { transcript, setup, observations, sessionId } = req.body;
+    const { transcript, setup, observations, sessionId, prosodyData } = req.body;
 
     if (!transcript || !Array.isArray(transcript) || !setup) {
       sendEvent('error', { message: 'transcript and setup are required' });
@@ -394,6 +394,7 @@ router.post('/assess/stream', async (req: Request, res: Response) => {
       assessorVerdicts: verdicts,
       chairmanSynthesis,
       setup,
+      prosodyData: prosodyData ?? undefined,
     });
 
     // Save report to DB (best effort)
