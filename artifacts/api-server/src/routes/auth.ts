@@ -30,7 +30,7 @@ function userToPayload(user: { id: string; email: string; name: string; role: st
 
 router.post('/auth/register', async (req: Request, res: Response) => {
   try {
-    const { email, name, password, role = 'viewer' } = req.body;
+    const { email, name, password, role = 'interviewer' } = req.body;
     if (!email || !name || !password) {
       return res.status(400).json({ error: 'email, name, and password are required' });
     }

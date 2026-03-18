@@ -1,5 +1,7 @@
 import { Router } from 'express';
 import type { Request, Response } from 'express';
+import prisma from '../db/prisma.js';
+import { buildReport } from '../lib/reportBuilder.js';
 
 const router = Router();
 
@@ -122,107 +124,48 @@ const ASSESSOR_JSON_SCHEMA = `{
 
 async function callAnthropic(config: AssessorConfig, transcriptText: string, setupContext: string): Promise<any> {
   if (!process.env.ANTHROPIC_API_KEY) throw new Error('ANTHROPIC_API_KEY not configured');
-
   const userPrompt = buildUserPrompt(config.displayName, transcriptText, setupContext);
-
   const res = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
-    headers: {
-      'x-api-key': process.env.ANTHROPIC_API_KEY,
-      'anthropic-version': '2023-06-01',
-      'content-type': 'application/json',
-    },
-    body: JSON.stringify({
-      model: config.model,
-      max_tokens: 8000,
-      system: config.systemPrompt,
-      messages: [{ role: 'user', content: userPrompt }],
-    }),
+    headers: { 'x-api-key': process.env.ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
+    body: JSON.stringify({ model: config.model, max_tokens: 8000, system: config.systemPrompt, messages: [{ role: 'user', content: userPrompt }] }),
   });
-
-  if (!res.ok) {
-    const err = await res.text();
-    throw new Error(`Anthropic API error ${res.status}: ${err.substring(0, 200)}`);
-  }
-
+  if (!res.ok) { const err = await res.text(); throw new Error(`Anthropic API error ${res.status}: ${err.substring(0, 200)}`); }
   const data = await res.json();
-  const text = data.content[0]?.text || '';
-  return extractJSON(text);
+  return extractJSON(data.content[0]?.text || '');
 }
 
 async function callOpenAI(config: AssessorConfig, transcriptText: string, setupContext: string): Promise<any> {
   if (!process.env.OPENAI_API_KEY) throw new Error('OPENAI_API_KEY not configured');
-
   const userPrompt = buildUserPrompt(config.displayName, transcriptText, setupContext);
-
   const res = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      model: config.model,
-      max_tokens: 8000,
-      messages: [
-        { role: 'system', content: config.systemPrompt },
-        { role: 'user', content: userPrompt },
-      ],
-    }),
+    headers: { 'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ model: config.model, max_tokens: 8000, messages: [{ role: 'system', content: config.systemPrompt }, { role: 'user', content: userPrompt }] }),
   });
-
-  if (!res.ok) {
-    const err = await res.text();
-    throw new Error(`OpenAI API error ${res.status}: ${err.substring(0, 200)}`);
-  }
-
+  if (!res.ok) { const err = await res.text(); throw new Error(`OpenAI API error ${res.status}: ${err.substring(0, 200)}`); }
   const data = await res.json();
-  const text = data.choices[0]?.message?.content || '';
-  return extractJSON(text);
+  return extractJSON(data.choices[0]?.message?.content || '');
 }
 
 async function callGoogle(config: AssessorConfig, transcriptText: string, setupContext: string): Promise<any> {
   if (!process.env.GOOGLE_API_KEY) throw new Error('GOOGLE_API_KEY not configured');
-
   const userPrompt = buildUserPrompt(config.displayName, transcriptText, setupContext);
-
   const res = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/${config.model}:generateContent?key=${process.env.GOOGLE_API_KEY}`,
     {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        systemInstruction: { parts: { text: config.systemPrompt } },
-        contents: { parts: [{ text: userPrompt }] },
-        generationConfig: { maxOutputTokens: 8000 },
-      }),
+      body: JSON.stringify({ systemInstruction: { parts: { text: config.systemPrompt } }, contents: { parts: [{ text: userPrompt }] }, generationConfig: { maxOutputTokens: 8000 } }),
     }
   );
-
-  if (!res.ok) {
-    const err = await res.text();
-    throw new Error(`Google API error ${res.status}: ${err.substring(0, 200)}`);
-  }
-
+  if (!res.ok) { const err = await res.text(); throw new Error(`Google API error ${res.status}: ${err.substring(0, 200)}`); }
   const data = await res.json();
-  const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-  return extractJSON(text);
+  return extractJSON(data.candidates?.[0]?.content?.parts?.[0]?.text || '');
 }
 
 function buildUserPrompt(displayName: string, transcriptText: string, setupContext: string): string {
-  return `## Interview Transcript
-${transcriptText}
-
-## Interview Setup
-${setupContext}
-
-## Your Task
-Analyze this interview transcript as ${displayName}. Evaluate the candidate across all 7 Pyramid dimensions and relevant Non-Negotiable Gates.
-
-Return your assessment as valid JSON ONLY (no markdown, no explanation) matching this structure:
-${ASSESSOR_JSON_SCHEMA}
-
-IMPORTANT: Score ALL 7 pyramid dimensions. Be rigorous. Be honest. Base all scores on evidence from the transcript.`;
+  return `## Interview Transcript\n${transcriptText}\n\n## Interview Setup\n${setupContext}\n\n## Your Task\nAnalyze this interview transcript as ${displayName}. Evaluate the candidate across all 7 Pyramid dimensions and relevant Non-Negotiable Gates.\n\nReturn your assessment as valid JSON ONLY (no markdown, no explanation) matching this structure:\n${ASSESSOR_JSON_SCHEMA}\n\nIMPORTANT: Score ALL 7 pyramid dimensions. Be rigorous. Be honest. Base all scores on evidence from the transcript.`;
 }
 
 function extractJSON(text: string): any {
@@ -248,7 +191,6 @@ async function callAssessorWithFallback(
     { ...config, model: 'claude-3-5-sonnet-20241022', provider: 'anthropic' },
     { ...config, model: 'gpt-4o', provider: 'openai' },
   ];
-
   let lastError = '';
   for (const fallbackConfig of fallbacks) {
     try {
@@ -258,28 +200,10 @@ async function callAssessorWithFallback(
         recommendation: response.recommendation || 'insufficient_data',
         confidence: response.confidence || 0.5,
         narrative: response.narrative || '',
-        dimensionScores: (response.dimensionScores || []).map((ds: any) => ({
-          dimension: ds.dimension,
-          score: ds.score,
-          weight: ds.weight,
-          evidence: ds.evidence || [],
-          assessorNotes: ds.assessorNotes || {},
-        })),
-        deepSignalScores: (response.deepSignalScores || []).map((ds: any) => ({
-          signal: ds.signal,
-          score: ds.score,
-          evidence: ds.evidence || [],
-          parentDimensions: ds.parentDimensions || [],
-        })),
+        dimensionScores: (response.dimensionScores || []).map((ds: any) => ({ dimension: ds.dimension, score: ds.score, weight: ds.weight, evidence: ds.evidence || [], assessorNotes: ds.assessorNotes || {} })),
+        deepSignalScores: (response.deepSignalScores || []).map((ds: any) => ({ signal: ds.signal, score: ds.score, evidence: ds.evidence || [], parentDimensions: ds.parentDimensions || [] })),
         psychologicalScreening: response.psychologicalScreening,
-        gateEvaluations: (response.gateEvaluations || []).map((ge: any) => ({
-          gate: ge.gate,
-          confidence: ge.confidence,
-          isCore: ge.isCore,
-          evidence: ge.evidence || [],
-          triggerDetails: ge.triggerDetails || '',
-          assessorSource: config.displayName,
-        })),
+        gateEvaluations: (response.gateEvaluations || []).map((ge: any) => ({ gate: ge.gate, confidence: ge.confidence, isCore: ge.isCore, evidence: ge.evidence || [], triggerDetails: ge.triggerDetails || '', assessorSource: config.displayName })),
         keyInsights: response.keyInsights || [],
         dissent: response.dissent,
       };
@@ -292,11 +216,7 @@ async function callAssessorWithFallback(
   return { error: `${config.role} failed after all fallbacks: ${lastError}` };
 }
 
-async function callChairman(
-  verdicts: any[],
-  transcriptText: string,
-  setupContext: string
-): Promise<any> {
+async function callChairman(verdicts: any[], transcriptText: string, setupContext: string): Promise<any> {
   if (!process.env.ANTHROPIC_API_KEY && !process.env.OPENAI_API_KEY) {
     return {
       recommendation: verdicts.filter(v => v.recommendation === 'hire').length > verdicts.length / 2 ? 'hire' : 'no_hire',
@@ -306,32 +226,8 @@ async function callChairman(
     };
   }
 
-  const verdictsText = verdicts.map(v =>
-    `${v.role.toUpperCase()} (${v.recommendation}, ${(v.confidence * 100).toFixed(0)}% confidence):\n${v.narrative}`
-  ).join('\n\n');
-
-  const prompt = `You are The Chairman of the ASSAY assessment chamber. Synthesize these ${verdicts.length} assessor verdicts into a final recommendation.
-
-ASSESSOR VERDICTS:
-${verdictsText}
-
-INTERVIEW SETUP:
-${setupContext}
-
-PYRAMID BAR: hire requires ≥4.0/5.0 overall, no critical red flags in Character or Hands-On.
-
-Return JSON only:
-{
-  "recommendation": "hire" | "cautious" | "no_hire",
-  "confidence": 0.0-1.0,
-  "narrative": "synthesis paragraph",
-  "executiveSummary": "2-3 sentence executive summary",
-  "caseAgainst": "strongest case against hiring",
-  "raiseTheBar": "would this hire raise the bar?",
-  "assayInsight": "metaphorical insight about this candidate",
-  "finalRecommendation": "hire" | "cautious_below_bar" | "do_not_proceed",
-  "keyInsights": ["key1", "key2"]
-}`;
+  const verdictsText = verdicts.map(v => `${v.role.toUpperCase()} (${v.recommendation}, ${(v.confidence * 100).toFixed(0)}% confidence):\n${v.narrative}`).join('\n\n');
+  const prompt = `You are The Chairman of the ASSAY assessment chamber. Synthesize these ${verdicts.length} assessor verdicts into a final recommendation.\n\nASSESSOR VERDICTS:\n${verdictsText}\n\nINTERVIEW SETUP:\n${setupContext}\n\nPYRAMID BAR: hire requires ≥4.0/5.0 overall, no critical red flags in Character or Hands-On.\n\nReturn JSON only:\n{"recommendation":"hire"|"cautious"|"no_hire","confidence":0.0-1.0,"narrative":"synthesis paragraph","executiveSummary":"2-3 sentence executive summary","caseAgainst":"strongest case against hiring","raiseTheBar":"would this hire raise the bar?","assayInsight":"metaphorical insight about this candidate","finalRecommendation":"hire"|"cautious_below_bar"|"do_not_proceed","keyInsights":["key1","key2"]}`;
 
   try {
     if (process.env.ANTHROPIC_API_KEY) {
@@ -340,26 +236,17 @@ Return JSON only:
         headers: { 'x-api-key': process.env.ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
         body: JSON.stringify({ model: 'claude-3-5-sonnet-20241022', max_tokens: 4000, messages: [{ role: 'user', content: prompt }] }),
       });
-      if (res.ok) {
-        const data = await res.json();
-        return extractJSON(data.content[0]?.text || '');
-      }
+      if (res.ok) return extractJSON((await res.json()).content[0]?.text || '');
     }
-
     if (process.env.OPENAI_API_KEY) {
       const res = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({ model: 'gpt-4o', max_tokens: 4000, messages: [{ role: 'user', content: prompt }] }),
       });
-      if (res.ok) {
-        const data = await res.json();
-        return extractJSON(data.choices[0]?.message?.content || '');
-      }
+      if (res.ok) return extractJSON((await res.json()).choices[0]?.message?.content || '');
     }
-  } catch (err) {
-    console.error('Chairman synthesis error:', err);
-  }
+  } catch (err) { console.error('Chairman synthesis error:', err); }
 
   return {
     recommendation: verdicts.filter(v => v.recommendation === 'hire').length > verdicts.length / 2 ? 'hire' : 'no_hire',
@@ -369,66 +256,161 @@ Return JSON only:
   };
 }
 
-router.post('/assess', async (req: Request, res: Response) => {
-  try {
-    const { transcript, setup, observations } = req.body;
+function prepareTranscriptContext(transcript: any[], setup: any) {
+  const transcriptText = transcript.length > 0
+    ? transcript.map((e: any) => `[${e.timestamp}] ${e.speaker.toUpperCase()}: ${e.text}`).join('\n')
+    : '[No transcript recorded - candidate may not have spoken during interview]';
 
-    if (!transcript || !Array.isArray(transcript)) {
-      return res.status(400).json({ error: 'transcript array is required' });
-    }
-
-    if (!setup) {
-      return res.status(400).json({ error: 'setup is required' });
-    }
-
-    const transcriptText = transcript.length > 0
-      ? transcript.map((e: any) => `[${e.timestamp}] ${e.speaker.toUpperCase()}: ${e.text}`).join('\n')
-      : '[No transcript recorded - candidate may not have spoken during interview]';
-
-    const setupContext = `Candidate: ${setup.candidateName}
-Role: ${setup.roleName} (${setup.roleLevel})
+  const setupContext = `Candidate: ${setup.candidateName}
+Role: ${setup.roleName} (${setup.roleLevel || ''})
 Job Description: ${setup.jobDescription || 'Not provided'}
 CV Summary: ${setup.cvSummary || 'Not provided'}
 Interview Mode: ${setup.interviewMode}
 Active Gates: ${setup.activeGates?.join(', ') || 'standard gates'}`;
 
-    // Run all 5 assessors in parallel
-    const results = await Promise.allSettled(
-      ASSESSOR_CONFIGS.map(config => callAssessorWithFallback(config, transcriptText, setupContext))
-    );
+  return { transcriptText, setupContext };
+}
 
+// Legacy synchronous endpoint (kept for backward compat)
+router.post('/assess', async (req: Request, res: Response) => {
+  try {
+    const { transcript, setup, observations } = req.body;
+    if (!transcript || !Array.isArray(transcript)) return res.status(400).json({ error: 'transcript array is required' });
+    if (!setup) return res.status(400).json({ error: 'setup is required' });
+
+    const { transcriptText, setupContext } = prepareTranscriptContext(transcript, setup);
+
+    const results = await Promise.allSettled(ASSESSOR_CONFIGS.map(config => callAssessorWithFallback(config, transcriptText, setupContext)));
     const verdicts: any[] = [];
     const failures: string[] = [];
 
     results.forEach((result, i) => {
-      const config = ASSESSOR_CONFIGS[i];
       if (result.status === 'fulfilled') {
-        if ('verdict' in result.value) {
-          verdicts.push(result.value.verdict);
-        } else {
-          failures.push(result.value.error);
-          console.error(`Assessor ${config.role} failed:`, result.value.error);
-        }
+        if ('verdict' in result.value) verdicts.push(result.value.verdict);
+        else { failures.push(result.value.error); console.error(`Assessor ${ASSESSOR_CONFIGS[i].role} failed:`, result.value.error); }
       } else {
-        failures.push(`${config.role}: ${result.reason}`);
+        failures.push(`${ASSESSOR_CONFIGS[i].role}: ${result.reason}`);
       }
     });
 
-    if (verdicts.length === 0) {
-      return res.status(500).json({ error: 'All assessors failed', details: failures });
-    }
-
-    // Get chairman synthesis
+    if (verdicts.length === 0) return res.status(500).json({ error: 'All assessors failed', details: failures });
     const chairmanSynthesis = await callChairman(verdicts, transcriptText, setupContext);
-
-    return res.json({
-      verdicts,
-      chairmanSynthesis,
-      failedAssessors: failures.length > 0 ? failures : undefined,
-    });
+    return res.json({ verdicts, chairmanSynthesis, failedAssessors: failures.length > 0 ? failures : undefined });
   } catch (error) {
     console.error('Assessment error:', error);
     return res.status(500).json({ error: error instanceof Error ? error.message : 'Internal server error' });
+  }
+});
+
+// Streaming SSE endpoint - sends real-time progress as each assessor completes
+router.post('/assess/stream', async (req: Request, res: Response) => {
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Connection', 'keep-alive');
+  res.setHeader('X-Accel-Buffering', 'no');
+  res.flushHeaders();
+
+  const sendEvent = (event: string, data: object) => {
+    try {
+      res.write(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`);
+    } catch {
+      // Client disconnected
+    }
+  };
+
+  try {
+    const { transcript, setup, observations, sessionId } = req.body;
+
+    if (!transcript || !Array.isArray(transcript) || !setup) {
+      sendEvent('error', { message: 'transcript and setup are required' });
+      res.end();
+      return;
+    }
+
+    const { transcriptText, setupContext } = prepareTranscriptContext(transcript, setup);
+
+    sendEvent('start', { sessionId, assessorCount: ASSESSOR_CONFIGS.length });
+
+    const verdicts: any[] = [];
+    const errors: string[] = [];
+
+    // Start all assessors in parallel — stream events as each completes
+    const assessorPromises = ASSESSOR_CONFIGS.map(async (config, index) => {
+      const startedAt = Date.now();
+      sendEvent('assessor_start', { role: config.role, displayName: config.displayName, index });
+
+      const result = await callAssessorWithFallback(config, transcriptText, setupContext);
+      const duration = Date.now() - startedAt;
+
+      if ('verdict' in result) {
+        verdicts.push(result.verdict);
+
+        // Save verdict to DB (best effort)
+        if (sessionId) {
+          prisma.assessorVerdict.create({
+            data: {
+              sessionId,
+              role: result.verdict.role,
+              recommendation: result.verdict.recommendation,
+              confidence: result.verdict.confidence,
+              narrative: result.verdict.narrative,
+              dimensionScores: result.verdict.dimensionScores,
+              deepSignalScores: result.verdict.deepSignalScores ?? null,
+              psychologicalScreening: result.verdict.psychologicalScreening ?? null,
+              gateEvaluations: result.verdict.gateEvaluations,
+              keyInsights: result.verdict.keyInsights,
+              dissent: result.verdict.dissent ?? null,
+            },
+          }).catch(err => console.warn('Failed to save verdict to DB:', err));
+        }
+
+        sendEvent('assessor_complete', { role: config.role, displayName: config.displayName, index, duration });
+      } else {
+        errors.push(result.error);
+        console.error(`Assessor ${config.role} failed:`, result.error);
+        sendEvent('assessor_error', { role: config.role, displayName: config.displayName, index, duration, error: result.error });
+      }
+    });
+
+    await Promise.allSettled(assessorPromises);
+
+    if (verdicts.length === 0) {
+      sendEvent('error', { message: 'All assessors failed', details: errors });
+      res.end();
+      return;
+    }
+
+    // Chairman synthesis
+    const chairmanStart = Date.now();
+    sendEvent('chairman_start', { index: 5 });
+    const chairmanSynthesis = await callChairman(verdicts, transcriptText, setupContext);
+    sendEvent('chairman_complete', { duration: Date.now() - chairmanStart });
+
+    // Build report
+    const report = buildReport({
+      sessionId: sessionId || `session-${Date.now()}`,
+      candidateName: setup.candidateName,
+      roleName: setup.roleName,
+      assessorVerdicts: verdicts,
+      chairmanSynthesis,
+      setup,
+    });
+
+    // Save report to DB (best effort)
+    if (sessionId) {
+      prisma.report.upsert({
+        where: { id: report.id },
+        create: { id: report.id, sessionId, candidateName: setup.candidateName, roleName: setup.roleName, reportData: report as any },
+        update: { reportData: report as any },
+      }).catch(err => console.warn('Failed to save report to DB:', err));
+    }
+
+    sendEvent('report_complete', { reportId: report.id, report });
+    res.end();
+  } catch (error) {
+    console.error('Streaming assessment error:', error);
+    sendEvent('error', { message: error instanceof Error ? error.message : 'Internal server error' });
+    res.end();
   }
 });
 

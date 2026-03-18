@@ -5,16 +5,15 @@ import { VoiceVisualizer } from '../components/VoiceVisualizer';
 import { motion, AnimatePresence } from 'framer-motion';
 import { VoiceEngine } from '../lib/voiceEngine';
 import type { VoiceEngineCallbacks } from '../lib/voiceEngine';
-import type { TranscriptEntry, Observation } from '../types';
+import type { Observation } from '../types';
 
 type InterviewStatus = 'connecting' | 'idle' | 'ai_speaking' | 'listening' | 'processing';
 
-const BASE_URL = import.meta.env.BASE_URL;
 const VOICE_ENABLED = import.meta.env.VITE_VOICE_ENABLED === 'true';
 
 export function InterviewPage() {
   const [, navigate] = useLocation();
-  const { session, addTranscriptEntry, updateSessionStatus, addObservation, setReport, setError } = useAssayStore();
+  const { session, addTranscriptEntry, updateSessionStatus, addObservation, setError } = useAssayStore();
   const voiceEngineRef = useRef<VoiceEngine | null>(null);
 
   const [status, setStatus] = useState<InterviewStatus>('connecting');
@@ -110,43 +109,19 @@ export function InterviewPage() {
     setIsEndingInterview(true);
 
     try {
+      // Disconnect voice engine
       if (voiceEngineRef.current) {
         await voiceEngineRef.current.disconnect();
         voiceEngineRef.current = null;
       }
 
+      // Mark session complete
       updateSessionStatus('completed');
 
-      const assessRes = await fetch(`${BASE_URL}api/assess`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ transcript: session.transcript, setup: session.setup, observations: session.observations }),
-      });
-
-      if (!assessRes.ok) throw new Error(`Assessment failed: ${assessRes.status}`);
-      const { verdicts, chairmanSynthesis } = await assessRes.json();
-
-      const reportRes = await fetch(`${BASE_URL}api/report`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          sessionId: session.id,
-          candidateName: session.setup.candidateName,
-          roleName: session.setup.roleName,
-          assessorVerdicts: verdicts,
-          chairmanSynthesis,
-          transcript: session.transcript,
-          setup: session.setup,
-        }),
-      });
-
-      if (!reportRes.ok) throw new Error(`Report generation failed: ${reportRes.status}`);
-      const reportData = await reportRes.json();
-
-      setReport(reportData);
-      navigate(`/report/${reportData.id}`);
+      // Navigate immediately to processing page — it will trigger assessment
+      navigate('/processing');
     } catch (error) {
-      setError(error instanceof Error ? error.message : 'Error processing interview.');
+      setError(error instanceof Error ? error.message : 'Error ending interview.');
       setIsEndingInterview(false);
     }
   };
@@ -251,7 +226,7 @@ export function InterviewPage() {
             {isEndingInterview ? (
               <span className="flex items-center gap-2">
                 <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin-slow" />
-                Processing Assessment...
+                Ending Interview...
               </span>
             ) : 'End Interview & Generate Report'}
           </motion.button>
