@@ -223,5 +223,6 @@ export interface AssayReport {
     candidates: { name: string; score: number; recommendation: string }[];
   };
 
+  psychologicalProfile?: PsychologicalScreening;
   prosodyData?: import('../lib/emotionEngine').ProsodyData;
 }

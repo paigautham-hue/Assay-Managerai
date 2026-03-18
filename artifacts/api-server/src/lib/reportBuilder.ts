@@ -73,6 +73,10 @@ export function buildReport(opts: BuildReportOptions) {
 
   const { overallStatus: gateStatus, evaluations: gateEvaluations } = evaluateGates(assessorVerdicts);
 
+  // Extract psychological profile from the psychologist's verdict
+  const psychologistVerdict = assessorVerdicts.find(v => v.role === 'psychologist');
+  const psychologicalProfile = psychologistVerdict?.psychologicalScreening ?? undefined;
+
   const dimensionScoreMap = new Map<string, { scores: number[]; weights: number[]; allEvidence: string[] }>();
   for (const verdict of assessorVerdicts) {
     for (const dimScore of (verdict.dimensionScores || [])) {
@@ -199,6 +203,7 @@ export function buildReport(opts: BuildReportOptions) {
 
     followUpQuestions,
     comparison: undefined,
+    psychologicalProfile: psychologicalProfile ?? undefined,
     prosodyData: prosodyData ?? undefined,
   };
 }
