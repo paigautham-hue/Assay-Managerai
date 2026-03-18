@@ -1,14 +1,62 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocation, useParams } from 'wouter';
 import { useAssayStore } from '../store/useAssayStore';
 import { motion } from 'framer-motion';
 import { DIMENSION_DISPLAY_NAMES } from '../types';
 import type { PsychologicalScreening } from '../types';
 import type { ProsodyData } from '../types';
+import { GATE_DEFINITIONS } from '../lib/gates';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell,
   ResponsiveContainer, PieChart, Pie, Legend,
 } from 'recharts';
+
+// ─── Skeleton ─────────────────────────────────────────────────────────────────
+
+function SkeletonBlock({ w = '100%', h = 16, className = '' }: { w?: string | number; h?: number; className?: string }) {
+  return (
+    <div
+      className={className}
+      style={{
+        width: w,
+        height: h,
+        borderRadius: 6,
+        background: 'rgba(255,255,255,0.06)',
+        animation: 'pulse 1.8s ease-in-out infinite',
+      }}
+    />
+  );
+}
+
+function ReportSkeleton() {
+  return (
+    <div className="bg-gradient-dark min-h-screen pt-12 pb-20">
+      <style>{`@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }`}</style>
+      <div className="max-w-5xl mx-auto px-4 sm:px-6">
+        <div className="mb-12">
+          <SkeletonBlock h={36} w="40%" className="mb-3" />
+          <SkeletonBlock h={22} w="25%" className="mb-2" />
+          <SkeletonBlock h={14} w="20%" />
+        </div>
+        {/* Gate banner */}
+        <div className="rounded-xl p-8 mb-6" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+          <SkeletonBlock h={14} w="20%" className="mb-3 mx-auto" />
+          <SkeletonBlock h={32} w="40%" className="mb-2 mx-auto" />
+          <SkeletonBlock h={18} w="25%" className="mx-auto" />
+        </div>
+        {/* Sections */}
+        {[1, 2, 3].map(i => (
+          <div key={i} className="rounded-xl p-8 mb-6" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+            <SkeletonBlock h={22} w="30%" className="mb-4" />
+            <SkeletonBlock h={14} className="mb-2" />
+            <SkeletonBlock h={14} w="90%" className="mb-2" />
+            <SkeletonBlock h={14} w="80%" />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 // ─── Shared layout ────────────────────────────────────────────────────────────
 
@@ -561,6 +609,14 @@ export function ReportPage() {
   const params = useParams<{ id: string }>();
   const { reports } = useAssayStore();
   const report = reports.find(r => r.id === params.id);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    const t = setTimeout(() => setIsLoaded(true), 550);
+    return () => clearTimeout(t);
+  }, []);
+
+  if (!isLoaded) return <ReportSkeleton />;
 
   if (!report) {
     return (
@@ -685,7 +741,9 @@ export function ReportPage() {
                     <span className="inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold" style={{ background: col, color: '#0D0D1A' }}>
                       {gate.confidence === 'PASS' ? '✓' : gate.confidence === 'FLAG' ? '○' : gate.confidence === 'FAIL' ? '✗' : '?'}
                     </span>
-                    <h4 className="font-bold" style={{ color: 'var(--color-text-primary)' }}>{gate.gate.replace(/_/g, ' ').toUpperCase()}</h4>
+                    <h4 className="font-bold" style={{ color: 'var(--color-text-primary)' }}>
+                      {GATE_DEFINITIONS[gate.gate as keyof typeof GATE_DEFINITIONS]?.displayName ?? gate.gate.replace(/_/g, ' ')}
+                    </h4>
                     <span className="text-xs font-semibold px-2 py-0.5 rounded" style={{ color: col, background: `${col}20` }}>{gate.confidence}</span>
                   </div>
                   <p className="text-sm leading-relaxed" style={{ color: 'var(--color-text-secondary)' }}>{gate.evidence.join('; ')}</p>

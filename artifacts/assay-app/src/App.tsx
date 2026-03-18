@@ -4,6 +4,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/context/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { HomePage } from "@/pages/HomePage";
 import { SetupPage } from "@/pages/SetupPage";
 import { InterviewPage } from "@/pages/InterviewPage";
@@ -34,7 +35,9 @@ function Router() {
 
       <Route path="/interview">
         <ProtectedRoute minimumRole="interviewer">
-          <InterviewPage />
+          <ErrorBoundary label="Interview">
+            <InterviewPage />
+          </ErrorBoundary>
         </ProtectedRoute>
       </Route>
 
@@ -46,7 +49,9 @@ function Router() {
 
       <Route path="/report/:id">
         <ProtectedRoute>
-          <ReportPage />
+          <ErrorBoundary label="Report">
+            <ReportPage />
+          </ErrorBoundary>
         </ProtectedRoute>
       </Route>
 
