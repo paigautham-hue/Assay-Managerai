@@ -1,0 +1,114 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Organization {
+  id        String   @id @default(uuid())
+  name      String
+  settings  Json     @default("{}")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  users    User[]
+  sessions InterviewSession[]
+
+  @@map("organizations")
+}
+
+model User {
+  id             String   @id @default(uuid())
+  email          String   @unique
+  name           String
+  role           String   @default("user")
+  organizationId String?  @map("organization_id")
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  organization Organization? @relation(fields: [organizationId], references: [id])
+
+  @@map("users")
+}
+
+model InterviewSession {
+  id             String    @id @default(uuid())
+  organizationId String?   @map("organization_id")
+  setup          Json
+  status         String    @default("preparing")
+  startedAt      DateTime? @map("started_at")
+  endedAt        DateTime? @map("ended_at")
+  voiceProvider  String    @default("openai") @map("voice_provider")
+  createdAt      DateTime  @default(now()) @map("created_at")
+
+  organization Organization?     @relation(fields: [organizationId], references: [id])
+  transcripts  TranscriptEntry[]
+  observations Observation[]
+  verdicts     AssessorVerdict[]
+  reports      Report[]
+
+  @@map("interview_sessions")
+}
+
+model TranscriptEntry {
+  id             String   @id @default(uuid())
+  sessionId      String   @map("session_id")
+  speaker        String
+  text           String
+  timestamp      DateTime
+  audioTimestamp Float?   @map("audio_timestamp")
+
+  session InterviewSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@map("transcript_entries")
+}
+
+model Observation {
+  id          String   @id @default(uuid())
+  sessionId   String   @map("session_id")
+  type        String
+  dimension   String?
+  gate        String?
+  description String
+  evidence    String
+  confidence  Float
+  timestamp   DateTime
+
+  session InterviewSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@map("observations")
+}
+
+model AssessorVerdict {
+  id                     String  @id @default(uuid())
+  sessionId              String  @map("session_id")
+  role                   String
+  recommendation         String
+  confidence             Float
+  narrative              String
+  dimensionScores        Json    @map("dimension_scores")
+  deepSignalScores       Json?   @map("deep_signal_scores")
+  psychologicalScreening Json?   @map("psychological_screening")
+  gateEvaluations        Json    @map("gate_evaluations")
+  keyInsights            Json    @map("key_insights")
+  dissent                String?
+
+  session InterviewSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@map("assessor_verdicts")
+}
+
+model Report {
+  id            String   @id @default(uuid())
+  sessionId     String   @map("session_id")
+  candidateName String   @map("candidate_name")
+  roleName      String   @map("role_name")
+  reportData    Json     @map("report_data")
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  session InterviewSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@map("reports")
+}

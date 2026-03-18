@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { useAssayStore } from '../store/useAssayStore';
 import { motion } from 'framer-motion';
@@ -14,7 +15,11 @@ const itemVariants = {
 
 export function HomePage() {
   const [, navigate] = useLocation();
-  const { reports } = useAssayStore();
+  const { reports, loadReports, isLoading } = useAssayStore();
+
+  useEffect(() => {
+    loadReports();
+  }, []);
 
   const stats = {
     total: reports.length,
