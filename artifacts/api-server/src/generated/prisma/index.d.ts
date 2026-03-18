@@ -2427,8 +2427,11 @@ export namespace Prisma {
     email: string | null
     name: string | null
     role: string | null
+    passwordHash: string | null
+    googleId: string | null
     organizationId: string | null
     createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type UserMaxAggregateOutputType = {
@@ -2436,8 +2439,11 @@ export namespace Prisma {
     email: string | null
     name: string | null
     role: string | null
+    passwordHash: string | null
+    googleId: string | null
     organizationId: string | null
     createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type UserCountAggregateOutputType = {
@@ -2445,8 +2451,11 @@ export namespace Prisma {
     email: number
     name: number
     role: number
+    passwordHash: number
+    googleId: number
     organizationId: number
     createdAt: number
+    updatedAt: number
     _all: number
   }
 
@@ -2456,8 +2465,11 @@ export namespace Prisma {
     email?: true
     name?: true
     role?: true
+    passwordHash?: true
+    googleId?: true
     organizationId?: true
     createdAt?: true
+    updatedAt?: true
   }
 
   export type UserMaxAggregateInputType = {
@@ -2465,8 +2477,11 @@ export namespace Prisma {
     email?: true
     name?: true
     role?: true
+    passwordHash?: true
+    googleId?: true
     organizationId?: true
     createdAt?: true
+    updatedAt?: true
   }
 
   export type UserCountAggregateInputType = {
@@ -2474,8 +2489,11 @@ export namespace Prisma {
     email?: true
     name?: true
     role?: true
+    passwordHash?: true
+    googleId?: true
     organizationId?: true
     createdAt?: true
+    updatedAt?: true
     _all?: true
   }
 
@@ -2556,8 +2574,11 @@ export namespace Prisma {
     email: string
     name: string
     role: string
+    passwordHash: string | null
+    googleId: string | null
     organizationId: string | null
     createdAt: Date
+    updatedAt: Date
     _count: UserCountAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
     _max: UserMaxAggregateOutputType | null
@@ -2582,8 +2603,11 @@ export namespace Prisma {
     email?: boolean
     name?: boolean
     role?: boolean
+    passwordHash?: boolean
+    googleId?: boolean
     organizationId?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
     organization?: boolean | User$organizationArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -2592,8 +2616,11 @@ export namespace Prisma {
     email?: boolean
     name?: boolean
     role?: boolean
+    passwordHash?: boolean
+    googleId?: boolean
     organizationId?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
     organization?: boolean | User$organizationArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -2602,8 +2629,11 @@ export namespace Prisma {
     email?: boolean
     name?: boolean
     role?: boolean
+    passwordHash?: boolean
+    googleId?: boolean
     organizationId?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
   }
 
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2623,8 +2653,11 @@ export namespace Prisma {
       email: string
       name: string
       role: string
+      passwordHash: string | null
+      googleId: string | null
       organizationId: string | null
       createdAt: Date
+      updatedAt: Date
     }, ExtArgs["result"]["user"]>
     composites: {}
   }
@@ -3023,8 +3056,11 @@ export namespace Prisma {
     readonly email: FieldRef<"User", 'String'>
     readonly name: FieldRef<"User", 'String'>
     readonly role: FieldRef<"User", 'String'>
+    readonly passwordHash: FieldRef<"User", 'String'>
+    readonly googleId: FieldRef<"User", 'String'>
     readonly organizationId: FieldRef<"User", 'String'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
+    readonly updatedAt: FieldRef<"User", 'DateTime'>
   }
     
 
@@ -8445,8 +8481,11 @@ export namespace Prisma {
     email: 'email',
     name: 'name',
     role: 'role',
+    passwordHash: 'passwordHash',
+    googleId: 'googleId',
     organizationId: 'organizationId',
-    createdAt: 'createdAt'
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -8703,8 +8742,11 @@ export namespace Prisma {
     email?: StringFilter<"User"> | string
     name?: StringFilter<"User"> | string
     role?: StringFilter<"User"> | string
+    passwordHash?: StringNullableFilter<"User"> | string | null
+    googleId?: StringNullableFilter<"User"> | string | null
     organizationId?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
+    updatedAt?: DateTimeFilter<"User"> | Date | string
     organization?: XOR<OrganizationNullableRelationFilter, OrganizationWhereInput> | null
   }
 
@@ -8713,31 +8755,40 @@ export namespace Prisma {
     email?: SortOrder
     name?: SortOrder
     role?: SortOrder
+    passwordHash?: SortOrderInput | SortOrder
+    googleId?: SortOrderInput | SortOrder
     organizationId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
     organization?: OrganizationOrderByWithRelationInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
     id?: string
     email?: string
+    googleId?: string
     AND?: UserWhereInput | UserWhereInput[]
     OR?: UserWhereInput[]
     NOT?: UserWhereInput | UserWhereInput[]
     name?: StringFilter<"User"> | string
     role?: StringFilter<"User"> | string
+    passwordHash?: StringNullableFilter<"User"> | string | null
     organizationId?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
+    updatedAt?: DateTimeFilter<"User"> | Date | string
     organization?: XOR<OrganizationNullableRelationFilter, OrganizationWhereInput> | null
-  }, "id" | "email">
+  }, "id" | "email" | "googleId">
 
   export type UserOrderByWithAggregationInput = {
     id?: SortOrder
     email?: SortOrder
     name?: SortOrder
     role?: SortOrder
+    passwordHash?: SortOrderInput | SortOrder
+    googleId?: SortOrderInput | SortOrder
     organizationId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
     _count?: UserCountOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
     _min?: UserMinOrderByAggregateInput
@@ -8751,8 +8802,11 @@ export namespace Prisma {
     email?: StringWithAggregatesFilter<"User"> | string
     name?: StringWithAggregatesFilter<"User"> | string
     role?: StringWithAggregatesFilter<"User"> | string
+    passwordHash?: StringNullableWithAggregatesFilter<"User"> | string | null
+    googleId?: StringNullableWithAggregatesFilter<"User"> | string | null
     organizationId?: StringNullableWithAggregatesFilter<"User"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
   }
 
   export type InterviewSessionWhereInput = {
@@ -9190,7 +9244,10 @@ export namespace Prisma {
     email: string
     name: string
     role?: string
+    passwordHash?: string | null
+    googleId?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     organization?: OrganizationCreateNestedOneWithoutUsersInput
   }
 
@@ -9199,8 +9256,11 @@ export namespace Prisma {
     email: string
     name: string
     role?: string
+    passwordHash?: string | null
+    googleId?: string | null
     organizationId?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type UserUpdateInput = {
@@ -9208,7 +9268,10 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    googleId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organization?: OrganizationUpdateOneWithoutUsersNestedInput
   }
 
@@ -9217,8 +9280,11 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    googleId?: NullableStringFieldUpdateOperationsInput | string | null
     organizationId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type UserCreateManyInput = {
@@ -9226,8 +9292,11 @@ export namespace Prisma {
     email: string
     name: string
     role?: string
+    passwordHash?: string | null
+    googleId?: string | null
     organizationId?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type UserUpdateManyMutationInput = {
@@ -9235,7 +9304,10 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    googleId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type UserUncheckedUpdateManyInput = {
@@ -9243,8 +9315,11 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    googleId?: NullableStringFieldUpdateOperationsInput | string | null
     organizationId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type InterviewSessionCreateInput = {
@@ -9824,8 +9899,11 @@ export namespace Prisma {
     email?: SortOrder
     name?: SortOrder
     role?: SortOrder
+    passwordHash?: SortOrder
+    googleId?: SortOrder
     organizationId?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type UserMaxOrderByAggregateInput = {
@@ -9833,8 +9911,11 @@ export namespace Prisma {
     email?: SortOrder
     name?: SortOrder
     role?: SortOrder
+    passwordHash?: SortOrder
+    googleId?: SortOrder
     organizationId?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type UserMinOrderByAggregateInput = {
@@ -9842,8 +9923,11 @@ export namespace Prisma {
     email?: SortOrder
     name?: SortOrder
     role?: SortOrder
+    passwordHash?: SortOrder
+    googleId?: SortOrder
     organizationId?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -10311,6 +10395,10 @@ export namespace Prisma {
     connect?: OrganizationWhereUniqueInput
   }
 
+  export type NullableStringFieldUpdateOperationsInput = {
+    set?: string | null
+  }
+
   export type OrganizationUpdateOneWithoutUsersNestedInput = {
     create?: XOR<OrganizationCreateWithoutUsersInput, OrganizationUncheckedCreateWithoutUsersInput>
     connectOrCreate?: OrganizationCreateOrConnectWithoutUsersInput
@@ -10319,10 +10407,6 @@ export namespace Prisma {
     delete?: OrganizationWhereInput | boolean
     connect?: OrganizationWhereUniqueInput
     update?: XOR<XOR<OrganizationUpdateToOneWithWhereWithoutUsersInput, OrganizationUpdateWithoutUsersInput>, OrganizationUncheckedUpdateWithoutUsersInput>
-  }
-
-  export type NullableStringFieldUpdateOperationsInput = {
-    set?: string | null
   }
 
   export type OrganizationCreateNestedOneWithoutSessionsInput = {
@@ -10822,7 +10906,10 @@ export namespace Prisma {
     email: string
     name: string
     role?: string
+    passwordHash?: string | null
+    googleId?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type UserUncheckedCreateWithoutOrganizationInput = {
@@ -10830,7 +10917,10 @@ export namespace Prisma {
     email: string
     name: string
     role?: string
+    passwordHash?: string | null
+    googleId?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type UserCreateOrConnectWithoutOrganizationInput = {
@@ -10905,8 +10995,11 @@ export namespace Prisma {
     email?: StringFilter<"User"> | string
     name?: StringFilter<"User"> | string
     role?: StringFilter<"User"> | string
+    passwordHash?: StringNullableFilter<"User"> | string | null
+    googleId?: StringNullableFilter<"User"> | string | null
     organizationId?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
+    updatedAt?: DateTimeFilter<"User"> | Date | string
   }
 
   export type InterviewSessionUpsertWithWhereUniqueWithoutOrganizationInput = {
@@ -11571,7 +11664,10 @@ export namespace Prisma {
     email: string
     name: string
     role?: string
+    passwordHash?: string | null
+    googleId?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type InterviewSessionCreateManyOrganizationInput = {
@@ -11589,7 +11685,10 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    googleId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type UserUncheckedUpdateWithoutOrganizationInput = {
@@ -11597,7 +11696,10 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    googleId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type UserUncheckedUpdateManyWithoutOrganizationInput = {
@@ -11605,7 +11707,10 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    googleId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type InterviewSessionUpdateWithoutOrganizationInput = {

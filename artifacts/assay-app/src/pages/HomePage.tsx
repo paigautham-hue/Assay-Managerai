@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { useAssayStore } from '../store/useAssayStore';
 import { motion } from 'framer-motion';
+import { NavBar } from '@/components/NavBar';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -34,22 +35,7 @@ export function HomePage() {
 
   return (
     <div className="min-h-screen bg-gradient-dark">
-      <motion.nav
-        className="nav-bar"
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-gradient-gold flex items-center justify-center">
-              <span className="text-[#0D0D1A] font-bold text-lg">A</span>
-            </div>
-            <span className="text-lg font-bold" style={{ color: 'var(--color-text-primary)' }}>ASSAY</span>
-          </div>
-          <div className="avatar avatar-sm">U</div>
-        </div>
-      </motion.nav>
+      <NavBar />
 
       <div className="max-w-7xl mx-auto px-6 py-12">
         <motion.div

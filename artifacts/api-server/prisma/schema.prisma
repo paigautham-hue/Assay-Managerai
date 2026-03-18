@@ -24,9 +24,12 @@ model User {
   id             String   @id @default(uuid())
   email          String   @unique
   name           String
-  role           String   @default("user")
+  role           String   @default("viewer")
+  passwordHash   String?  @map("password_hash")
+  googleId       String?  @unique @map("google_id")
   organizationId String?  @map("organization_id")
   createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
 
   organization Organization? @relation(fields: [organizationId], references: [id])
 

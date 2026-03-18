@@ -12,9 +12,26 @@ pnpm workspace monorepo using TypeScript. Each package manages its own dependenc
 - **TypeScript version**: 5.9
 - **API framework**: Express 5
 - **Database**: PostgreSQL + Drizzle ORM (shared lib) + Prisma 5 (ASSAY app)
+- **Auth**: JWT (httpOnly cookie `assay_token`) + bcrypt, Google OAuth 2.0 via `google-auth-library`
 - **Validation**: Zod (`zod/v4`), `drizzle-zod`
 - **API codegen**: Orval (from OpenAPI spec)
 - **Build**: esbuild (CJS bundle)
+
+## ASSAY App Authentication
+
+- All `/api/*` routes are protected except `/api/auth/*` and `/api/health`
+- All frontend routes are protected except `/login`
+- `/admin` page requires `owner` or `admin` role
+- First registered user is automatically assigned `owner` role
+- Roles: `owner` > `admin` > `interviewer` > `viewer`
+- Auth files: `artifacts/api-server/src/middleware/auth.ts`, `src/routes/auth.ts`
+- Frontend: `artifacts/assay-app/src/context/AuthContext.tsx`, `src/components/ProtectedRoute.tsx`
+
+### Required env vars for Google OAuth
+- `GOOGLE_CLIENT_ID` - Google OAuth app client ID
+- `GOOGLE_CLIENT_SECRET` - Google OAuth app client secret
+- `APP_URL` - Full app URL (e.g. `https://xxx.replit.dev/assay-app`) for OAuth redirect
+- `JWT_SECRET` - Strong secret for signing JWT tokens (defaults to dev secret if unset)
 
 ## Structure
 

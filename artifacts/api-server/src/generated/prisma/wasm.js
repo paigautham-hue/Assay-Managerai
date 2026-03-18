@@ -134,8 +134,11 @@ exports.Prisma.UserScalarFieldEnum = {
   email: 'email',
   name: 'name',
   role: 'role',
+  passwordHash: 'passwordHash',
+  googleId: 'googleId',
   organizationId: 'organizationId',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.InterviewSessionScalarFieldEnum = {
