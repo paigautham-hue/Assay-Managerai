@@ -13,7 +13,9 @@ const router: IRouter = Router();
 
 router.use(authRouter);
 
-const publicPaths = ['/api/auth/', '/api/health'];
+// req.path inside this router is relative (e.g. "/healthz", "/auth/login") —
+// do NOT include the "/api" prefix here.
+const publicPaths = ['/auth/', '/healthz'];
 function isPublicPath(path: string): boolean {
   return publicPaths.some(p => path.startsWith(p));
 }
