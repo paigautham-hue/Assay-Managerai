@@ -94,3 +94,42 @@ Generated React Query hooks and fetch client from the OpenAPI spec (e.g. `useHea
 ### `scripts` (`@workspace/scripts`)
 
 Utility scripts package. Each script is a `.ts` file in `src/` with a corresponding npm script in `package.json`. Run scripts via `pnpm --filter @workspace/scripts run <script>`. Scripts can import any workspace package (e.g., `@workspace/db`) by adding it as a dependency in `scripts/package.json`.
+
+### `artifacts/assay-app` (`@workspace/assay-app`)
+
+ASSAY — Premium AI-powered executive interview assessment platform. A React + Vite SPA with a dark gold theme.
+
+**Features:**
+- 5-assessor AI panel: Advocate, Prosecutor, Psychologist, Operator, Culture Probe + Chairman synthesis
+- 7-dimension Pyramid V2 scoring: domain_expertise, hands_on_accountability, character, people_influence, strategy_change, motivation, financial_fit
+- Non-negotiable gate evaluations (integrity, accountability, harm_pattern, context_misalignment + optional gates)
+- Voice interview mode via OpenAI Realtime API/WebRTC (when `VITE_VOICE_ENABLED=true`)
+- Demo mode with simulated interview flow when voice is disabled
+
+**Routes (Wouter):**
+- `/` — HomePage (dashboard, recent assessments)
+- `/setup` — SetupPage (6-step wizard: candidate info, role level, context, gates, mode, confirm)
+- `/interview` — InterviewPage (live interview with VoiceVisualizer, real-time observations sidebar)
+- `/processing` — ProcessingPage (deliberation animation)
+- `/report/:id` — ReportPage (full assessment report with expandable sections)
+
+**Key Files:**
+- `src/types/index.ts` — All TypeScript types and constants (DIMENSION_DISPLAY_NAMES, DIMENSION_WEIGHTS)
+- `src/store/useAssayStore.ts` — Zustand store (session, reports, transcript, observations)
+- `src/lib/gates.ts` — Gate definitions and role presets
+- `src/lib/assessors.ts` — Assessor configurations and system prompts
+- `src/lib/modelRouter.ts` — Model registry and routing
+- `src/lib/voiceEngine.ts` — WebRTC/OpenAI Realtime voice engine
+- `src/components/VoiceVisualizer.tsx` — Animated voice status visualizer
+- `src/index.css` — Complete dark gold design system
+
+**API Routes (api-server):**
+- `POST /api/assess` — Runs 5 parallel AI assessors + chairman synthesis; requires ANTHROPIC_API_KEY, OPENAI_API_KEY, GOOGLE_API_KEY
+- `POST /api/report` — Generates full AssayReport from assessor verdicts + chairman synthesis
+- `POST /api/session` — Creates OpenAI Realtime ephemeral session token; requires OPENAI_API_KEY
+
+**Environment Variables:**
+- `VITE_VOICE_ENABLED` — Enable real voice interviews (frontend)
+- `OPENAI_API_KEY` — OpenAI API key (api-server)
+- `ANTHROPIC_API_KEY` — Anthropic API key (api-server)
+- `GOOGLE_API_KEY` — Google Gemini API key (api-server)
