@@ -13,7 +13,7 @@ type InterviewStatus = 'connecting' | 'idle' | 'ai_speaking' | 'listening' | 'pr
 type Phase = 'mic_check' | 'interview';
 type MicPermission = 'idle' | 'requesting' | 'granted' | 'denied';
 
-const VOICE_ENABLED = import.meta.env.VITE_VOICE_ENABLED === 'true';
+const VOICE_ENABLED = true;
 const HUME_API_KEY: string | null = import.meta.env.VITE_HUME_API_KEY || null;
 const BASE_URL: string = import.meta.env.BASE_URL || '/';
 
