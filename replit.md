@@ -1,5 +1,11 @@
 # Workspace
 
+## GitHub Repository
+
+**Repo:** `https://github.com/paigautham-hue/Assay-Managerai.git` — **`master` branch**
+
+When the user asks to sync with GitHub or pull their latest changes, fetch from this repo's `master` branch. Note: Replit's git credential helper blocks standard `git fetch` with embedded tokens — use the GitHub REST API with a Personal Access Token instead (the user will need to provide one each time as they revoke them after use).
+
 ## Overview
 
 pnpm workspace monorepo using TypeScript. Each package manages its own dependencies.
@@ -120,8 +126,7 @@ ASSAY — Premium AI-powered executive interview assessment platform. A React + 
 - 5-assessor AI panel: Advocate, Prosecutor, Psychologist, Operator, Culture Probe + Chairman synthesis
 - 7-dimension Pyramid V2 scoring: domain_expertise, hands_on_accountability, character, people_influence, strategy_change, motivation, financial_fit
 - Non-negotiable gate evaluations (integrity, accountability, harm_pattern, context_misalignment + optional gates)
-- Voice interview mode via OpenAI Realtime API/WebRTC (when `VITE_VOICE_ENABLED=true`)
-- Demo mode with simulated interview flow when voice is disabled
+- Voice interview mode via OpenAI Realtime API/WebRTC (always enabled — `VOICE_ENABLED` is hardcoded `true`)
 
 **Routes (Wouter):**
 - `/` — HomePage (dashboard, recent assessments)
@@ -146,7 +151,6 @@ ASSAY — Premium AI-powered executive interview assessment platform. A React + 
 - `POST /api/session` — Creates OpenAI Realtime ephemeral session token; requires OPENAI_API_KEY
 
 **Environment Variables:**
-- `VITE_VOICE_ENABLED` — Enable real voice interviews (frontend)
-- `OPENAI_API_KEY` — OpenAI API key (api-server)
+- `OPENAI_API_KEY` — OpenAI API key (api-server) — required for voice interviews and assessments
 - `ANTHROPIC_API_KEY` — Anthropic API key (api-server)
 - `GOOGLE_API_KEY` — Google Gemini API key (api-server)
