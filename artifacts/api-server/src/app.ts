@@ -26,7 +26,7 @@ if (process.env.NODE_ENV === "production") {
   if (existsSync(staticDir)) {
     app.use(express.static(staticDir));
     // SPA fallback — let React Router handle client-side routing.
-    app.get("*", (_req, res) => {
+    app.get("/{*splat}", (_req, res) => {
       res.sendFile(path.join(staticDir, "index.html"));
     });
   } else {
