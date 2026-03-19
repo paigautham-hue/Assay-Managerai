@@ -93,9 +93,16 @@ router.get('/auth/me', authenticate, (req: Request, res: Response) => {
   return res.json({ user: { ...req.user, hasPassword: true } });
 });
 
+router.get('/auth/providers', (_req: Request, res: Response) => {
+  return res.json({
+    google: !!(GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET),
+    password: true,
+  });
+});
+
 router.get('/auth/google', (_req: Request, res: Response) => {
   if (!GOOGLE_CLIENT_ID) {
-    return res.status(503).json({ error: 'Google OAuth not configured' });
+    return res.redirect(`${APP_URL}/login?error=google_not_configured`);
   }
   const client = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, `${APP_URL}/api/auth/google/callback`);
   const url = client.generateAuthUrl({
