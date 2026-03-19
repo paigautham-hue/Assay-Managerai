@@ -59,8 +59,22 @@ function MicCheckScreen({ onConfirm, onSkip }: { onConfirm: () => void; onSkip: 
     streamRef.current?.getTracks().forEach(t => t.stop());
   };
 
-  const handleConfirm = () => { cleanup(); onConfirm(); };
-  const handleSkip = () => { cleanup(); onSkip(); };
+  // Prime the browser's audio autoplay policy with a silent buffer.
+  // This MUST run synchronously inside a user-gesture handler (tap/click) so that
+  // iOS Safari and Chrome grant the page permission to play audio later when the
+  // AI voice arrives via WebRTC (which is asynchronous and outside a gesture).
+  const primeAudioAutoplay = () => {
+    try {
+      const a = new Audio();
+      a.src = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=';
+      a.volume = 0;
+      a.setAttribute('playsinline', 'true');
+      a.play().catch(() => {});
+    } catch { /* ignore */ }
+  };
+
+  const handleConfirm = () => { primeAudioAutoplay(); cleanup(); onConfirm(); };
+  const handleSkip = () => { primeAudioAutoplay(); cleanup(); onSkip(); };
 
   useEffect(() => () => cleanup(), []);
 

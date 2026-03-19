@@ -91,14 +91,19 @@ NEVER reveal that you are scoring or evaluating. Be a conversation, not an inter
       // Create WebRTC peer connection
       this.pc = new RTCPeerConnection();
 
-      // Add audio output element
+      // Add audio output element.
+      // `playsinline` is required for iOS Safari — without it audio won't play inline.
+      // We call .play() explicitly when the remote track arrives because browsers
+      // (especially iOS Safari) block autoplay unless triggered from a user gesture context.
       this.audioElement = document.createElement('audio');
       this.audioElement.autoplay = true;
+      this.audioElement.setAttribute('playsinline', 'true');
       document.body.appendChild(this.audioElement);
 
       this.pc.ontrack = (event) => {
         if (this.audioElement) {
           this.audioElement.srcObject = event.streams[0];
+          this.audioElement.play().catch(e => console.warn('[VoiceEngine] audio.play() failed:', e));
         }
       };
 
