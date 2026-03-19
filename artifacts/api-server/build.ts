@@ -1,10 +1,16 @@
 import path from "path";
 import { fileURLToPath } from "url";
 import { build as esbuild } from "esbuild";
-import { rm, readFile, cp, mkdir } from "fs/promises";
+import { rm } from "fs/promises";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// Name of the Prisma query-engine binary that ships with the generated client.
+// This file is committed to git alongside the generated client code so it is
+// always present in both development and production (no build-time copy needed).
+const ENGINE_BINARY =
+  "libquery_engine-debian-openssl-3.0.x.so.node";
 
 async function buildAll() {
   const distDir = path.resolve(__dirname, "dist");
@@ -12,23 +18,22 @@ async function buildAll() {
 
   console.log("building server...");
 
-  // Prisma's generated client contains a native .node binary that cannot be
-  // bundled by esbuild. We mark it as external so the CJS output keeps a
-  // require() call, then copy the generated directory to the location Node
-  // will resolve it from at runtime (dist/../generated/prisma →
-  // artifacts/api-server/generated/prisma).
+  // The Prisma query-engine binary lives in src/generated/prisma/ (git-tracked).
+  // When esbuild bundles the Prisma client, __dirname inside the bundle becomes
+  // the dist/ folder, so Prisma cannot find the binary on its own.
   //
-  // Everything else (npm packages) is bundled inline so the binary is fully
+  // Fix: inject a one-line banner at the absolute top of the CJS output —
+  // before ANY module code runs — that sets PRISMA_QUERY_ENGINE_LIBRARY to the
+  // correct absolute path derived from __dirname at runtime.
+  //
+  // All npm packages are bundled inline (external: []) so the binary is fully
   // self-contained and does NOT require node_modules to be present at runtime.
-  const prismaExternalPlugin = {
-    name: "prisma-external",
-    setup(build: import("esbuild").PluginBuild) {
-      build.onResolve({ filter: /generated[/\\]prisma/ }, (args) => ({
-        path: args.path,
-        external: true,
-      }));
-    },
-  };
+  const engineBannerLine = [
+    `if (!process.env.PRISMA_QUERY_ENGINE_LIBRARY) {`,
+    `  process.env.PRISMA_QUERY_ENGINE_LIBRARY =`,
+    `    require("path").join(__dirname, "..", "src", "generated", "prisma", "${ENGINE_BINARY}");`,
+    `}`,
+  ].join(" ");
 
   await esbuild({
     entryPoints: [path.resolve(__dirname, "src/index.ts")],
@@ -40,22 +45,10 @@ async function buildAll() {
       "process.env.NODE_ENV": '"production"',
     },
     minify: true,
-    // Bundle ALL npm packages inline — deployment containers may not have
-    // node_modules accessible, so the binary must be self-contained.
-    // Only Node built-ins are automatically excluded by esbuild.
     external: [],
-    plugins: [prismaExternalPlugin],
+    banner: { js: engineBannerLine },
     logLevel: "info",
   });
-
-  // Copy generated Prisma client so it can be required at runtime.
-  // The CJS bundle lives at dist/index.cjs; require('../generated/prisma/...')
-  // resolves to artifacts/api-server/generated/prisma/.
-  const prismaSrc = path.resolve(__dirname, "src", "generated", "prisma");
-  const prismaDest = path.resolve(__dirname, "generated", "prisma");
-  console.log("copying prisma client to", prismaDest);
-  await mkdir(prismaDest, { recursive: true });
-  await cp(prismaSrc, prismaDest, { recursive: true });
 
   console.log("build complete");
 }
