@@ -21,7 +21,7 @@ export class VoiceEngine {
   private audioLevelInterval: ReturnType<typeof setInterval> | null = null;
   private externalAudioEl: HTMLAudioElement | null = null;
 
-  private readonly SILENCE_PATIENCE_MS = 8000;
+  private readonly SILENCE_PATIENCE_MS = 800;
 
   constructor(
     setup: InterviewSetup,
@@ -212,7 +212,7 @@ NEVER reveal that you are scoring or evaluating. Be a conversation, not an inter
         input_audio_transcription: { model: 'whisper-1' },
         turn_detection: {
           type: 'server_vad',
-          threshold: 0.5,
+          threshold: 0.3,
           prefix_padding_ms: 300,
           silence_duration_ms: this.SILENCE_PATIENCE_MS,
         },
