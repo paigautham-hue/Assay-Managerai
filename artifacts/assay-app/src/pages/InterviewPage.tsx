@@ -293,6 +293,10 @@ export function InterviewPage() {
   const voiceEngineRef = useRef<VoiceEngine | null>(null);
   const emotionEngineRef = useRef<EmotionEngine | null>(null);
   const transcriptEndRef = useRef<HTMLDivElement>(null);
+  // Pre-created audio element unlocked inside the user-gesture handler so iOS
+  // Safari grants it autoplay permission even when .play() is called later from
+  // an async WebRTC callback.
+  const audioElementRef = useRef<HTMLAudioElement | null>(null);
 
   const [phase, setPhase] = useState<Phase>('mic_check');
   const [status, setStatus] = useState<InterviewStatus>('connecting');
@@ -350,7 +354,11 @@ export function InterviewPage() {
         onAudioLevel: setAudioLevel,
       };
 
-      voiceEngineRef.current = new VoiceEngine(session.setup, callbacks);
+      voiceEngineRef.current = new VoiceEngine(
+        session.setup,
+        callbacks,
+        audioElementRef.current ?? undefined,
+      );
       voiceEngineRef.current.connect().catch(() => setError('Failed to connect to voice system'));
     } else {
       const t1 = setTimeout(() => setStatus('idle'), 1500);
@@ -520,10 +528,23 @@ export function InterviewPage() {
 
   // ── Mic check phase ────────────────────────────────────────────────────────
   if (phase === 'mic_check') {
+    const unlockAndStart = () => {
+      // Create the audio element that VoiceEngine will use for remote WebRTC audio.
+      // Doing this synchronously inside the tap handler is the ONLY reliable way to
+      // get iOS Safari to allow .play() later when the async WebRTC track arrives.
+      const audioEl = document.createElement('audio');
+      audioEl.setAttribute('playsinline', 'true');
+      audioEl.muted = true;
+      document.body.appendChild(audioEl);
+      // The play() call here registers this element as gesture-unlocked with iOS.
+      audioEl.play().then(() => { audioEl.muted = false; }).catch(() => { audioEl.muted = false; });
+      audioElementRef.current = audioEl;
+      setPhase('interview');
+    };
     return (
       <MicCheckScreen
-        onConfirm={() => setPhase('interview')}
-        onSkip={() => setPhase('interview')}
+        onConfirm={unlockAndStart}
+        onSkip={unlockAndStart}
       />
     );
   }
@@ -692,20 +713,24 @@ export function InterviewPage() {
                   setVoiceError(null);
                   setStatus('connecting');
                   if (session) {
-                    voiceEngineRef.current = new VoiceEngine(session.setup, {
-                      onTranscript: addTranscriptEntry,
-                      onObservation: addObservation,
-                      onStatusChange: veStatus => {
-                        if (veStatus === 'connecting') setStatus('connecting');
-                        else if (veStatus === 'connected') setStatus('idle');
-                        else if (veStatus === 'speaking') setStatus('ai_speaking');
-                        else if (veStatus === 'listening') setStatus('listening');
-                        else if (veStatus === 'processing') setStatus('processing');
-                        else if (veStatus === 'error') setStatus('idle');
+                    voiceEngineRef.current = new VoiceEngine(
+                      session.setup,
+                      {
+                        onTranscript: addTranscriptEntry,
+                        onObservation: addObservation,
+                        onStatusChange: veStatus => {
+                          if (veStatus === 'connecting') setStatus('connecting');
+                          else if (veStatus === 'connected') setStatus('idle');
+                          else if (veStatus === 'speaking') setStatus('ai_speaking');
+                          else if (veStatus === 'listening') setStatus('listening');
+                          else if (veStatus === 'processing') setStatus('processing');
+                          else if (veStatus === 'error') setStatus('idle');
+                        },
+                        onError: err => { setVoiceError(err); setStatus('idle'); },
+                        onAudioLevel: setAudioLevel,
                       },
-                      onError: err => { setVoiceError(err); setStatus('idle'); },
-                      onAudioLevel: setAudioLevel,
-                    });
+                      audioElementRef.current ?? undefined,
+                    );
                     voiceEngineRef.current.connect().catch(() => {});
                   }
                 }}

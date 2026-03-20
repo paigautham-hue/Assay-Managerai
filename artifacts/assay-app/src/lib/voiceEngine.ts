@@ -19,12 +19,20 @@ export class VoiceEngine {
   private audioContext: AudioContext | null = null;
   private analyserNode: AnalyserNode | null = null;
   private audioLevelInterval: ReturnType<typeof setInterval> | null = null;
+  private externalAudioEl: HTMLAudioElement | null = null;
 
   private readonly SILENCE_PATIENCE_MS = 8000;
 
-  constructor(setup: InterviewSetup, callbacks: VoiceEngineCallbacks) {
+  constructor(
+    setup: InterviewSetup,
+    callbacks: VoiceEngineCallbacks,
+    /** Pre-created, gesture-unlocked <audio> element. Pass this from iOS so
+     *  Safari allows remote WebRTC audio to play without an autoplay block. */
+    preCreatedAudioEl?: HTMLAudioElement,
+  ) {
     this.setup = setup;
     this.callbacks = callbacks;
+    this.externalAudioEl = preCreatedAudioEl ?? null;
   }
 
   private buildSystemPrompt(): string {
@@ -93,18 +101,23 @@ NEVER reveal that you are scoring or evaluating. Be a conversation, not an inter
       // Create WebRTC peer connection
       this.pc = new RTCPeerConnection();
 
-      // Add audio output element.
-      // `playsinline` is required for iOS Safari — without it audio won't play inline.
-      // We call .play() explicitly when the remote track arrives because browsers
-      // (especially iOS Safari) block autoplay unless triggered from a user gesture context.
-      this.audioElement = document.createElement('audio');
-      this.audioElement.autoplay = true;
-      this.audioElement.setAttribute('playsinline', 'true');
-      document.body.appendChild(this.audioElement);
+      // Use a pre-created, gesture-unlocked audio element if one was provided by the
+      // caller (required for iOS Safari — play() only works when triggered inside a
+      // user-gesture call stack, which connect() is not).  Fall back to creating one
+      // here for desktop browsers that don't impose the same restriction.
+      if (this.externalAudioEl) {
+        this.audioElement = this.externalAudioEl;
+      } else {
+        this.audioElement = document.createElement('audio');
+        this.audioElement.autoplay = true;
+        this.audioElement.setAttribute('playsinline', 'true');
+        document.body.appendChild(this.audioElement);
+      }
 
       this.pc.ontrack = (event) => {
         if (this.audioElement) {
           this.audioElement.srcObject = event.streams[0];
+          // Resume the element — it may be paused if no srcObject was set before.
           this.audioElement.play().catch(e => console.warn('[VoiceEngine] audio.play() failed:', e));
         }
       };
@@ -187,6 +200,7 @@ NEVER reveal that you are scoring or evaluating. Be a conversation, not an inter
   private sendSessionUpdate() {
     if (!this.dc || this.dc.readyState !== 'open') return;
 
+    // Configure the session (instructions, VAD, transcription, etc.)
     this.dc.send(JSON.stringify({
       type: 'session.update',
       session: {
@@ -202,6 +216,16 @@ NEVER reveal that you are scoring or evaluating. Be a conversation, not an inter
           prefix_padding_ms: 300,
           silence_duration_ms: this.SILENCE_PATIENCE_MS,
         },
+      },
+    }));
+
+    // Trigger the AI's opening greeting.
+    // Without this, the AI sits silently in VAD mode waiting for the candidate
+    // to speak first — the session never "starts" from the user's perspective.
+    this.dc.send(JSON.stringify({
+      type: 'response.create',
+      response: {
+        modalities: ['text', 'audio'],
       },
     }));
   }
