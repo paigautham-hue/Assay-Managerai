@@ -60,9 +60,11 @@ NEVER reveal that you are scoring or evaluating. Be a conversation, not an inter
     this.callbacks.onStatusChange('connecting');
 
     try {
-      // Get ephemeral token from our API
+      // Get ephemeral token from our API.
+      // credentials:'include' is required so the auth cookie is sent with the request.
       const sessionResponse = await fetch(`${import.meta.env.BASE_URL}api/session`, {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           systemPrompt: this.buildSystemPrompt(),
@@ -121,22 +123,54 @@ NEVER reveal that you are scoring or evaluating. Be a conversation, not an inter
       };
       this.dc.onmessage = (e) => this.handleServerEvent(JSON.parse(e.data));
 
+      // Monitor RTCPeerConnection state so failures surface as errors immediately.
+      this.pc.onconnectionstatechange = () => {
+        const state = this.pc?.connectionState;
+        console.log('[VoiceEngine] connection state:', state);
+        if (state === 'failed' || state === 'closed') {
+          this.callbacks.onError(`WebRTC connection ${state}`);
+          this.callbacks.onStatusChange('error');
+        }
+      };
+
       // Create SDP offer
       const offer = await this.pc.createOffer();
       await this.pc.setLocalDescription(offer);
 
-      // Send offer to OpenAI Realtime API
+      // Wait for ICE gathering to complete BEFORE sending the offer to OpenAI.
+      // OpenAI's Realtime endpoint expects a complete SDP with all ICE candidates
+      // in one shot — sending an incomplete offer causes the data channel to never open.
+      await new Promise<void>((resolve, reject) => {
+        const gatherTimeout = setTimeout(
+          () => reject(new Error('ICE gathering timed out after 10 s')),
+          10_000,
+        );
+        if (this.pc!.iceGatheringState === 'complete') {
+          clearTimeout(gatherTimeout);
+          resolve();
+        } else {
+          this.pc!.onicegatheringstatechange = () => {
+            if (this.pc!.iceGatheringState === 'complete') {
+              clearTimeout(gatherTimeout);
+              resolve();
+            }
+          };
+        }
+      });
+
+      // Send the COMPLETE SDP (with all gathered ICE candidates) to OpenAI.
       const sdpResponse = await fetch('https://api.openai.com/v1/realtime?model=gpt-4o-realtime-preview-2024-12-17', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${clientSecret}`,
           'Content-Type': 'application/sdp',
         },
-        body: offer.sdp,
+        body: this.pc.localDescription!.sdp,
       });
 
       if (!sdpResponse.ok) {
-        throw new Error('Failed to connect to OpenAI Realtime API');
+        const errText = await sdpResponse.text().catch(() => sdpResponse.statusText);
+        throw new Error(`OpenAI Realtime API rejected the offer (${sdpResponse.status}): ${errText}`);
       }
 
       const sdpAnswer = await sdpResponse.text();

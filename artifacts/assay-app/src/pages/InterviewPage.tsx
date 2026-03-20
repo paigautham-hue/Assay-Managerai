@@ -302,6 +302,7 @@ export function InterviewPage() {
   const [showEndModal, setShowEndModal] = useState(false);
   const [showFlagsPanel, setShowFlagsPanel] = useState(true);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [voiceError, setVoiceError] = useState<string | null>(null);
 
   // Detect mobile
   useEffect(() => {
@@ -343,6 +344,7 @@ export function InterviewPage() {
         },
         onError: error => {
           setError(error);
+          setVoiceError(error);
           setStatus('idle');
         },
         onAudioLevel: setAudioLevel,
@@ -669,6 +671,51 @@ export function InterviewPage() {
               </span>
             </div>
           </motion.div>
+
+          {/* Voice connection error */}
+          {voiceError && (
+            <div
+              className="w-full max-w-2xl rounded-xl px-4 py-3 mb-4 flex items-start gap-3"
+              style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)' }}
+            >
+              <span style={{ color: '#EF4444', fontSize: 16, lineHeight: 1.4 }}>⚠</span>
+              <div className="min-w-0">
+                <p className="text-xs font-semibold mb-0.5" style={{ color: '#EF4444' }}>
+                  Voice connection failed
+                </p>
+                <p className="text-xs leading-relaxed" style={{ color: 'rgba(239,68,68,0.8)' }}>
+                  {voiceError}
+                </p>
+              </div>
+              <button
+                onClick={() => {
+                  setVoiceError(null);
+                  setStatus('connecting');
+                  if (session) {
+                    voiceEngineRef.current = new VoiceEngine(session.setup, {
+                      onTranscript: addTranscriptEntry,
+                      onObservation: addObservation,
+                      onStatusChange: veStatus => {
+                        if (veStatus === 'connecting') setStatus('connecting');
+                        else if (veStatus === 'connected') setStatus('idle');
+                        else if (veStatus === 'speaking') setStatus('ai_speaking');
+                        else if (veStatus === 'listening') setStatus('listening');
+                        else if (veStatus === 'processing') setStatus('processing');
+                        else if (veStatus === 'error') setStatus('idle');
+                      },
+                      onError: err => { setVoiceError(err); setStatus('idle'); },
+                      onAudioLevel: setAudioLevel,
+                    });
+                    voiceEngineRef.current.connect().catch(() => {});
+                  }
+                }}
+                className="ml-auto flex-shrink-0 text-xs font-semibold px-3 py-1 rounded-lg"
+                style={{ background: 'rgba(239,68,68,0.2)', color: '#EF4444', border: '1px solid rgba(239,68,68,0.3)' }}
+              >
+                Retry
+              </button>
+            </div>
+          )}
 
           {/* Transcript */}
           <div
