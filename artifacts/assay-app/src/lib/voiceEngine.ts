@@ -30,7 +30,7 @@ export class VoiceEngine {
   // Delay before re-enabling mic after AI finishes speaking.
   // Gives the speaker time to fully drain buffered audio so the mic
   // doesn't pick up the tail end of the AI's voice.
-  private readonly MIC_UNMUTE_DELAY_MS = 350;
+  private readonly MIC_UNMUTE_DELAY_MS = 600;
 
   constructor(
     setup: InterviewSetup,
@@ -295,9 +295,10 @@ DECEPTION DETECTION (running in background):
         input_audio_transcription: { model: 'whisper-1' },
         turn_detection: {
           type: 'server_vad',
-          threshold: 0.3,
-          prefix_padding_ms: 300,
-          silence_duration_ms: this.SILENCE_PATIENCE_MS,
+          threshold: 0.5,
+          prefix_padding_ms: 500,
+          silence_duration_ms: 800,
+          eagerness: 'medium',
         },
       },
     }));

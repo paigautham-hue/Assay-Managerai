@@ -72,22 +72,37 @@ export function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#1A1A2E] flex items-center justify-center px-4">
+    <div className="min-h-screen bg-gradient-dark flex items-center justify-center px-4 relative overflow-hidden">
+      {/* Animated background */}
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute w-[500px] h-[500px] rounded-full opacity-[0.04]" style={{ background: 'radial-gradient(circle, var(--color-gold), transparent 70%)', top: '-15%', right: '-10%', animation: 'breathe 10s ease-in-out infinite' }} />
+        <div className="absolute w-[350px] h-[350px] rounded-full opacity-[0.03]" style={{ background: 'radial-gradient(circle, #60A5FA, transparent 70%)', bottom: '-5%', left: '-8%', animation: 'breathe 14s ease-in-out infinite reverse' }} />
+        <div className="absolute w-[250px] h-[250px] rounded-full opacity-[0.02]" style={{ background: 'radial-gradient(circle, #A78BFA, transparent 70%)', top: '40%', left: '60%', animation: 'breathe 12s ease-in-out infinite' }} />
+        <div className="absolute inset-0 opacity-[0.012]" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.4) 1px, transparent 0)', backgroundSize: '48px 48px' }} />
+      </div>
+
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, ease: 'easeOut' }}
-        className="w-full max-w-md"
+        transition={{ duration: 0.5, ease: 'easeOut' }}
+        className="relative w-full max-w-md"
       >
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-[#C9A84C]/10 border border-[#C9A84C]/20 mb-4">
-            <span className="text-[#C9A84C] font-bold text-xl">A</span>
-          </div>
-          <h1 className="text-3xl font-bold text-[#C9A84C] tracking-tight">ASSAY</h1>
-          <p className="text-[#8B8B9E] text-sm mt-1">Premium AI-powered executive assessment</p>
+          <motion.div
+            className="inline-flex items-center justify-center w-14 h-14 rounded-2xl mb-5 relative"
+            style={{ background: 'rgba(201,168,76,0.1)', border: '1px solid rgba(201,168,76,0.2)' }}
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 0.1, type: 'spring', stiffness: 200 }}
+          >
+            <div className="absolute inset-0 rounded-2xl animate-pulse-ring" style={{ border: '2px solid rgba(201,168,76,0.15)' }} />
+            <span className="text-[#C9A84C] font-bold text-2xl">A</span>
+          </motion.div>
+          <h1 className="text-3xl font-bold tracking-tight" style={{ background: 'linear-gradient(135deg, var(--color-gold) 0%, #E8D48B 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>ASSAY</h1>
+          <p className="text-sm mt-2" style={{ color: 'var(--color-text-secondary)' }}>Premium AI-powered executive assessment</p>
         </div>
 
-        <div className="bg-[#12122A] border border-white/5 rounded-2xl p-8 shadow-2xl">
+        <div className="rounded-2xl p-8" style={{ background: 'rgba(18,18,42,0.8)', backdropFilter: 'blur(24px) saturate(180%)', WebkitBackdropFilter: 'blur(24px) saturate(180%)', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 8px 32px rgba(0,0,0,0.4), 0 0 80px rgba(201,168,76,0.03)' }}>
           <div className="flex rounded-lg bg-white/5 p-1 mb-6">
             {(['login', 'register'] as Mode[]).map((m) => (
               <button
