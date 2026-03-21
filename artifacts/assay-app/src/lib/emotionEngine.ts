@@ -96,28 +96,45 @@ export class EmotionEngine {
   private connected = false;
 
   constructor(
-    private readonly humeApiKey: string | null,
+    private humeApiKey: string | null,
     private readonly baseUrl: string = '/',
   ) {}
+
+  /** Fetch Hume API key from backend if not already provided. */
+  private async resolveHumeKey(): Promise<string | null> {
+    if (this.humeApiKey) return this.humeApiKey;
+    try {
+      const res = await fetch(`${this.baseUrl}api/hume-token`, { credentials: 'include' });
+      if (!res.ok) return null;
+      const data = await res.json();
+      this.humeApiKey = data.apiKey || null;
+      return this.humeApiKey;
+    } catch { return null; }
+  }
 
   /**
    * Connect to Hume Streaming Expression Measurement API.
    * Captures microphone audio and streams to Hume for real-time prosody analysis.
    * No-op if HUME_API_KEY is not set.
    */
-  async connect(onEmotion?: (data: EmotionDataPoint) => void): Promise<void> {
-    if (!this.humeApiKey) return;
+  async connect(onEmotion?: (data: EmotionDataPoint) => void, existingStream?: MediaStream): Promise<void> {
+    const apiKey = await this.resolveHumeKey();
+    if (!apiKey) return;
 
     this.onEmotionCallback = onEmotion;
 
     try {
-      // Capture mic audio (independent from VoiceEngine's stream)
-      this.micStream = await navigator.mediaDevices.getUserMedia({
-        audio: { echoCancellation: true, noiseSuppression: false, sampleRate: 16000 },
-      });
+      // Use shared stream from VoiceEngine if available, else capture our own
+      if (existingStream) {
+        this.micStream = existingStream;
+      } else {
+        this.micStream = await navigator.mediaDevices.getUserMedia({
+          audio: { echoCancellation: true, noiseSuppression: false, sampleRate: 16000 },
+        });
+      }
 
       // Connect to Hume Streaming API
-      const wsUrl = `wss://api.hume.ai/v0/stream/models?api_key=${this.humeApiKey}`;
+      const wsUrl = `wss://api.hume.ai/v0/stream/models?api_key=${apiKey}`;
       this.ws = new WebSocket(wsUrl);
 
       this.ws.addEventListener('open', () => {

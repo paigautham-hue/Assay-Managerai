@@ -31,9 +31,9 @@ router.post('/session', async (req: Request, res: Response) => {
         input_audio_transcription: { model: 'whisper-1' },
         turn_detection: {
           type: 'server_vad',
-          threshold: 0.5,
-          prefix_padding_ms: 300,
-          silence_duration_ms: 8000,
+          threshold: 0.35,
+          prefix_padding_ms: 500,
+          silence_duration_ms: 700,
         },
       }),
     });

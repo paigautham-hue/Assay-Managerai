@@ -125,6 +125,7 @@ body {
 @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
 @keyframes pulse-ring { 0% { transform: scale(0.85); opacity: 0.8; } 100% { transform: scale(1.15); opacity: 0; } }
 @keyframes breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02); } }
+@keyframes blink { 0%, 38%, 42%, 100% { opacity: 0; } 40% { opacity: 1; } }
 
 .animate-fade-in { animation: fade-in 0.5s ease-out; }
 .animate-slide-up { animation: slide-up 0.5s cubic-bezier(0.22, 1, 0.36, 1); }
@@ -132,6 +133,7 @@ body {
 .animate-spin-slow { animation: spin-slow 8s linear infinite; }
 .animate-pulse-ring { animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
 .animate-breathe { animation: breathe 4s ease-in-out infinite; }
+.animate-blink { animation: blink 3s ease-in-out infinite; }
 
 /* === COLOR UTILITIES === */
 .text-gold { color: var(--color-gold); }

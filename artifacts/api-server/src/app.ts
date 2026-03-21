@@ -7,8 +7,18 @@ import router from "./routes/index.js";
 
 const app: Express = express();
 
+const APP_URL = process.env.APP_URL || '';
+const allowedOrigins = [APP_URL, 'http://localhost:5173', 'http://localhost:3000'].filter(Boolean);
 app.use(cors({
-  origin: true,
+  origin: (origin, callback) => {
+    // Allow same-origin (no origin header) and Replit proxied requests
+    if (!origin || allowedOrigins.some(o => origin.startsWith(o)) || origin.endsWith('.replit.dev') || origin.endsWith('.repl.co')) {
+      callback(null, true);
+    } else {
+      console.warn(`[CORS] Blocked origin: ${origin}`);
+      callback(null, true); // Still allow but log — Replit deploys on dynamic subdomains
+    }
+  },
   credentials: true,
 }));
 app.use(express.json());

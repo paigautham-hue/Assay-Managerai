@@ -17,7 +17,7 @@ const ASSESSOR_CONFIGS: AssessorConfig[] = [
   {
     role: 'advocate',
     displayName: 'The Advocate',
-    model: 'claude-opus-4-5',
+    model: 'claude-sonnet-4-5-20250514',
     provider: 'anthropic',
     systemPrompt: `You are The Advocate in the ASSAY interview assessment chamber. Find the BEST case for this candidate.
 NORTH STAR: "Avoid future problems." Identify genuine strengths that predict future success.
@@ -29,7 +29,7 @@ Output valid JSON only.`,
   {
     role: 'prosecutor',
     displayName: 'The Prosecutor',
-    model: 'claude-opus-4-5',
+    model: 'claude-sonnet-4-5-20250514',
     provider: 'anthropic',
     systemPrompt: `You are The Prosecutor in the ASSAY interview assessment chamber. Stress-test claims and find cracks.
 NORTH STAR: "Avoid future problems." You are the last line of defense against a bad hire.
@@ -58,7 +58,7 @@ Output valid JSON only.`,
   {
     role: 'operator',
     displayName: 'The Operator',
-    model: 'claude-opus-4-5',
+    model: 'claude-sonnet-4-5-20250514',
     provider: 'anthropic',
     systemPrompt: `You are The Operator in the ASSAY interview assessment chamber. Evaluate execution reality.
 NORTH STAR: "Avoid future problems." Find the gap between strategy talk and execution reality.
@@ -169,9 +169,20 @@ function buildUserPrompt(displayName: string, transcriptText: string, setupConte
 }
 
 function extractJSON(text: string): any {
-  const match = text.match(/\{[\s\S]*\}/);
-  if (!match) throw new Error('No JSON found in response');
-  return JSON.parse(match[0]);
+  try { return JSON.parse(text.trim()); } catch { }
+  const start = text.indexOf('{');
+  if (start === -1) throw new Error('No JSON found in response');
+  let depth = 0; let inString = false; let escape = false;
+  for (let i = start; i < text.length; i++) {
+    const ch = text[i];
+    if (escape) { escape = false; continue; }
+    if (ch === '\\' && inString) { escape = true; continue; }
+    if (ch === '"') { inString = !inString; continue; }
+    if (inString) continue;
+    if (ch === '{') depth++;
+    else if (ch === '}') { depth--; if (depth === 0) return JSON.parse(text.slice(start, i + 1)); }
+  }
+  throw new Error('No complete JSON object found in response');
 }
 
 async function callAssessor(config: AssessorConfig, transcriptText: string, setupContext: string): Promise<any> {

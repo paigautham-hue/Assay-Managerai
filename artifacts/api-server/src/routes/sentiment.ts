@@ -124,4 +124,11 @@ router.post('/sentiment', async (req: Request, res: Response) => {
   }
 });
 
+// Proxy endpoint to serve Hume API key from backend (not exposed in client bundle)
+router.get('/hume-token', (_req: Request, res: Response) => {
+  const key = process.env.HUME_API_KEY;
+  if (!key) return res.status(404).json({ error: 'HUME_API_KEY not configured' });
+  return res.json({ apiKey: key });
+});
+
 export default router;

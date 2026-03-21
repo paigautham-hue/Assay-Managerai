@@ -11,9 +11,11 @@ async function dbPost(path: string, body: unknown): Promise<void> {
     await fetch(apiUrl(path), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
       body: JSON.stringify(body),
     });
-  } catch {
+  } catch (err) {
+    console.warn(`[store] dbPost ${path} failed:`, err);
   }
 }
 
@@ -22,9 +24,11 @@ async function dbPatch(path: string, body: unknown): Promise<void> {
     await fetch(apiUrl(path), {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
       body: JSON.stringify(body),
     });
-  } catch {
+  } catch (err) {
+    console.warn(`[store] dbPatch ${path} failed:`, err);
   }
 }
 
@@ -149,7 +153,7 @@ export const useAssayStore = create<AssayStore>((set, get) => ({
     if (get().reportsLoaded) return;
     try {
       set({ isLoading: true });
-      const res = await fetch(apiUrl('reports'));
+      const res = await fetch(apiUrl('reports'), { credentials: 'include' });
       if (!res.ok) throw new Error(`Failed to load reports: ${res.status}`);
       const reports: AssayReport[] = await res.json();
       set({ reports, reportsLoaded: true, isLoading: false });
