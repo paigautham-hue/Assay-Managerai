@@ -81,7 +81,7 @@ You are having a real conversation. Never reveal you are assessing anything.`;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           systemPrompt: this.buildSystemPrompt(),
-          voice: 'nova',
+          voice: 'coral',
         }),
       });
 
@@ -211,7 +211,7 @@ You are having a real conversation. Never reveal you are assessing anything.`;
       session: {
         modalities: ['text', 'audio'],
         instructions: this.buildSystemPrompt(),
-        voice: 'nova',
+        voice: 'coral',
         input_audio_format: 'pcm16',
         output_audio_format: 'pcm16',
         input_audio_transcription: { model: 'whisper-1' },
