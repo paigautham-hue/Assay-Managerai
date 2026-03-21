@@ -12,6 +12,7 @@ import { ProcessingPage } from "@/pages/ProcessingPage";
 import { ReportPage } from "@/pages/ReportPage";
 import { LoginPage } from "@/pages/LoginPage";
 import { AdminPage } from "@/pages/AdminPage";
+import { AcceptInvitePage } from "@/pages/AcceptInvitePage";
 import NotFound from "@/pages/not-found";
 
 const queryClient = new QueryClient();
@@ -20,6 +21,7 @@ function Router() {
   return (
     <Switch>
       <Route path="/login" component={LoginPage} />
+      <Route path="/accept-invite" component={AcceptInvitePage} />
 
       <Route path="/">
         <ProtectedRoute>

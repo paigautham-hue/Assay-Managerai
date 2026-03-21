@@ -1,14 +1,48 @@
 export type UserRole = 'owner' | 'admin' | 'interviewer' | 'viewer';
+export type UserStatus = 'active' | 'suspended';
 
 export interface AdminUser {
   id: string;
   email: string;
   name: string;
   role: UserRole;
+  status: UserStatus;
   organizationId?: string;
   createdAt: string;
+  lastActiveAt?: string | null;
   googleId?: string;
   hasPassword: boolean;
+}
+
+export interface Invitation {
+  id: string;
+  email: string;
+  role: UserRole;
+  token: string;
+  invitedById: string;
+  invitedBy: { id: string; name: string; email: string };
+  expiresAt: string;
+  acceptedAt: string | null;
+  createdAt: string;
+  inviteUrl?: string;
+}
+
+export interface ActivityLogEntry {
+  id: string;
+  userId: string | null;
+  actorId: string | null;
+  action: string;
+  details: Record<string, unknown>;
+  createdAt: string;
+  user: { id: string; name: string; email: string } | null;
+  actor: { id: string; name: string; email: string } | null;
+}
+
+export interface OrgSettings {
+  id: string | null;
+  name: string;
+  userCount: number;
+  settings: Record<string, unknown>;
 }
 
 export interface AuthSession {

@@ -134,11 +134,33 @@ exports.Prisma.UserScalarFieldEnum = {
   email: 'email',
   name: 'name',
   role: 'role',
+  status: 'status',
   passwordHash: 'passwordHash',
   googleId: 'googleId',
   organizationId: 'organizationId',
+  lastActiveAt: 'lastActiveAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.InvitationScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  role: 'role',
+  token: 'token',
+  invitedById: 'invitedById',
+  expiresAt: 'expiresAt',
+  acceptedAt: 'acceptedAt',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.ActivityLogScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  actorId: 'actorId',
+  action: 'action',
+  details: 'details',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.InterviewSessionScalarFieldEnum = {
@@ -231,6 +253,8 @@ exports.Prisma.NullsOrder = {
 exports.Prisma.ModelName = {
   Organization: 'Organization',
   User: 'User',
+  Invitation: 'Invitation',
+  ActivityLog: 'ActivityLog',
   InterviewSession: 'InterviewSession',
   TranscriptEntry: 'TranscriptEntry',
   Observation: 'Observation',

@@ -21,19 +21,51 @@ model Organization {
 }
 
 model User {
-  id             String   @id @default(uuid())
-  email          String   @unique
+  id             String    @id @default(uuid())
+  email          String    @unique
   name           String
-  role           String   @default("viewer")
-  passwordHash   String?  @map("password_hash")
-  googleId       String?  @unique @map("google_id")
-  organizationId String?  @map("organization_id")
-  createdAt      DateTime @default(now()) @map("created_at")
-  updatedAt      DateTime @updatedAt @map("updated_at")
+  role           String    @default("viewer")
+  status         String    @default("active")
+  passwordHash   String?   @map("password_hash")
+  googleId       String?   @unique @map("google_id")
+  organizationId String?   @map("organization_id")
+  lastActiveAt   DateTime? @map("last_active_at")
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
 
-  organization Organization? @relation(fields: [organizationId], references: [id])
+  organization  Organization? @relation(fields: [organizationId], references: [id])
+  invitations   Invitation[]  @relation("InvitedBy")
+  activityLogs  ActivityLog[]
 
   @@map("users")
+}
+
+model Invitation {
+  id          String    @id @default(uuid())
+  email       String
+  role        String    @default("interviewer")
+  token       String    @unique
+  invitedById String    @map("invited_by")
+  expiresAt   DateTime  @map("expires_at")
+  acceptedAt  DateTime? @map("accepted_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  invitedBy User @relation("InvitedBy", fields: [invitedById], references: [id], onDelete: Cascade)
+
+  @@map("invitations")
+}
+
+model ActivityLog {
+  id        String   @id @default(uuid())
+  userId    String?  @map("user_id")
+  actorId   String?  @map("actor_id")
+  action    String
+  details   Json     @default("{}")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@map("activity_logs")
 }
 
 model InterviewSession {
