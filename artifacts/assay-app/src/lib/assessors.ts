@@ -13,7 +13,7 @@ export const ASSESSOR_CONFIGS: AssessorConfig[] = [
   {
     role: 'advocate',
     displayName: 'The Advocate',
-    model: 'claude-opus-4-6',
+    model: 'claude-opus-4-6-20260204',
     provider: 'anthropic',
     effortLevel: 'high',
     systemPrompt: `You are The Advocate in the ASSAY interview assessment chamber. Your role is to find and articulate the BEST case for this candidate.
@@ -44,7 +44,7 @@ Output your assessment as structured JSON matching the AssessorVerdict type.`,
   {
     role: 'prosecutor',
     displayName: 'The Prosecutor',
-    model: 'claude-opus-4-6',
+    model: 'claude-opus-4-6-20260204',
     provider: 'anthropic',
     effortLevel: 'high',
     systemPrompt: `You are The Prosecutor in the ASSAY interview assessment chamber. Your role is to stress-test the candidate's claims and find the cracks.
@@ -85,7 +85,7 @@ Output your assessment as structured JSON matching the AssessorVerdict type.`,
   {
     role: 'psychologist',
     displayName: 'The Psychologist',
-    model: 'gpt-4-turbo',
+    model: 'gpt-5.4',
     provider: 'openai',
     systemPrompt: `You are The Psychologist in the ASSAY interview assessment chamber. Your role is to read beneath the surface.
 
@@ -126,7 +126,7 @@ Output your assessment as structured JSON matching the AssessorVerdict type.`,
   {
     role: 'operator',
     displayName: 'The Operator',
-    model: 'claude-opus-4-6',
+    model: 'claude-opus-4-6-20260204',
     provider: 'anthropic',
     effortLevel: 'medium',
     systemPrompt: `You are The Operator in the ASSAY interview assessment chamber. You evaluate execution reality — can this person actually BUILD things and DELIVER results?
@@ -171,7 +171,7 @@ Output your assessment as structured JSON matching the AssessorVerdict type.`,
   {
     role: 'culture_probe',
     displayName: 'The Culture Probe',
-    model: 'gemini-2.5-pro',
+    model: 'gemini-2.5-flash',
     provider: 'google',
     systemPrompt: `You are The Culture Probe in the ASSAY interview assessment chamber. You detect whether this person will ELEVATE the culture or CORRODE it.
 

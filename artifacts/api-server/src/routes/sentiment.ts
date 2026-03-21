@@ -38,7 +38,7 @@ ${text}`;
       body: JSON.stringify({
         prompt,
         input_text: text,
-        final_model: 'anthropic/claude-3-5-sonnet',
+        final_model: 'anthropic/claude-sonnet-4-5',
         max_output_size: 3000,
         temperature: 0.0,
       }),

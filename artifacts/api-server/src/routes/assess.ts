@@ -17,7 +17,7 @@ const ASSESSOR_CONFIGS: AssessorConfig[] = [
   {
     role: 'advocate',
     displayName: 'The Advocate',
-    model: 'claude-sonnet-4-5-20250514',
+    model: 'claude-opus-4-6-20260204',
     provider: 'anthropic',
     systemPrompt: `You are The Advocate in the ASSAY interview assessment chamber. Find the BEST case for this candidate.
 NORTH STAR: "Avoid future problems." Identify genuine strengths that predict future success.
@@ -29,7 +29,7 @@ Output valid JSON only.`,
   {
     role: 'prosecutor',
     displayName: 'The Prosecutor',
-    model: 'claude-sonnet-4-5-20250514',
+    model: 'claude-opus-4-6-20260204',
     provider: 'anthropic',
     systemPrompt: `You are The Prosecutor in the ASSAY interview assessment chamber. Stress-test claims and find cracks.
 NORTH STAR: "Avoid future problems." You are the last line of defense against a bad hire.
@@ -43,7 +43,7 @@ Output valid JSON only.`,
   {
     role: 'psychologist',
     displayName: 'The Psychologist',
-    model: 'gpt-4o',
+    model: 'gpt-5.4',
     provider: 'openai',
     systemPrompt: `You are The Psychologist in the ASSAY interview assessment chamber. Read beneath the surface.
 NORTH STAR: "Avoid future problems." The most dangerous hires interview brilliantly but create chaos inside.
@@ -58,7 +58,7 @@ Output valid JSON only.`,
   {
     role: 'operator',
     displayName: 'The Operator',
-    model: 'claude-sonnet-4-5-20250514',
+    model: 'claude-opus-4-6-20260204',
     provider: 'anthropic',
     systemPrompt: `You are The Operator in the ASSAY interview assessment chamber. Evaluate execution reality.
 NORTH STAR: "Avoid future problems." Find the gap between strategy talk and execution reality.
@@ -74,7 +74,7 @@ Output valid JSON only.`,
   {
     role: 'culture_probe',
     displayName: 'The Culture Probe',
-    model: 'gemini-2.0-flash',
+    model: 'gemini-2.5-flash',
     provider: 'google',
     systemPrompt: `You are The Culture Probe in the ASSAY interview assessment chamber. Detect whether this person will ELEVATE or CORRODE the culture.
 NORTH STAR: "Avoid future problems." Culture corrosion is slow, invisible, and catastrophic.
@@ -199,8 +199,8 @@ async function callAssessorWithFallback(
 ): Promise<{ verdict: any } | { error: string }> {
   const fallbacks: AssessorConfig[] = [
     config,
-    { ...config, model: 'claude-3-5-sonnet-20241022', provider: 'anthropic' },
-    { ...config, model: 'gpt-4o', provider: 'openai' },
+    { ...config, model: 'claude-sonnet-4-5-20250929', provider: 'anthropic' },
+    { ...config, model: 'gpt-5.4', provider: 'openai' },
   ];
   let lastError = '';
   for (const fallbackConfig of fallbacks) {
@@ -245,7 +245,7 @@ async function callChairman(verdicts: any[], transcriptText: string, setupContex
       const res = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
         headers: { 'x-api-key': process.env.ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
-        body: JSON.stringify({ model: 'claude-3-5-sonnet-20241022', max_tokens: 4000, messages: [{ role: 'user', content: prompt }] }),
+        body: JSON.stringify({ model: 'claude-sonnet-4-5-20250929', max_tokens: 4000, messages: [{ role: 'user', content: prompt }] }),
       });
       if (res.ok) return extractJSON((await res.json()).content[0]?.text || '');
     }
@@ -253,7 +253,7 @@ async function callChairman(verdicts: any[], transcriptText: string, setupContex
       const res = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model: 'gpt-4o', max_tokens: 4000, messages: [{ role: 'user', content: prompt }] }),
+        body: JSON.stringify({ model: 'gpt-5.4', max_tokens: 4000, messages: [{ role: 'user', content: prompt }] }),
       });
       if (res.ok) return extractJSON((await res.json()).choices[0]?.message?.content || '');
     }

@@ -17,30 +17,30 @@ export interface ModelEntry {
 }
 
 export const MODEL_REGISTRY: Record<string, ModelEntry> = {
-  'claude-opus-4-6': {
-    id: 'claude-opus-4-6',
+  'claude-opus-4-6-20260204': {
+    id: 'claude-opus-4-6-20260204',
     provider: 'anthropic',
-    capabilities: { reasoning: 'high', contextWindow: 'large', modality: ['text'], costTier: 'premium' },
+    capabilities: { reasoning: 'high', contextWindow: 'massive', modality: ['text', 'vision'], costTier: 'premium' },
     isAvailable: true,
-    fallbacks: ['claude-sonnet-4-6', 'gpt-4-turbo', 'gemini-2.5-flash'],
+    fallbacks: ['claude-sonnet-4-5-20250929', 'gpt-5.4', 'gemini-2.5-flash'],
     costPer1kTokens: 0.015,
     avgLatencyMs: 3000,
   },
-  'claude-sonnet-4-6': {
-    id: 'claude-sonnet-4-6',
+  'claude-sonnet-4-5-20250929': {
+    id: 'claude-sonnet-4-5-20250929',
     provider: 'anthropic',
-    capabilities: { reasoning: 'medium', contextWindow: 'large', modality: ['text'], costTier: 'standard' },
+    capabilities: { reasoning: 'high', contextWindow: 'large', modality: ['text', 'vision'], costTier: 'standard' },
     isAvailable: true,
-    fallbacks: ['claude-opus-4-6', 'gpt-4-turbo', 'gemini-2.5-flash'],
+    fallbacks: ['claude-opus-4-6-20260204', 'gpt-5.4', 'gemini-2.5-flash'],
     costPer1kTokens: 0.003,
     avgLatencyMs: 1500,
   },
-  'gpt-4-turbo': {
-    id: 'gpt-4-turbo',
+  'gpt-5.4': {
+    id: 'gpt-5.4',
     provider: 'openai',
     capabilities: { reasoning: 'high', contextWindow: 'large', modality: ['text', 'vision'], costTier: 'standard' },
     isAvailable: true,
-    fallbacks: ['claude-opus-4-6', 'claude-sonnet-4-6'],
+    fallbacks: ['claude-opus-4-6-20260204', 'claude-sonnet-4-5-20250929'],
     costPer1kTokens: 0.003,
     avgLatencyMs: 2000,
   },
@@ -49,18 +49,9 @@ export const MODEL_REGISTRY: Record<string, ModelEntry> = {
     provider: 'google',
     capabilities: { reasoning: 'medium', contextWindow: 'large', modality: ['text'], costTier: 'economy' },
     isAvailable: true,
-    fallbacks: ['gemini-2.5-pro', 'claude-sonnet-4-6'],
+    fallbacks: ['gpt-5.4', 'claude-sonnet-4-5-20250929'],
     costPer1kTokens: 0.001,
     avgLatencyMs: 800,
-  },
-  'gemini-2.5-pro': {
-    id: 'gemini-2.5-pro',
-    provider: 'google',
-    capabilities: { reasoning: 'high', contextWindow: 'massive', modality: ['text', 'vision'], costTier: 'standard' },
-    isAvailable: true,
-    fallbacks: ['gemini-2.5-flash', 'claude-opus-4-6'],
-    costPer1kTokens: 0.007,
-    avgLatencyMs: 2000,
   },
 };
 
