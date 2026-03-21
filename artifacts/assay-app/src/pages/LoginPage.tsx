@@ -93,7 +93,7 @@ export function LoginPage() {
               <button
                 key={m}
                 onClick={() => { setMode(m); setError(''); }}
-                className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${
+                className={`flex-1 py-3 text-sm font-medium rounded-md transition-all min-h-[44px] ${
                   mode === m
                     ? 'bg-[#C9A84C] text-[#1A1A2E]'
                     : 'text-[#8B8B9E] hover:text-white'
@@ -114,7 +114,7 @@ export function LoginPage() {
                   onChange={(e) => setName(e.target.value)}
                   required
                   placeholder="Jane Smith"
-                  className="w-full bg-white/5 border border-white/10 rounded-lg px-3.5 py-2.5 text-white placeholder:text-[#8B8B9E]/50 text-sm focus:outline-none focus:border-[#C9A84C]/50 focus:ring-1 focus:ring-[#C9A84C]/20 transition-all"
+                  className="w-full bg-white/5 border border-white/10 rounded-lg px-3.5 py-3 text-white placeholder:text-[#8B8B9E]/50 text-sm focus:outline-none focus:border-[#C9A84C]/50 focus:ring-1 focus:ring-[#C9A84C]/20 transition-all min-h-[44px]"
                 />
               </div>
             )}
@@ -127,7 +127,7 @@ export function LoginPage() {
                 required
                 placeholder="you@company.com"
                 autoComplete="email"
-                className="w-full bg-white/5 border border-white/10 rounded-lg px-3.5 py-2.5 text-white placeholder:text-[#8B8B9E]/50 text-sm focus:outline-none focus:border-[#C9A84C]/50 focus:ring-1 focus:ring-[#C9A84C]/20 transition-all"
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-3.5 py-3 text-white placeholder:text-[#8B8B9E]/50 text-sm focus:outline-none focus:border-[#C9A84C]/50 focus:ring-1 focus:ring-[#C9A84C]/20 transition-all min-h-[44px]"
               />
             </div>
             <div>
@@ -139,7 +139,7 @@ export function LoginPage() {
                 required
                 placeholder="••••••••"
                 autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
-                className="w-full bg-white/5 border border-white/10 rounded-lg px-3.5 py-2.5 text-white placeholder:text-[#8B8B9E]/50 text-sm focus:outline-none focus:border-[#C9A84C]/50 focus:ring-1 focus:ring-[#C9A84C]/20 transition-all"
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-3.5 py-3 text-white placeholder:text-[#8B8B9E]/50 text-sm focus:outline-none focus:border-[#C9A84C]/50 focus:ring-1 focus:ring-[#C9A84C]/20 transition-all min-h-[44px]"
               />
             </div>
 
@@ -152,7 +152,7 @@ export function LoginPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full bg-[#C9A84C] hover:bg-[#D4B85A] text-[#1A1A2E] font-semibold py-2.5 rounded-lg text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-[#C9A84C] hover:bg-[#D4B85A] text-[#1A1A2E] font-semibold py-3 rounded-lg text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed min-h-[44px]"
             >
               {isSubmitting ? 'Please wait…' : mode === 'login' ? 'Sign In' : 'Create Account'}
             </button>
@@ -171,7 +171,7 @@ export function LoginPage() {
 
               <button
                 onClick={handleGoogleLogin}
-                className="w-full flex items-center justify-center gap-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-medium py-2.5 rounded-lg text-sm transition-all"
+                className="w-full flex items-center justify-center gap-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-medium py-3 rounded-lg text-sm transition-all min-h-[44px]"
               >
                 <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
                   <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z" fill="#4285F4"/>

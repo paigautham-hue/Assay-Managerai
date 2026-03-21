@@ -155,7 +155,7 @@ export function SetupPage() {
   const subStyle: React.CSSProperties = { color: 'var(--color-text-secondary)', fontSize: '0.875rem' };
 
   return (
-    <div className="bg-gradient-dark min-h-screen pt-8 pb-20">
+    <div className="bg-gradient-dark min-h-screen pt-8 pb-20 overflow-x-hidden">
       <div className="max-w-2xl mx-auto px-4 sm:px-6">
         <motion.div className="mb-8" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
           <div className="flex items-center justify-between mb-4">

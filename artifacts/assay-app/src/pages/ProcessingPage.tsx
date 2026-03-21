@@ -389,7 +389,8 @@ export function ProcessingPage() {
       {/* Bottom pulse */}
       {phase === 'running' && (
         <motion.div
-          className="absolute bottom-8 flex items-center gap-2"
+          className="absolute flex items-center gap-2"
+          style={{ bottom: 'calc(2rem + env(safe-area-inset-bottom, 0px))' }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4 }}

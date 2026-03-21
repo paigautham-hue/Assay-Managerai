@@ -40,7 +40,7 @@ export function NavBar({ animate = true }: NavBarProps) {
           onClick={() => navigate('/')}
           className="flex items-center gap-3 hover:opacity-80 transition-opacity"
         >
-          <div className="w-10 h-10 rounded-lg bg-gradient-gold flex items-center justify-center">
+          <div className="w-11 h-11 rounded-lg bg-gradient-gold flex items-center justify-center">
             <span className="text-[#0D0D1A] font-bold text-lg">A</span>
           </div>
           <span className="text-lg font-bold" style={{ color: 'var(--color-text-primary)' }}>ASSAY</span>
@@ -82,7 +82,7 @@ export function NavBar({ animate = true }: NavBarProps) {
                 <div className="py-1">
                   <button
                     onClick={() => { setOpen(false); navigate('/'); }}
-                    className="w-full text-left px-4 py-2.5 text-sm text-[#8B8B9E] hover:text-white hover:bg-white/5 transition-colors"
+                    className="w-full text-left px-4 py-3 text-sm text-[#8B8B9E] hover:text-white hover:bg-white/5 transition-colors min-h-[44px]"
                   >
                     Dashboard
                   </button>
@@ -90,7 +90,7 @@ export function NavBar({ animate = true }: NavBarProps) {
                   {hasRole('owner', 'admin') && (
                     <button
                       onClick={() => { setOpen(false); navigate('/admin'); }}
-                      className="w-full text-left px-4 py-2.5 text-sm text-[#8B8B9E] hover:text-white hover:bg-white/5 transition-colors"
+                      className="w-full text-left px-4 py-3 text-sm text-[#8B8B9E] hover:text-white hover:bg-white/5 transition-colors min-h-[44px]"
                     >
                       Admin Panel
                     </button>
@@ -100,7 +100,7 @@ export function NavBar({ animate = true }: NavBarProps) {
                 <div className="border-t border-white/5 py-1">
                   <button
                     onClick={handleLogout}
-                    className="w-full text-left px-4 py-2.5 text-sm text-red-400 hover:text-red-300 hover:bg-red-500/5 transition-colors"
+                    className="w-full text-left px-4 py-3 text-sm text-red-400 hover:text-red-300 hover:bg-red-500/5 transition-colors min-h-[44px]"
                   >
                     Sign Out
                   </button>

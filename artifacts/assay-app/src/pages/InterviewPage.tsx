@@ -652,7 +652,7 @@ export function InterviewPage() {
       {/* Body */}
       <div
         className="flex relative"
-        style={{ height: 'calc(100vh - 72px)' }}
+        style={{ height: 'calc(100dvh - 72px)' }}
       >
         {/* Main area */}
         <motion.div
@@ -748,7 +748,7 @@ export function InterviewPage() {
             style={{
               background: 'rgba(0,0,0,0.4)',
               border: '1px solid rgba(255,255,255,0.06)',
-              height: isMobile ? '40vh' : '24rem',
+              height: isMobile ? '40dvh' : '24rem',
             }}
           >
             <AnimatePresence mode="popLayout">
@@ -851,8 +851,8 @@ export function InterviewPage() {
         {!isMobile && !showFlagsPanel && (
           <motion.button
             onClick={() => setShowFlagsPanel(true)}
-            className="fixed right-4 bottom-6 rounded-full p-3 font-bold z-50"
-            style={{ background: 'var(--color-gold)', color: '#0D0D1A' }}
+            className="fixed right-4 rounded-full p-3 font-bold z-50 min-w-[44px] min-h-[44px]"
+            style={{ bottom: 'calc(1.5rem + env(safe-area-inset-bottom, 0px))', background: 'var(--color-gold)', color: '#0D0D1A' }}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
             initial={{ scale: 0 }}
@@ -882,7 +882,8 @@ export function InterviewPage() {
               className="fixed inset-x-0 bottom-0 z-40 rounded-t-2xl overflow-hidden"
               style={{
                 background: 'var(--color-surface)',
-                maxHeight: '70vh',
+                maxHeight: '70dvh',
+                paddingBottom: 'env(safe-area-inset-bottom, 0px)',
                 display: 'flex',
                 flexDirection: 'column',
               }}
@@ -909,6 +910,7 @@ export function InterviewPage() {
                 </h2>
                 <button
                   onClick={() => setShowFlagsPanel(false)}
+                  className="w-11 h-11 flex items-center justify-center rounded-lg"
                   style={{ color: 'var(--color-text-secondary)' }}
                 >
                   ✕

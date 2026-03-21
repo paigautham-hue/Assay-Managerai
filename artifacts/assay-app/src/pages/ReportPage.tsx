@@ -304,7 +304,7 @@ function PsychologicalRiskSection({ profile }: { profile: PsychologicalScreening
               <BarChart data={stressData} layout="vertical" margin={{ top: 0, right: 24, left: 0, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" horizontal={false} />
                 <XAxis type="number" domain={[0, 10]} tick={{ fill: '#666', fontSize: 11 }} axisLine={{ stroke: 'rgba(255,255,255,0.08)' }} tickLine={false} ticks={[0, 2, 4, 6, 8, 10]} />
-                <YAxis dataKey="name" type="category" tick={{ fill: '#aaa', fontSize: 12 }} axisLine={false} tickLine={false} width={90} />
+                <YAxis dataKey="name" type="category" tick={{ fill: '#aaa', fontSize: 12 }} axisLine={false} tickLine={false} width={70} />
                 <Tooltip content={<DarkTooltip />} />
                 <Bar dataKey="score" radius={[0, 4, 4, 0]} fill="#60A5FA" maxBarSize={24} />
               </BarChart>
@@ -637,7 +637,7 @@ export function ReportPage() {
   const gateBg = report.gateBanner.status === 'passed' ? 'rgba(52,211,153,0.1)' : report.gateBanner.status === 'flagged' ? 'rgba(251,191,36,0.1)' : 'rgba(248,113,113,0.1)';
 
   return (
-    <div className="bg-gradient-dark min-h-screen pt-12 pb-20">
+    <div className="bg-gradient-dark min-h-screen pb-20" style={{ paddingTop: 'calc(3rem + env(safe-area-inset-top, 0px))' }}>
       <div className="max-w-5xl mx-auto px-4 sm:px-6">
         <motion.div className="mb-12" initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
           <div className="flex items-start justify-between mb-6 flex-wrap gap-4">
