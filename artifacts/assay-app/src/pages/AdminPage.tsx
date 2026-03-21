@@ -218,6 +218,10 @@ function InviteModal({ currentUser, onClose, onInviteSent }: InviteModalProps) {
   const [error, setError] = useState('');
   const [result, setResult] = useState<Invitation | null>(null);
 
+  const clientInviteUrl = result
+    ? `${window.location.origin}${(import.meta.env.BASE_URL || '/').replace(/\/$/, '')}/accept-invite?token=${result.token}`
+    : '';
+
   const roleOptions = (['admin', 'interviewer', 'viewer'] as UserRole[]).concat(currentUser.role === 'owner' ? ['owner'] : []);
 
   async function handleSend() {
@@ -260,10 +264,10 @@ function InviteModal({ currentUser, onClose, onInviteSent }: InviteModalProps) {
               <p className="text-[#8B8B9E] text-xs">Share this link with {result.email}</p>
             </div>
             <div className="bg-[#0D0D1A] border border-white/8 rounded-xl p-3">
-              <p className="text-[#C9A84C] text-xs font-mono break-all leading-relaxed">{result.inviteUrl}</p>
+              <p className="text-[#C9A84C] text-xs font-mono break-all leading-relaxed">{clientInviteUrl}</p>
             </div>
             <button
-              onClick={() => { navigator.clipboard.writeText(result.inviteUrl || ''); }}
+              onClick={() => { navigator.clipboard.writeText(clientInviteUrl); }}
               className="w-full py-2.5 rounded-xl bg-[#C9A84C] text-[#0D0D1A] text-sm font-semibold hover:bg-[#D4B56A] transition-colors"
             >
               Copy Invite Link
