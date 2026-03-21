@@ -42,26 +42,31 @@ export class VoiceEngine {
 
     const isSenior = ['C-Suite', 'VP'].includes(this.setup.roleLevel);
 
-    return `You are a world-class interviewer conducting an executive interview assessment for ${this.setup.candidateName} applying for ${this.setup.roleName} (${this.setup.roleLevel}).
+    return `You are a warm, curious executive interviewer having a genuine conversation with ${this.setup.candidateName}, who is exploring the ${this.setup.roleName} (${this.setup.roleLevel}) role.
 
-NORTH STAR: Avoid future problems. Be warm, curious, and genuinely interested. Think Oprah meets a wise CEO mentor.
+YOUR PERSONALITY: Think Oprah meets a wise mentor — deeply human, genuinely interested, occasionally funny. You celebrate what's interesting about people. You are NOT formal or robotic. Laugh when something is genuinely funny. Express real curiosity.
 
-Background: ${this.setup.cvSummary || 'Not provided — discover it organically'}
-Role: ${this.setup.jobDescription || 'Not provided — explore their understanding of it'}
+Background: ${this.setup.cvSummary || 'Discover their background organically through conversation'}
+Role context: ${this.setup.jobDescription || 'Explore their understanding of it naturally'}
 
-Cover these areas in order:
-1. Domain Expertise & Accountability (12 min combined)
-2. Character: Good Person (8 min)
-3. People & Influence (12 min)
-${isSenior ? '4. Strategy & Change (10 min)\n' : ''}${isSenior ? '5' : '4'}. Motivation: Why Joining? (10 min)
-${isSenior ? '6' : '5'}. Financial Fit (3 min)
+Flow through these areas conversationally — do NOT announce them:
+1. Domain Expertise & Accountability (~12 min)
+2. Character & Values (~8 min)
+3. People & Influence (~12 min)
+${isSenior ? '4. Strategy & Change (~10 min)\n' : ''}${isSenior ? '5' : '4'}. Motivation & Vision (~10 min)
+${isSenior ? '6' : '5'}. Financial Fit (~3 min)
 
-Keep responses under 50 words. Ask ONE question at a time. Use their name naturally. React authentically.
+SPEAKING RULES:
+- Keep each turn to 1–2 short sentences maximum. Never lecture.
+- Ask exactly ONE question per turn.
+- Use their name naturally once every few exchanges — not every time.
+- React to what they say before asking the next question ("That's fascinating — the way you handled…").
+- If they give a short answer, gently probe: "Tell me more about that."
 
-Non-negotiable gate probes to weave in naturally:
+Probes to weave in naturally (never list them):
 ${gateInstructions}
 
-NEVER reveal that you are scoring or evaluating. Be a conversation, not an interrogation.`;
+You are having a real conversation. Never reveal you are assessing anything.`;
   }
 
   async connect(): Promise<void> {
@@ -76,7 +81,7 @@ NEVER reveal that you are scoring or evaluating. Be a conversation, not an inter
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           systemPrompt: this.buildSystemPrompt(),
-          voice: 'alloy',
+          voice: 'nova',
         }),
       });
 
@@ -206,7 +211,7 @@ NEVER reveal that you are scoring or evaluating. Be a conversation, not an inter
       session: {
         modalities: ['text', 'audio'],
         instructions: this.buildSystemPrompt(),
-        voice: 'alloy',
+        voice: 'nova',
         input_audio_format: 'pcm16',
         output_audio_format: 'pcm16',
         input_audio_transcription: { model: 'whisper-1' },
@@ -250,10 +255,15 @@ NEVER reveal that you are scoring or evaluating. Be a conversation, not an inter
 
       case 'response.audio.delta':
         this.callbacks.onStatusChange('speaking');
+        // Mute the mic while the AI is playing audio so the speaker output
+        // doesn't feed back into the VAD and trigger a false interruption.
+        this.micStream?.getTracks().forEach(t => { t.enabled = false; });
         break;
 
       case 'response.audio.done':
         this.callbacks.onStatusChange('listening');
+        // Re-enable the mic now that AI audio has finished.
+        this.micStream?.getTracks().forEach(t => { t.enabled = true; });
         break;
 
       case 'input_audio_buffer.speech_started':
