@@ -25,7 +25,7 @@ router.post('/session', async (req: Request, res: Response) => {
         model: 'gpt-realtime',
         modalities: ['text', 'audio'],
         instructions: systemPrompt,
-        voice: voice || 'alloy',
+        voice: voice || 'coral',
         input_audio_format: 'pcm16',
         output_audio_format: 'pcm16',
         input_audio_transcription: { model: 'whisper-1' },
