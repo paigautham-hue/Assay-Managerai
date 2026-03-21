@@ -82,7 +82,7 @@ export const useAssayStore = create<AssayStore>((set, get) => ({
     };
     set({ session, currentView: 'interview' });
 
-    dbPost('sessions', {
+    await dbPost('sessions', {
       id,
       setup: session.setup,
       status: 'preparing',
@@ -159,7 +159,7 @@ export const useAssayStore = create<AssayStore>((set, get) => ({
       set({ reports, reportsLoaded: true, isLoading: false });
     } catch (err) {
       console.warn('Could not load reports from DB:', err);
-      set({ isLoading: false, reportsLoaded: true });
+      set({ isLoading: false, reportsLoaded: false });
     }
   },
 

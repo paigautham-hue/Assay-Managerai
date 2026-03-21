@@ -422,6 +422,10 @@ router.post('/assess/stream', async (req: Request, res: Response) => {
     }
   };
 
+  // Detect client disconnect to stop wasting API credits
+  let clientDisconnected = false;
+  req.on('close', () => { clientDisconnected = true; });
+
   try {
     const { transcript, setup, observations, sessionId, prosodyData } = req.body;
 

@@ -119,7 +119,8 @@ router.post('/auth/logout', (_req: Request, res: Response) => {
 
 router.get('/auth/me', authenticate, async (req: Request, res: Response) => {
   await touchLastActive(req.user!.id);
-  return res.json({ user: { ...req.user, hasPassword: true } });
+  const dbUser = await prisma.user.findUnique({ where: { id: req.user!.id }, select: { passwordHash: true } });
+  return res.json({ user: { ...req.user, hasPassword: !!dbUser?.passwordHash } });
 });
 
 // ── Providers ─────────────────────────────────────────────────────────────────
@@ -202,10 +203,10 @@ router.patch('/auth/users/:id', authenticate, async (req: Request, res: Response
   if (name) updates.name = name;
   if (status && ['active', 'suspended'].includes(status)) updates.status = status;
 
-  const updated = await prisma.user.update({ where: { id: req.params.id }, data: updates, select: { id: true, email: true, name: true, role: true, status: true, organizationId: true, createdAt: true, lastActiveAt: true } });
+  const updated = await prisma.user.update({ where: { id: req.params.id }, data: updates, select: { id: true, email: true, name: true, role: true, status: true, organizationId: true, createdAt: true, lastActiveAt: true, passwordHash: true } });
 
   await logActivity('user.updated', { changes: updates, targetEmail: target.email }, req.user!.id, target.id);
-  return res.json({ ...updated, hasPassword: true });
+  return res.json({ ...updated, hasPassword: !!updated.passwordHash, passwordHash: undefined });
 });
 
 // ── Delete User ───────────────────────────────────────────────────────────────

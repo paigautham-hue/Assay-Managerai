@@ -51,7 +51,7 @@ const POSITIVE_EMOTIONS = new Set([
 const NEGATIVE_EMOTIONS = new Set([
   'Anxiety', 'Fear', 'Sadness', 'Anger', 'Disgust', 'Distress',
   'Awkwardness', 'Boredom', 'Confusion', 'Contempt', 'Disappointment',
-  'Disapproval', 'Disgust', 'Doubt', 'Embarrassment', 'Guilt', 'Horror',
+  'Disapproval', 'Doubt', 'Embarrassment', 'Guilt', 'Horror',
   'Pain', 'Realization', 'Shame', 'Stress', 'Surprise (negative)',
   'Tiredness',
 ]);
@@ -90,6 +90,7 @@ export class EmotionEngine {
   private ws: WebSocket | null = null;
   private audioContext: AudioContext | null = null;
   private micStream: MediaStream | null = null;
+  private ownsMicStream = false;
   private processor: ScriptProcessorNode | null = null;
   private timeline: EmotionDataPoint[] = [];
   private onEmotionCallback?: (data: EmotionDataPoint) => void;
@@ -127,10 +128,12 @@ export class EmotionEngine {
       // Use shared stream from VoiceEngine if available, else capture our own
       if (existingStream) {
         this.micStream = existingStream;
+        this.ownsMicStream = false;
       } else {
         this.micStream = await navigator.mediaDevices.getUserMedia({
           audio: { echoCancellation: true, noiseSuppression: false, sampleRate: 16000 },
         });
+        this.ownsMicStream = true;
       }
 
       // Connect to Hume Streaming API
@@ -231,10 +234,11 @@ export class EmotionEngine {
       this.ws = null;
     }
 
-    if (this.micStream) {
+    // Only stop mic tracks if we own the stream (not shared from VoiceEngine)
+    if (this.micStream && !this.ownsMicStream) {
       this.micStream.getTracks().forEach(t => t.stop());
-      this.micStream = null;
     }
+    this.micStream = null;
 
     this.connected = false;
   }

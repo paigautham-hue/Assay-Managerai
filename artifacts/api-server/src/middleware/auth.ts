@@ -19,6 +19,10 @@ declare global {
 
 const JWT_SECRET = process.env.JWT_SECRET || 'assay-dev-secret-change-in-production';
 
+if (!process.env.JWT_SECRET) {
+  console.warn('[AUTH] ⚠️  WARNING: JWT_SECRET not set — using insecure default. Set JWT_SECRET in Replit Secrets for production.');
+}
+
 export function signToken(user: AuthUser): string {
   return jwt.sign(user, JWT_SECRET, { expiresIn: '7d' });
 }

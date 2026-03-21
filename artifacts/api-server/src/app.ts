@@ -11,12 +11,12 @@ const APP_URL = process.env.APP_URL || '';
 const allowedOrigins = [APP_URL, 'http://localhost:5173', 'http://localhost:3000'].filter(Boolean);
 app.use(cors({
   origin: (origin, callback) => {
-    // Allow same-origin (no origin header) and Replit proxied requests
-    if (!origin || allowedOrigins.some(o => origin.startsWith(o)) || origin.endsWith('.replit.dev') || origin.endsWith('.repl.co')) {
+    // Allow same-origin (no origin header), explicit allowlist, and Replit/Capacitor domains
+    if (!origin || allowedOrigins.some(o => origin.startsWith(o)) || origin.endsWith('.replit.dev') || origin.endsWith('.repl.co') || origin.endsWith('.replit.app') || origin.startsWith('capacitor://') || origin.startsWith('ionic://')) {
       callback(null, true);
     } else {
       console.warn(`[CORS] Blocked origin: ${origin}`);
-      callback(null, true); // Still allow but log — Replit deploys on dynamic subdomains
+      callback(new Error(`Origin ${origin} not allowed by CORS`));
     }
   },
   credentials: true,

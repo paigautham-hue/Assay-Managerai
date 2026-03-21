@@ -96,7 +96,12 @@ export function ProcessingPage() {
         return;
       }
 
-      const reader = response.body!.getReader();
+      if (!response.body) {
+        setErrorMessage('Assessment response has no body. Please try again.');
+        setPhase('error');
+        return;
+      }
+      const reader = response.body.getReader();
       const decoder = new TextDecoder();
       let buffer = '';
 
