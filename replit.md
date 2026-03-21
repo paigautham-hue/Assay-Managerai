@@ -23,6 +23,25 @@ pnpm workspace monorepo using TypeScript. Each package manages its own dependenc
 - **API codegen**: Orval (from OpenAPI spec)
 - **Build**: esbuild (CJS bundle)
 
+## Pending: Invite Email Delivery
+
+Invitation emails are not yet sent automatically. When the user has a **Resend** API key (resend.com → API Keys → Create API Key):
+
+1. Store it as secret `RESEND_API_KEY`
+2. Install `resend` in `artifacts/api-server`: `pnpm --filter @workspace/api-server add resend`
+3. In `artifacts/api-server/src/routes/auth.ts`, after the `invitations.create(...)` call in `POST /auth/invitations`, add:
+   ```ts
+   import { Resend } from 'resend';
+   const resend = new Resend(process.env.RESEND_API_KEY);
+   await resend.emails.send({
+     from: 'ASSAY <noreply@yourdomain.com>',
+     to: email,
+     subject: `You've been invited to join ASSAY`,
+     html: `<p>You've been invited as <strong>${role}</strong>. <a href="${inviteUrl}">Accept invitation</a></p>`,
+   });
+   ```
+4. Note: the `inviteUrl` must be built from the real app domain, not `APP_URL`. Use `process.env.APP_PUBLIC_URL` or pass it from the client.
+
 ## ASSAY App Authentication
 
 - All `/api/*` routes are protected except `/api/auth/*` and `/api/health`
