@@ -11,10 +11,13 @@ const router = Router();
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '';
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET || '';
 const APP_URL = process.env.APP_URL || 'http://localhost:5173';
+const IS_PROD = process.env.NODE_ENV === 'production';
 const COOKIE_OPTS = {
   httpOnly: true,
-  secure: process.env.NODE_ENV === 'production',
-  sameSite: 'lax' as const,
+  secure: IS_PROD,
+  // 'none' is required for Capacitor iOS (WKWebView cross-origin) to receive cookies.
+  // 'lax' blocks cookies when the iOS app (assay://localhost) calls the API (https://...).
+  sameSite: (IS_PROD ? 'none' : 'lax') as 'none' | 'lax',
   maxAge: 7 * 24 * 60 * 60 * 1000,
   path: '/',
 };

@@ -6,12 +6,12 @@ import { NavBar } from '@/components/NavBar';
 
 const containerVariants = {
   hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { staggerChildren: 0.1, delayChildren: 0.05 } },
+  visible: { opacity: 1, transition: { staggerChildren: 0.08, delayChildren: 0.1 } },
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 8 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: 'easeOut' } },
+  hidden: { opacity: 0, y: 12 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } },
 };
 
 export function HomePage() {
@@ -34,76 +34,113 @@ export function HomePage() {
   };
 
   const statsMeta = [
-    { label: 'Total Assessments', value: stats.total, unit: '', icon: '📊', color: 'var(--color-gold)' },
-    { label: 'Pass Rate', value: stats.passRate, unit: '%', icon: '✅', color: 'var(--color-green)' },
-    { label: 'Average Score', value: stats.avgScore, unit: '/5', icon: '⭐', color: 'var(--color-amber)' },
-    { label: 'Active Interviews', value: stats.active, unit: '', icon: '🎙️', color: 'var(--color-blue)' },
+    { label: 'Total Assessments', value: stats.total, unit: '', color: 'var(--color-gold)' },
+    { label: 'Pass Rate', value: stats.passRate, unit: '%', color: 'var(--color-green)' },
+    { label: 'Average Score', value: stats.avgScore, unit: '/5', color: 'var(--color-amber)' },
+    { label: 'Active Interviews', value: stats.active, unit: '', color: 'var(--color-blue)' },
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-dark relative overflow-hidden">
-      {/* Animated background elements */}
+    <div className="min-h-screen relative overflow-hidden" style={{ background: 'linear-gradient(170deg, #0D0D1A 0%, #0F1028 40%, #111130 70%, #0D0D1A 100%)' }}>
+      {/* Cinematic background layers */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
+        {/* Primary gold aurora */}
         <div
-          className="absolute w-[600px] h-[600px] rounded-full opacity-[0.03]"
+          className="absolute"
           style={{
-            background: 'radial-gradient(circle, var(--color-gold), transparent 70%)',
-            top: '-200px',
-            right: '-200px',
-            animation: 'breathe 8s ease-in-out infinite',
+            width: '900px', height: '900px',
+            background: 'radial-gradient(circle, rgba(201,168,76,0.06) 0%, rgba(201,168,76,0.02) 40%, transparent 70%)',
+            top: '-350px', right: '-250px',
+            animation: 'breathe 10s ease-in-out infinite',
+            filter: 'blur(60px)',
           }}
         />
+        {/* Secondary blue aurora */}
         <div
-          className="absolute w-[400px] h-[400px] rounded-full opacity-[0.02]"
+          className="absolute"
           style={{
-            background: 'radial-gradient(circle, #60A5FA, transparent 70%)',
-            bottom: '-100px',
-            left: '-100px',
-            animation: 'breathe 12s ease-in-out infinite reverse',
+            width: '600px', height: '600px',
+            background: 'radial-gradient(circle, rgba(96,165,250,0.04) 0%, transparent 70%)',
+            bottom: '-150px', left: '-150px',
+            animation: 'breathe 14s ease-in-out infinite reverse',
+            filter: 'blur(80px)',
           }}
         />
-        {/* Subtle dot grid pattern */}
+        {/* Subtle mesh gradient overlay */}
         <div
-          className="absolute inset-0 opacity-[0.015]"
+          className="absolute inset-0 opacity-[0.012]"
           style={{
-            backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.5) 1px, transparent 0)',
-            backgroundSize: '40px 40px',
+            backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.4) 0.5px, transparent 0)',
+            backgroundSize: '48px 48px',
           }}
+        />
+        {/* Top light streak */}
+        <div
+          className="absolute top-0 left-0 right-0 h-px"
+          style={{ background: 'linear-gradient(90deg, transparent, rgba(201,168,76,0.15), transparent)' }}
         />
       </div>
 
       <NavBar />
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
-        {/* Hero section */}
+      <div className="relative max-w-7xl mx-auto px-5 sm:px-8 py-10 sm:py-16">
+        {/* Hero section with premium typography */}
         <motion.div
-          className="mb-12 sm:mb-16"
-          initial={{ opacity: 0, y: 20 }}
+          className="mb-14 sm:mb-20"
+          initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         >
-          <div className="mb-3">
-            <span className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.15em] px-3 py-1 rounded-full" style={{ background: 'rgba(201,168,76,0.08)', color: 'var(--color-gold)', border: '1px solid rgba(201,168,76,0.15)' }}>
-              <span className="w-1.5 h-1.5 rounded-full bg-[#C9A84C] animate-pulse" />
+          <motion.div
+            className="mb-5"
+            initial={{ opacity: 0, x: -12 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+          >
+            <span className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.2em] px-4 py-1.5 rounded-full" style={{ background: 'rgba(201,168,76,0.06)', color: 'var(--color-gold)', border: '1px solid rgba(201,168,76,0.1)' }}>
+              <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: 'var(--color-gold)', boxShadow: '0 0 8px rgba(201,168,76,0.6)' }} />
               Dashboard
             </span>
-          </div>
-          <h1 className="heading-xl mb-3">
-            <span style={{ background: 'linear-gradient(135deg, var(--color-gold) 0%, #E8D48B 50%, var(--color-gold) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>ASSAY</span>
-          </h1>
-          <p className="body-lg max-w-2xl">Reveal what leaders are made of. Premium AI-powered executive interview assessment.</p>
+          </motion.div>
 
-          <motion.div
-            className="mt-8"
-            initial={{ opacity: 0, y: 10 }}
+          <h1 className="mb-4" style={{ fontSize: 'clamp(3rem, 7vw, 4.5rem)', fontWeight: 800, letterSpacing: '-0.04em', lineHeight: 1.05 }}>
+            <span style={{
+              background: 'linear-gradient(135deg, #D4B85A 0%, #F5E6A3 30%, #C9A84C 60%, #B8943D 100%)',
+              WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
+              filter: 'drop-shadow(0 2px 4px rgba(201,168,76,0.2))',
+            }}>ASSAY</span>
+          </h1>
+
+          <motion.p
+            className="max-w-xl mb-10"
+            style={{ fontSize: 'clamp(1rem, 2.5vw, 1.25rem)', color: 'var(--color-text-secondary)', lineHeight: 1.7, letterSpacing: '-0.01em' }}
+            initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.15 }}
           >
-            <button onClick={() => navigate('/setup')} className="btn btn-primary btn-lg group">
-              <svg className="w-5 h-5 transition-transform group-hover:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            Reveal what leaders are made of. Premium AI-powered executive interview assessment.
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.25 }}
+          >
+            <button
+              onClick={() => navigate('/setup')}
+              className="group relative inline-flex items-center gap-3 font-bold text-[#0D0D1A] px-8 py-4 rounded-2xl overflow-hidden"
+              style={{
+                background: 'linear-gradient(135deg, #D4B85A 0%, #C9A84C 50%, #B8943D 100%)',
+                boxShadow: '0 4px 20px rgba(201,168,76,0.35), 0 1px 3px rgba(0,0,0,0.2)',
+                fontSize: '1.0625rem',
+              }}
+            >
+              {/* Hover shimmer effect */}
+              <span className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)', animation: 'shimmer 2s ease-in-out infinite' }} />
+              <svg className="w-5 h-5 relative transition-transform duration-300 group-hover:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
               </svg>
-              New Assessment
+              <span className="relative">New Assessment</span>
             </button>
           </motion.div>
         </motion.div>

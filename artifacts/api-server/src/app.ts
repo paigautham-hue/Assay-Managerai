@@ -12,7 +12,7 @@ const allowedOrigins = [APP_URL, 'http://localhost:5173', 'http://localhost:3000
 app.use(cors({
   origin: (origin, callback) => {
     // Allow same-origin (no origin header), explicit allowlist, and Replit/Capacitor domains
-    if (!origin || allowedOrigins.some(o => origin.startsWith(o)) || origin.endsWith('.replit.dev') || origin.endsWith('.repl.co') || origin.endsWith('.replit.app') || origin.startsWith('capacitor://') || origin.startsWith('ionic://')) {
+    if (!origin || allowedOrigins.some(o => origin.startsWith(o)) || origin.endsWith('.replit.dev') || origin.endsWith('.repl.co') || origin.endsWith('.replit.app') || origin.startsWith('capacitor://') || origin.startsWith('ionic://') || origin.startsWith('assay://')) {
       callback(null, true);
     } else {
       console.warn(`[CORS] Blocked origin: ${origin}`);

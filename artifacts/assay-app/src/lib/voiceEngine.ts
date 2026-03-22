@@ -12,6 +12,7 @@ export class VoiceEngine {
   private pc: RTCPeerConnection | null = null;
   private dc: RTCDataChannel | null = null;
   private micStream: MediaStream | null = null;
+  private processedStream: MediaStream | null = null; // Gain-controlled stream sent to WebRTC
   private audioElement: HTMLAudioElement | null = null;
   private callbacks: VoiceEngineCallbacks;
   private setup: InterviewSetup;
@@ -30,7 +31,7 @@ export class VoiceEngine {
   // Delay before re-enabling mic after AI finishes speaking.
   // Gives the speaker time to fully drain buffered audio so the mic
   // doesn't pick up the tail end of the AI's voice.
-  private readonly MIC_UNMUTE_DELAY_MS = 600;
+  private readonly MIC_UNMUTE_DELAY_MS = 800;
 
   constructor(
     setup: InterviewSetup,
@@ -186,7 +187,8 @@ DECEPTION DETECTION (running in background):
         }
       });
 
-      // Setup audio processing chain: mic -> gain (for muting) -> destination
+      // Setup audio processing chain: mic -> gain -> MediaStreamDestination (-> WebRTC)
+      // MUST happen before adding tracks to WebRTC so we send the gain-controlled stream
       this.setupAudioProcessing();
 
       // Create WebRTC peer connection
@@ -209,9 +211,11 @@ DECEPTION DETECTION (running in background):
         }
       };
 
-      // Add mic track to peer connection
-      this.micStream.getTracks().forEach(track => {
-        this.pc!.addTrack(track, this.micStream!);
+      // Add the PROCESSED (gain-controlled) stream to WebRTC, NOT the raw mic.
+      // This is the critical echo fix: when AI speaks, gain=0 means OpenAI receives silence.
+      const streamToSend = this.processedStream || this.micStream;
+      streamToSend.getTracks().forEach(track => {
+        this.pc!.addTrack(track, streamToSend);
       });
 
       // Create data channel
@@ -295,10 +299,10 @@ DECEPTION DETECTION (running in background):
         input_audio_transcription: { model: 'whisper-1' },
         turn_detection: {
           type: 'server_vad',
-          threshold: 0.5,
-          prefix_padding_ms: 500,
-          silence_duration_ms: 800,
-          eagerness: 'medium',
+          threshold: 0.6,
+          prefix_padding_ms: 400,
+          silence_duration_ms: 700,
+          eagerness: 'low',
         },
       },
     }));
@@ -312,7 +316,14 @@ DECEPTION DETECTION (running in background):
     }));
   }
 
-  /** Setup audio processing chain for echo prevention. */
+  /**
+   * Setup audio processing chain for echo prevention.
+   * CRITICAL: The mic goes through a GainNode before being sent to WebRTC.
+   * When AI speaks, gain is set to 0 so OpenAI receives silence — preventing echo.
+   *
+   * Chain: Raw Mic → GainNode → MediaStreamDestination (→ WebRTC)
+   *                           → AnalyserNode (→ audio level UI)
+   */
   private setupAudioProcessing() {
     if (!this.micStream) return;
 
@@ -320,17 +331,24 @@ DECEPTION DETECTION (running in background):
       this.audioContext = new AudioContext();
       const source = this.audioContext.createMediaStreamSource(this.micStream);
 
-      // Gain node for software mic muting (more reliable than track.enabled)
+      // Gain node for software mic muting — THIS controls what WebRTC sends
       this.micGainNode = this.audioContext.createGain();
       this.micGainNode.gain.value = 1.0;
 
-      // Analyser for audio level monitoring
+      // Analyser for audio level monitoring (visual feedback)
       this.analyserNode = this.audioContext.createAnalyser();
       this.analyserNode.fftSize = 256;
 
+      // MediaStreamDestination creates a new MediaStream from the gain-controlled audio.
+      // This processed stream is what we send to WebRTC — so when gain=0, OpenAI hears silence.
+      const destination = this.audioContext.createMediaStreamDestination();
+
       source.connect(this.micGainNode);
-      this.micGainNode.connect(this.analyserNode);
-      // Don't connect to destination — we don't want to play mic audio locally
+      this.micGainNode.connect(this.analyserNode);   // For level monitoring
+      this.micGainNode.connect(destination);           // For WebRTC (gain-controlled!)
+
+      // Store the processed stream — we'll use this for WebRTC instead of raw mic
+      this.processedStream = destination.stream;
 
       const dataArray = new Uint8Array(this.analyserNode.frequencyBinCount);
       this.audioLevelInterval = setInterval(() => {
@@ -452,6 +470,10 @@ DECEPTION DETECTION (running in background):
     if (this.pc) {
       this.pc.close();
       this.pc = null;
+    }
+    if (this.processedStream) {
+      this.processedStream.getTracks().forEach(t => t.stop());
+      this.processedStream = null;
     }
     if (this.micStream) {
       this.micStream.getTracks().forEach(t => t.stop());
