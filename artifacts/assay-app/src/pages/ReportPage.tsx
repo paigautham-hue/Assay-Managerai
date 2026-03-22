@@ -6,6 +6,7 @@ import { DIMENSION_DISPLAY_NAMES } from '../types';
 import type { PsychologicalScreening } from '../types';
 import type { ProsodyData } from '../types';
 import { GATE_DEFINITIONS } from '../lib/gates';
+import { generateExecutivePDF } from '../lib/pdfExport';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell,
   ResponsiveContainer, PieChart, Pie, Legend,
@@ -649,6 +650,16 @@ export function ReportPage() {
               </p>
             </div>
             <div className="flex gap-3">
+              <button
+                onClick={() => generateExecutivePDF(report)}
+                className="btn btn-secondary px-5 flex items-center gap-2"
+                title="Export executive summary as PDF"
+              >
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M8 1v9M8 10L5 7M8 10l3-3M2 12v1.5A1.5 1.5 0 003.5 15h9a1.5 1.5 0 001.5-1.5V12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                Export PDF
+              </button>
               <button onClick={() => navigate('/setup')} className="btn btn-primary px-6">New Assessment</button>
             </div>
           </div>

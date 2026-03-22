@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/context/AuthContext';
 import { ROLE_DISPLAY_NAMES } from '@/types/admin';
 import type { UserRole } from '@/types/admin';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 interface NavBarProps {
   animate?: boolean;
@@ -46,6 +47,8 @@ export function NavBar({ animate = true }: NavBarProps) {
           <span className="text-lg font-bold" style={{ color: 'var(--color-text-primary)' }}>ASSAY</span>
         </button>
 
+        <div className="flex items-center gap-1">
+          <ThemeToggle />
         <div className="relative" ref={menuRef}>
           <button
             onClick={() => setOpen(o => !o)}
@@ -69,11 +72,11 @@ export function NavBar({ animate = true }: NavBarProps) {
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 4, scale: 0.97 }}
                 transition={{ duration: 0.15 }}
-                className="absolute right-0 top-full mt-2 w-52 bg-[#12122A] border border-white/10 rounded-xl shadow-2xl overflow-hidden z-50"
+                className="absolute right-0 top-full mt-2 w-52 surface-overlay rounded-xl shadow-2xl overflow-hidden z-50"
               >
-                <div className="px-4 py-3 border-b border-white/5">
-                  <p className="text-white text-sm font-medium truncate">{user?.name}</p>
-                  <p className="text-[#8B8B9E] text-xs truncate">{user?.email}</p>
+                <div className="px-4 py-3 border-b border-[var(--color-border-subtle)]">
+                  <p className="text-sm font-medium truncate" style={{ color: 'var(--color-text-primary)' }}>{user?.name}</p>
+                  <p className="text-xs truncate" style={{ color: 'var(--color-text-secondary)' }}>{user?.email}</p>
                   <span className="inline-block mt-1.5 px-2 py-0.5 rounded-full text-[10px] font-medium bg-[#C9A84C]/10 text-[#C9A84C] border border-[#C9A84C]/20">
                     {user ? ROLE_DISPLAY_NAMES[user.role as UserRole] : ''}
                   </span>
@@ -82,7 +85,7 @@ export function NavBar({ animate = true }: NavBarProps) {
                 <div className="py-1">
                   <button
                     onClick={() => { setOpen(false); navigate('/'); }}
-                    className="w-full text-left px-4 py-3 text-sm text-[#8B8B9E] hover:text-white hover:bg-white/5 transition-colors min-h-[44px]"
+                    className="w-full text-left px-4 py-3 text-sm transition-colors min-h-[44px]" style={{ color: 'var(--color-text-secondary)' }}
                   >
                     Dashboard
                   </button>
@@ -90,14 +93,14 @@ export function NavBar({ animate = true }: NavBarProps) {
                   {hasRole('owner', 'admin') && (
                     <button
                       onClick={() => { setOpen(false); navigate('/admin'); }}
-                      className="w-full text-left px-4 py-3 text-sm text-[#8B8B9E] hover:text-white hover:bg-white/5 transition-colors min-h-[44px]"
+                      className="w-full text-left px-4 py-3 text-sm transition-colors min-h-[44px]" style={{ color: 'var(--color-text-secondary)' }}
                     >
                       Admin Panel
                     </button>
                   )}
                 </div>
 
-                <div className="border-t border-white/5 py-1">
+                <div className="border-t border-[var(--color-border-subtle)] py-1">
                   <button
                     onClick={handleLogout}
                     className="w-full text-left px-4 py-3 text-sm text-red-400 hover:text-red-300 hover:bg-red-500/5 transition-colors min-h-[44px]"
@@ -108,6 +111,7 @@ export function NavBar({ animate = true }: NavBarProps) {
               </motion.div>
             )}
           </AnimatePresence>
+        </div>
         </div>
       </div>
     </nav>

@@ -3,6 +3,8 @@ import { useMemo } from 'react';
 interface VoiceVisualizerProps {
   status: 'idle' | 'speaking' | 'listening' | 'processing';
   audioLevel?: number;
+  /** Override the visualizer diameter in px (default: responsive 208/240) */
+  size?: number;
 }
 
 /**
@@ -11,7 +13,7 @@ interface VoiceVisualizerProps {
  * and particle effects. Inspired by Siri, Apple Intelligence, and
  * premium AI product design.
  */
-export function VoiceVisualizer({ status, audioLevel = 0.5 }: VoiceVisualizerProps) {
+export function VoiceVisualizer({ status, audioLevel = 0.5, size }: VoiceVisualizerProps) {
   const level = Math.min(1, audioLevel);
 
   const config = useMemo(() => {
@@ -86,7 +88,10 @@ export function VoiceVisualizer({ status, audioLevel = 0.5 }: VoiceVisualizerPro
   return (
     <div className="relative flex flex-col items-center select-none">
       {/* Main container */}
-      <div className="relative w-52 h-52 sm:w-60 sm:h-60 flex items-center justify-center">
+      <div
+        className={size ? 'relative flex items-center justify-center' : 'relative w-52 h-52 sm:w-60 sm:h-60 flex items-center justify-center'}
+        style={size ? { width: size, height: size } : undefined}
+      >
 
         {/* Ambient glow — large, soft background */}
         <div

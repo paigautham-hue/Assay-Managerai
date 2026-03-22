@@ -4,6 +4,7 @@ import { useAssayStore } from '../store/useAssayStore';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { GateName } from '../types';
 import { GATE_DEFINITIONS, ROLE_GATE_PRESETS } from '../lib/gates';
+import { ROLE_TEMPLATES, type RoleTemplate } from '../lib/roleTemplates';
 
 const CORE_GATE_IDS: GateName[] = ['integrity', 'accountability', 'harm_pattern', 'context_misalignment'];
 const OPTIONAL_GATE_IDS: GateName[] = ['financial_fluency', 'customer_orientation', 'people_judgment', 'decision_velocity', 'technical_depth'];
@@ -80,9 +81,10 @@ export function SetupPage() {
   });
 
   const [optionalGates, setOptionalGates] = useState<Set<GateName>>(() => getDefaultOptionalGates(''));
+  const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
 
   const goNext = () => {
-    if (currentStep === 1) {
+    if (currentStep === 1 && !selectedTemplate) {
       setOptionalGates(getDefaultOptionalGates(formData.roleName));
     }
     setDirection(1);
@@ -108,6 +110,28 @@ export function SetupPage() {
     setFormData(p => ({ ...p, roleName: role }));
     setShowSuggestions(false);
     setOptionalGates(getDefaultOptionalGates(role));
+  };
+
+  const applyTemplate = (template: RoleTemplate) => {
+    setSelectedTemplate(template.id);
+    setFormData(p => ({
+      ...p,
+      roleName: template.roleName,
+      roleLevel: template.roleLevel as typeof p.roleLevel,
+      jobDescription: template.jobDescription,
+    }));
+    setOptionalGates(new Set<GateName>(template.suggestedGates));
+  };
+
+  const clearTemplate = () => {
+    setSelectedTemplate(null);
+    setFormData(p => ({
+      ...p,
+      roleName: '',
+      roleLevel: 'C-Suite',
+      jobDescription: '',
+    }));
+    setOptionalGates(getDefaultOptionalGates(''));
   };
 
   const toggleGate = (gate: GateName) => {
@@ -183,6 +207,66 @@ export function SetupPage() {
                 <h2 className="heading-md mb-2" style={headingStyle}>Who are we assessing?</h2>
                 <p style={subStyle}>Tell us about the candidate and role</p>
               </div>
+
+              {/* Role Benchmark Templates */}
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <label className="block text-sm font-semibold" style={headingStyle}>Use a Template</label>
+                  {selectedTemplate && (
+                    <motion.button
+                      type="button"
+                      onClick={clearTemplate}
+                      className="text-xs font-medium px-2 py-1 rounded transition-opacity hover:opacity-80"
+                      style={{ color: 'var(--color-text-secondary)', background: 'rgba(255,255,255,0.06)' }}
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                    >
+                      Clear Template
+                    </motion.button>
+                  )}
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                  {ROLE_TEMPLATES.map(template => {
+                    const isSelected = selectedTemplate === template.id;
+                    return (
+                      <motion.button
+                        key={template.id}
+                        type="button"
+                        onClick={() => applyTemplate(template)}
+                        className="relative p-3 rounded-lg border-2 text-left transition-all"
+                        style={{
+                          borderColor: isSelected ? 'var(--color-gold)' : 'rgba(255,255,255,0.06)',
+                          background: isSelected ? 'rgba(201,168,76,0.1)' : 'var(--color-surface-raised)',
+                        }}
+                        whileHover={{ scale: 1.03 }}
+                        whileTap={{ scale: 0.97 }}
+                      >
+                        <div className="text-xl mb-1">{template.icon}</div>
+                        <div className="font-semibold text-xs leading-tight" style={headingStyle}>{template.title}</div>
+                        <span
+                          className="inline-block text-[10px] mt-1 px-1.5 py-0.5 rounded font-medium"
+                          style={{
+                            background: template.category === 'C-Suite' ? 'rgba(201,168,76,0.15)' : template.category === 'VP' ? 'rgba(96,165,250,0.15)' : template.category === 'Director' ? 'rgba(167,139,250,0.15)' : 'rgba(52,211,153,0.15)',
+                            color: template.category === 'C-Suite' ? 'var(--color-gold)' : template.category === 'VP' ? '#60A5FA' : template.category === 'Director' ? '#A78BFA' : '#34D399',
+                          }}
+                        >
+                          {template.category}
+                        </span>
+                        {isSelected && (
+                          <motion.div className="absolute top-2 right-2" initial={{ scale: 0 }} animate={{ scale: 1 }}>
+                            <div className="w-4 h-4 rounded-full bg-gold flex items-center justify-center">
+                              <span className="text-[10px] font-bold" style={{ color: '#0D0D1A' }}>✓</span>
+                            </div>
+                          </motion.div>
+                        )}
+                      </motion.button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="border-t" style={{ borderColor: 'rgba(255,255,255,0.06)' }} />
+
               <div>
                 <label className="block text-sm font-semibold mb-2" style={headingStyle}>Candidate Name</label>
                 <input

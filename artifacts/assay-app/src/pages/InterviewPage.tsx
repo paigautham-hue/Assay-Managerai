@@ -306,11 +306,16 @@ export function InterviewPage() {
   const [showEndModal, setShowEndModal] = useState(false);
   const [showFlagsPanel, setShowFlagsPanel] = useState(true);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [isTablet, setIsTablet] = useState(window.innerWidth >= 768 && window.innerWidth < 1200);
   const [voiceError, setVoiceError] = useState<string | null>(null);
 
-  // Detect mobile
+  // Detect mobile / tablet breakpoints
   useEffect(() => {
-    const handler = () => setIsMobile(window.innerWidth < 768);
+    const handler = () => {
+      const w = window.innerWidth;
+      setIsMobile(w < 768);
+      setIsTablet(w >= 768 && w < 1200);
+    };
     window.addEventListener('resize', handler);
     return () => window.removeEventListener('resize', handler);
   }, []);
@@ -622,7 +627,7 @@ export function InterviewPage() {
 
   // ── Interview UI ───────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen overflow-hidden" style={{ background: '#0D0D1A' }}>
+    <div className="min-h-screen overflow-hidden" style={{ background: '#0D0D1A', touchAction: 'manipulation' }}>
       {/* Header */}
       <motion.div
         className="border-b px-4 sm:px-6 py-4 flex items-center justify-between"
@@ -656,13 +661,17 @@ export function InterviewPage() {
       >
         {/* Main area */}
         <motion.div
-          className="flex-1 flex flex-col items-center justify-start px-4 sm:px-6 py-6 overflow-y-auto"
+          className="flex flex-col items-center justify-start px-4 sm:px-6 py-6 overflow-y-auto"
+          style={{
+            flex: isTablet ? '0 0 60%' : '1 1 0%',
+            WebkitOverflowScrolling: 'touch' as any,
+          }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
         >
           {/* Visualizer */}
-          <div className="mb-8 mt-2">
+          <div className={isTablet ? 'mb-4 mt-1' : 'mb-8 mt-2'}>
             <VoiceVisualizer
               status={
                 status === 'ai_speaking'
@@ -674,6 +683,7 @@ export function InterviewPage() {
                   : 'idle'
               }
               audioLevel={audioLevel}
+              size={isTablet ? 200 : undefined}
             />
           </div>
 
@@ -748,7 +758,8 @@ export function InterviewPage() {
             style={{
               background: 'rgba(0,0,0,0.4)',
               border: '1px solid rgba(255,255,255,0.06)',
-              height: isMobile ? '40dvh' : '24rem',
+              height: isMobile ? '40dvh' : isTablet ? '35dvh' : '24rem',
+              WebkitOverflowScrolling: 'touch' as any,
             }}
           >
             <AnimatePresence mode="popLayout">
@@ -804,6 +815,7 @@ export function InterviewPage() {
             onClick={() => setShowEndModal(true)}
             disabled={isEndingInterview}
             className="btn btn-danger px-8 py-3 disabled:opacity-50"
+            style={{ marginBottom: 'env(safe-area-inset-bottom, 0px)' }}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
@@ -817,8 +829,8 @@ export function InterviewPage() {
             )}
           </motion.button>
 
-          {/* Mobile observations toggle */}
-          {isMobile && !showFlagsPanel && (
+          {/* Mobile observations toggle (not shown on tablet — observations always visible) */}
+          {isMobile && !isTablet && !showFlagsPanel && (
             <motion.button
               onClick={() => setShowFlagsPanel(true)}
               className="mt-4 rounded-full px-5 py-2 text-sm font-semibold"
@@ -830,8 +842,35 @@ export function InterviewPage() {
           )}
         </motion.div>
 
+        {/* Tablet right panel (always visible, 40% width) */}
+        {isTablet && (
+          <motion.div
+            className="overflow-y-auto flex-shrink-0"
+            style={{
+              flex: '0 0 40%',
+              background: 'var(--color-surface)',
+              borderLeft: '1px solid rgba(255,255,255,0.06)',
+              WebkitOverflowScrolling: 'touch' as any,
+            }}
+            initial={{ x: 80, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ delay: 0.3 }}
+          >
+            {/* Tablet observations header (no close button) */}
+            <div
+              className="sticky top-0 px-6 py-4 z-10"
+              style={{ background: 'rgba(20,20,37,0.9)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}
+            >
+              <h2 className="heading-sm" style={{ color: 'var(--color-text-primary)' }}>
+                Observations{session?.observations.length ? ` (${session.observations.length})` : ''}
+              </h2>
+            </div>
+            {observationsContent}
+          </motion.div>
+        )}
+
         {/* Desktop sidebar */}
-        {!isMobile && showFlagsPanel && (
+        {!isMobile && !isTablet && showFlagsPanel && (
           <motion.div
             className="w-80 overflow-y-auto flex-shrink-0"
             style={{
@@ -848,7 +887,7 @@ export function InterviewPage() {
         )}
 
         {/* Desktop re-open button */}
-        {!isMobile && !showFlagsPanel && (
+        {!isMobile && !isTablet && !showFlagsPanel && (
           <motion.button
             onClick={() => setShowFlagsPanel(true)}
             className="fixed right-4 rounded-full p-3 font-bold z-50 min-w-[44px] min-h-[44px]"
@@ -863,9 +902,9 @@ export function InterviewPage() {
         )}
       </div>
 
-      {/* Mobile bottom sheet */}
+      {/* Mobile bottom sheet (not used on tablet) */}
       <AnimatePresence>
-        {isMobile && showFlagsPanel && (
+        {isMobile && !isTablet && showFlagsPanel && (
           <>
             {/* Backdrop */}
             <motion.div
@@ -918,7 +957,7 @@ export function InterviewPage() {
               </div>
 
               {/* Scrollable content */}
-              <div className="overflow-y-auto flex-1">{observationsContent}</div>
+              <div className="overflow-y-auto flex-1" style={{ WebkitOverflowScrolling: 'touch' as any }}>{observationsContent}</div>
             </motion.div>
           </>
         )}
