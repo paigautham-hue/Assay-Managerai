@@ -1,5 +1,13 @@
 import type { InterviewSetup, TranscriptEntry, Observation } from '../types';
 
+export interface AIPersonality {
+  style: 'formal' | 'casual' | 'balanced';
+  pace: 'thorough' | 'moderate' | 'efficient';
+  focusAreas: string[];
+  customInstructions: string;
+  interviewerName: string;
+}
+
 export interface VoiceEngineCallbacks {
   onTranscript: (entry: Omit<TranscriptEntry, 'id'>) => void;
   onObservation: (obs: Omit<Observation, 'id'>) => void;
@@ -33,14 +41,18 @@ export class VoiceEngine {
   // doesn't pick up the tail end of the AI's voice.
   private readonly MIC_UNMUTE_DELAY_MS = 800;
 
+  private personality?: AIPersonality;
+
   constructor(
     setup: InterviewSetup,
     callbacks: VoiceEngineCallbacks,
     preCreatedAudioEl?: HTMLAudioElement,
+    personality?: AIPersonality,
   ) {
     this.setup = setup;
     this.callbacks = callbacks;
     this.externalAudioEl = preCreatedAudioEl ?? null;
+    this.personality = personality;
   }
 
   /** Expose the mic stream so EmotionEngine can share it. */
@@ -55,7 +67,7 @@ export class VoiceEngine {
 
     const isSenior = ['C-Suite', 'VP'].includes(this.setup.roleLevel);
 
-    return `You are Sophia — a world-class executive interviewer with 20 years of experience at the intersection of McKinsey, Spencer Stuart, and organizational psychology. You have personally assessed over 2,000 senior leaders. You're known for conversations so natural that candidates forget they're being interviewed, yet so precise that every answer reveals something meaningful.
+    let prompt = `You are Sophia — a world-class executive interviewer with 20 years of experience at the intersection of McKinsey, Spencer Stuart, and organizational psychology. You have personally assessed over 2,000 senior leaders. You're known for conversations so natural that candidates forget they're being interviewed, yet so precise that every answer reveals something meaningful.
 
 CANDIDATE: ${this.setup.candidateName}
 ROLE: ${this.setup.roleName} (${this.setup.roleLevel})
@@ -151,6 +163,48 @@ DECEPTION DETECTION (running in background):
 - If they claim credit for a team effort, probe gently: "That sounds like it took a village. What was your unique contribution?"
 - If something smells rehearsed, break the pattern: "That's interesting — now tell me the version you'd share over drinks with a trusted friend."
 - End the conversation warmly. They should feel like they just had one of the best conversations of their career.`;
+
+    // --- Personality overrides ---
+    if (this.personality) {
+      const p = this.personality;
+      const overrides: string[] = [];
+
+      // Interviewer name override
+      const name = p.interviewerName || 'Sophia';
+      if (name !== 'Sophia') {
+        prompt = prompt.replace(/You are Sophia/, `You are ${name}`);
+      }
+
+      // Style overrides
+      if (p.style === 'formal') {
+        overrides.push('STYLE OVERRIDE: Adopt a professional, measured, and polished tone. Minimize slang and humor. Speak with precision and gravitas.');
+      } else if (p.style === 'casual') {
+        overrides.push('STYLE OVERRIDE: Be relaxed and conversational. Use humor freely, keep things light and personable. Make the candidate feel like they are chatting with a friend.');
+      }
+
+      // Pace overrides
+      if (p.pace === 'thorough') {
+        overrides.push('PACE OVERRIDE: Ask longer, more detailed questions. Go deep on each topic before moving on. Use multiple follow-ups to fully explore each area.');
+      } else if (p.pace === 'efficient') {
+        overrides.push('PACE OVERRIDE: Keep questions short and direct. Move quickly between topics. Minimize follow-ups unless something critical surfaces.');
+      }
+
+      // Focus areas
+      if (p.focusAreas.length > 0) {
+        overrides.push(`FOCUS AREAS: Pay special attention to and spend more time exploring: ${p.focusAreas.join(', ')}.`);
+      }
+
+      // Custom instructions (appended verbatim)
+      if (p.customInstructions.trim()) {
+        overrides.push(`ADDITIONAL INSTRUCTIONS:\n${p.customInstructions.trim()}`);
+      }
+
+      if (overrides.length > 0) {
+        prompt += `\n\n═══ ORGANIZATION PERSONALITY OVERRIDES ═══\n\n${overrides.join('\n\n')}`;
+      }
+    }
+
+    return prompt;
   }
 
   async connect(): Promise<void> {

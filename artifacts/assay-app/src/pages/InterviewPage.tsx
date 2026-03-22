@@ -4,8 +4,9 @@ import { useAssayStore } from '../store/useAssayStore';
 import { VoiceVisualizer } from '../components/VoiceVisualizer';
 import { motion, AnimatePresence } from 'framer-motion';
 import { VoiceEngine } from '../lib/voiceEngine';
-import type { VoiceEngineCallbacks } from '../lib/voiceEngine';
+import type { VoiceEngineCallbacks, AIPersonality } from '../lib/voiceEngine';
 import { EmotionEngine } from '../lib/emotionEngine';
+import { EmotionHeatmap } from '../components/EmotionHeatmap';
 import type { Observation } from '../types';
 import { GATE_DEFINITIONS } from '../lib/gates';
 
@@ -287,7 +288,7 @@ function EndInterviewModal({
 
 export function InterviewPage() {
   const [, navigate] = useLocation();
-  const { session, addTranscriptEntry, updateSessionStatus, addObservation, setProsodyData, setError } =
+  const { session, addTranscriptEntry, updateSessionStatus, addObservation, addEmotionDataPoint, emotionTimeline, setProsodyData, setError } =
     useAssayStore();
 
   const voiceEngineRef = useRef<VoiceEngine | null>(null);
@@ -308,6 +309,15 @@ export function InterviewPage() {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [isTablet, setIsTablet] = useState(window.innerWidth >= 768 && window.innerWidth < 1200);
   const [voiceError, setVoiceError] = useState<string | null>(null);
+  const [personality, setPersonality] = useState<AIPersonality | undefined>(undefined);
+
+  // Fetch AI personality settings on mount
+  useEffect(() => {
+    fetch(BASE_URL + 'api/personality', { credentials: 'include' })
+      .then(res => res.ok ? res.json() : null)
+      .then(data => { if (data) setPersonality(data); })
+      .catch(() => {}); // non-critical — will use defaults
+  }, []);
 
   // Detect mobile / tablet breakpoints
   useEffect(() => {
@@ -337,7 +347,7 @@ export function InterviewPage() {
     updateSessionStatus('active');
 
     emotionEngineRef.current = new EmotionEngine(HUME_API_KEY, BASE_URL);
-    emotionEngineRef.current.connect().catch(() => {});
+    emotionEngineRef.current.connect(addEmotionDataPoint).catch(() => {});
 
     if (VOICE_ENABLED) {
       const callbacks: VoiceEngineCallbacks = {
@@ -363,6 +373,7 @@ export function InterviewPage() {
         session.setup,
         callbacks,
         audioElementRef.current ?? undefined,
+        personality,
       );
       voiceEngineRef.current.connect().catch(() => setError('Failed to connect to voice system'));
     } else {
@@ -557,6 +568,11 @@ export function InterviewPage() {
   // ── Observations sidebar content (shared between desktop & mobile sheet) ───
   const observationsContent = (
     <div className="p-6 space-y-6">
+      {/* Live emotion heatmap */}
+      {emotionTimeline.length > 0 && (
+        <EmotionHeatmap dataPoints={emotionTimeline} />
+      )}
+
       {session?.observations && session.observations.length > 0 ? (
         <>
           {(['red_flag', 'strong_signal', 'gate_signal'] as const).map(type => {
@@ -740,6 +756,7 @@ export function InterviewPage() {
                         onAudioLevel: setAudioLevel,
                       },
                       audioElementRef.current ?? undefined,
+                      personality,
                     );
                     voiceEngineRef.current.connect().catch(() => {});
                   }

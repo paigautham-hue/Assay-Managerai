@@ -660,6 +660,22 @@ export function ReportPage() {
                 </svg>
                 Export PDF
               </button>
+              <button
+                onClick={async () => {
+                  try {
+                    const base = import.meta.env.BASE_URL || '/';
+                    const r = await fetch(`${base}api/reports/${report.id}/coaching`, { credentials: 'include' });
+                    if (r.ok) { navigate(`/coaching/${report.id}`); return; }
+                    const el = document.activeElement as HTMLButtonElement;
+                    if (el) { el.textContent = 'Generating...'; el.disabled = true; }
+                    await fetch(`${base}api/reports/${report.id}/coaching`, { method: 'POST', credentials: 'include' });
+                    navigate(`/coaching/${report.id}`);
+                  } catch { /* ignore */ }
+                }}
+                className="btn btn-secondary px-5 flex items-center gap-2"
+              >
+                🧠 Coaching
+              </button>
               <button onClick={() => navigate('/setup')} className="btn btn-primary px-6">New Assessment</button>
             </div>
           </div>

@@ -7,6 +7,9 @@ import sessionsRouter from "./sessions.js";
 import reportsRouter from "./reports.js";
 import authRouter from "./auth.js";
 import sentimentRouter from "./sentiment.js";
+import personalityRouter from "./personality.js";
+import analyticsRouter from "./analytics.js";
+import coachingRouter from "./coaching.js";
 import { authenticate } from "../middleware/auth.js";
 
 const router: IRouter = Router();
@@ -32,5 +35,8 @@ router.use(sessionRouter);
 router.use(sessionsRouter);
 router.use(reportsRouter);
 router.use(sentimentRouter);
+router.use(personalityRouter);
+router.use(analyticsRouter);
+router.use(coachingRouter);
 
 export default router;

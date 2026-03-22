@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import type { InterviewSession, AssayReport, InterviewSetup, TranscriptEntry, Observation, GateName } from '../types';
-import type { ProsodyData } from '../lib/emotionEngine';
+import type { ProsodyData, EmotionDataPoint } from '../lib/emotionEngine';
 import { v4 as uuidv4 } from 'uuid';
 
 const BASE_URL = import.meta.env.BASE_URL || '/';
@@ -42,12 +42,14 @@ interface AssayStore {
   isLoading: boolean;
   error: string | null;
   reportsLoaded: boolean;
+  emotionTimeline: EmotionDataPoint[];
 
   setView: (view: AssayStore['currentView']) => void;
   createSession: (setup: InterviewSetup) => Promise<void>;
   updateSessionStatus: (status: InterviewSession['status']) => void;
   addTranscriptEntry: (entry: Omit<TranscriptEntry, 'id'>) => void;
   addObservation: (obs: Omit<Observation, 'id'>) => void;
+  addEmotionDataPoint: (point: EmotionDataPoint) => void;
   setProsodyData: (data: ProsodyData) => void;
   setReport: (report: AssayReport) => void;
   loadReports: () => Promise<void>;
@@ -64,6 +66,7 @@ export const useAssayStore = create<AssayStore>((set, get) => ({
   isLoading: false,
   error: null,
   reportsLoaded: false,
+  emotionTimeline: [],
 
   setView: (view) => set({ currentView: view }),
 
@@ -131,6 +134,10 @@ export const useAssayStore = create<AssayStore>((set, get) => ({
     dbPost(`sessions/${session.id}/observations`, { ...obs, id });
   },
 
+  addEmotionDataPoint: (point) => {
+    set((state) => ({ emotionTimeline: [...state.emotionTimeline, point] }));
+  },
+
   setProsodyData: (data) => {
     const session = get().session;
     if (!session) return;
@@ -165,5 +172,5 @@ export const useAssayStore = create<AssayStore>((set, get) => ({
 
   setLoading: (isLoading) => set({ isLoading }),
   setError: (error) => set({ error }),
-  reset: () => set({ currentView: 'home', session: null, report: null, isLoading: false, error: null }),
+  reset: () => set({ currentView: 'home', session: null, report: null, isLoading: false, error: null, emotionTimeline: [] }),
 }));

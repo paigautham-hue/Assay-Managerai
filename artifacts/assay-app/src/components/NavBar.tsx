@@ -90,6 +90,13 @@ export function NavBar({ animate = true }: NavBarProps) {
                     Dashboard
                   </button>
 
+                  <button
+                    onClick={() => { setOpen(false); navigate('/analytics'); }}
+                    className="w-full text-left px-4 py-3 text-sm transition-colors min-h-[44px]" style={{ color: 'var(--color-text-secondary)' }}
+                  >
+                    Analytics
+                  </button>
+
                   {hasRole('owner', 'admin') && (
                     <button
                       onClick={() => { setOpen(false); navigate('/admin'); }}

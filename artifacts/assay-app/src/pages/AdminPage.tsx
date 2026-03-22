@@ -4,6 +4,7 @@ import { useAuth } from '@/context/AuthContext';
 import { NavBar } from '@/components/NavBar';
 import type { AdminUser, Invitation, ActivityLogEntry, OrgSettings, UserRole, UserStatus } from '@/types/admin';
 import { ROLE_DISPLAY_NAMES, ROLE_DESCRIPTIONS, ROLE_HIERARCHY } from '@/types/admin';
+import { PersonalityConfig } from '@/components/PersonalityConfig';
 
 const BASE_URL = import.meta.env.BASE_URL || '/';
 const api = (path: string) => `${BASE_URL}api/${path}`;
@@ -732,7 +733,7 @@ function SettingsTab({ currentUser }: { currentUser: AdminUser }) {
 
 // ── Main AdminPage ─────────────────────────────────────────────────────────────
 
-type Tab = 'users' | 'invitations' | 'activity' | 'settings';
+type Tab = 'users' | 'invitations' | 'activity' | 'settings' | 'personality';
 
 export function AdminPage() {
   const { user: currentUser } = useAuth();
@@ -801,6 +802,7 @@ export function AdminPage() {
     { id: 'invitations' as Tab, label: 'Invitations', count: invitations.filter(i => !i.acceptedAt && new Date(i.expiresAt) > new Date()).length || undefined },
     { id: 'activity' as Tab, label: 'Activity' },
     { id: 'settings' as Tab, label: 'Settings' },
+    { id: 'personality' as Tab, label: 'Sophia Personality' },
   ];
 
   const roleCounts = (['owner','admin','interviewer','viewer'] as UserRole[]).reduce((acc, r) => ({ ...acc, [r]: users.filter(u => u.role === r).length }), {} as Record<UserRole, number>);
@@ -860,6 +862,7 @@ export function AdminPage() {
                   )}
                   {tab === 'activity' && currentUser && <ActivityTab currentUserId={currentUser.id} />}
                   {tab === 'settings' && currentUser && <SettingsTab currentUser={currentUser as AdminUser} />}
+                  {tab === 'personality' && <PersonalityConfig />}
                 </motion.div>
               </AnimatePresence>
             </>

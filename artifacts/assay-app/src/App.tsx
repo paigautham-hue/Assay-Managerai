@@ -13,6 +13,8 @@ import { ProcessingPage } from "@/pages/ProcessingPage";
 import { ReportPage } from "@/pages/ReportPage";
 import { LoginPage } from "@/pages/LoginPage";
 import { AdminPage } from "@/pages/AdminPage";
+import { AnalyticsPage } from "@/pages/AnalyticsPage";
+import { CoachingPage } from "@/pages/CoachingPage";
 import { AcceptInvitePage } from "@/pages/AcceptInvitePage";
 import NotFound from "@/pages/not-found";
 
@@ -55,6 +57,18 @@ function Router() {
           <ErrorBoundary label="Report">
             <ReportPage />
           </ErrorBoundary>
+        </ProtectedRoute>
+      </Route>
+
+      <Route path="/coaching/:id">
+        <ProtectedRoute>
+          <CoachingPage />
+        </ProtectedRoute>
+      </Route>
+
+      <Route path="/analytics">
+        <ProtectedRoute minimumRole="viewer">
+          <AnalyticsPage />
         </ProtectedRoute>
       </Route>
 
