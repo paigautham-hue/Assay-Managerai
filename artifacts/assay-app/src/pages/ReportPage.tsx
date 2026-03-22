@@ -1,12 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useLocation, useParams } from 'wouter';
 import { useAssayStore } from '../store/useAssayStore';
 import { motion } from 'framer-motion';
 import { DIMENSION_DISPLAY_NAMES } from '../types';
-import type { PsychologicalScreening } from '../types';
+import type { PsychologicalScreening, TranscriptEntry } from '../types';
 import type { ProsodyData } from '../types';
 import { GATE_DEFINITIONS } from '../lib/gates';
 import { generateExecutivePDF } from '../lib/pdfExport';
+import { InterviewReplay } from '../components/InterviewReplay';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell,
   ResponsiveContainer, PieChart, Pie, Legend,
@@ -611,11 +612,66 @@ export function ReportPage() {
   const { reports } = useAssayStore();
   const report = reports.find(r => r.id === params.id);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [hasAudio, setHasAudio] = useState(false);
+  const [showReplay, setShowReplay] = useState(false);
+  const [replayTranscript, setReplayTranscript] = useState<TranscriptEntry[]>([]);
+  const [calibrationId, setCalibrationId] = useState<string | null>(null);
+  const [calibrationLoading, setCalibrationLoading] = useState(false);
+
+  const BASE_URL: string = import.meta.env.BASE_URL || '/';
 
   useEffect(() => {
     const t = setTimeout(() => setIsLoaded(true), 550);
     return () => clearTimeout(t);
   }, []);
+
+  // Check if audio exists for this session
+  useEffect(() => {
+    if (!report?.sessionId) return;
+    fetch(`${BASE_URL}api/sessions/${report.sessionId}/audio`, {
+      method: 'HEAD',
+      credentials: 'include',
+    })
+      .then(res => {
+        if (res.ok) setHasAudio(true);
+      })
+      .catch(() => {});
+  }, [report?.sessionId]);
+
+  // Check for existing calibration sessions
+  useEffect(() => {
+    if (!report?.id) return;
+    fetch(`${BASE_URL}api/calibration/by-report/${report.id}`, { credentials: 'include' })
+      .then(res => res.ok ? res.json() : [])
+      .then((sessions: any[]) => {
+        const active = sessions.find((s: any) => s.status === 'active');
+        if (active) setCalibrationId(active.id);
+      })
+      .catch(() => {});
+  }, [report?.id]);
+
+  // Load transcript when replay is opened
+  const handleShowReplay = useCallback(() => {
+    if (!report?.sessionId) return;
+    setShowReplay(true);
+    // Fetch the full session to get transcript entries with audioTimestamp
+    fetch(`${BASE_URL}api/sessions/${report.sessionId}`, { credentials: 'include' })
+      .then(res => res.ok ? res.json() : null)
+      .then(data => {
+        if (data?.transcripts) {
+          setReplayTranscript(
+            data.transcripts.map((t: any) => ({
+              id: t.id,
+              speaker: t.speaker,
+              text: t.text,
+              timestamp: t.timestamp,
+              audioTimestamp: t.audioTimestamp ?? undefined,
+            }))
+          );
+        }
+      })
+      .catch(() => {});
+  }, [report?.sessionId]);
 
   if (!isLoaded) return <ReportSkeleton />;
 
@@ -676,10 +732,84 @@ export function ReportPage() {
               >
                 🧠 Coaching
               </button>
+              <button
+                onClick={async () => {
+                  if (calibrationId) {
+                    navigate(`/calibration/${calibrationId}`);
+                    return;
+                  }
+                  setCalibrationLoading(true);
+                  try {
+                    const r = await fetch(`${BASE_URL}api/calibration`, {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      credentials: 'include',
+                      body: JSON.stringify({
+                        reportId: report.id,
+                        title: `Calibration: ${report.candidateName}`,
+                      }),
+                    });
+                    if (r.ok) {
+                      const session = await r.json();
+                      navigate(`/calibration/${session.id}`);
+                    }
+                  } catch { /* ignore */ }
+                  setCalibrationLoading(false);
+                }}
+                className="btn btn-secondary px-5 flex items-center gap-2"
+                disabled={calibrationLoading}
+              >
+                {calibrationId ? 'Join Calibration' : calibrationLoading ? 'Creating...' : 'Start Calibration'}
+              </button>
               <button onClick={() => navigate('/setup')} className="btn btn-primary px-6">New Assessment</button>
             </div>
           </div>
         </motion.div>
+
+        {/* Interview Replay */}
+        {hasAudio && (
+          <motion.div
+            className="mb-6"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            {!showReplay ? (
+              <button
+                onClick={handleShowReplay}
+                className="w-full rounded-xl p-5 flex items-center justify-center gap-3 transition-colors"
+                style={{
+                  background: 'rgba(212, 175, 55, 0.08)',
+                  border: '1px solid rgba(212, 175, 55, 0.25)',
+                  color: 'var(--color-gold)',
+                }}
+                onMouseEnter={e => (e.currentTarget.style.background = 'rgba(212, 175, 55, 0.15)')}
+                onMouseLeave={e => (e.currentTarget.style.background = 'rgba(212, 175, 55, 0.08)')}
+              >
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M6 4.5v11l9-5.5z" />
+                </svg>
+                <span className="font-semibold">Replay Interview</span>
+              </button>
+            ) : (
+              <ExpandableSection title="Interview Replay" icon="🎙️" defaultOpen>
+                <div className="pt-2">
+                  <InterviewReplay
+                    audioUrl={`${BASE_URL}api/sessions/${report.sessionId}/audio`}
+                    transcript={replayTranscript}
+                  />
+                  <button
+                    onClick={() => setShowReplay(false)}
+                    className="mt-3 text-xs"
+                    style={{ color: 'var(--color-text-tertiary)' }}
+                  >
+                    Hide replay
+                  </button>
+                </div>
+              </ExpandableSection>
+            )}
+          </motion.div>
+        )}
 
         {/* Gate Status Banner */}
         <motion.div

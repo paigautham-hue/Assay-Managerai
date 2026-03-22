@@ -1,8 +1,9 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation } from 'wouter';
 import { useAssayStore } from '../store/useAssayStore';
 import { motion } from 'framer-motion';
 import { NavBar } from '@/components/NavBar';
+import { CreateInviteModal } from '@/components/CreateInviteModal';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -17,6 +18,7 @@ const itemVariants = {
 export function HomePage() {
   const [, navigate] = useLocation();
   const { reports, loadReports, isLoading } = useAssayStore();
+  const [showInviteModal, setShowInviteModal] = useState(false);
 
   useEffect(() => {
     loadReports();
@@ -122,6 +124,7 @@ export function HomePage() {
           </motion.p>
 
           <motion.div
+            className="flex flex-wrap items-center gap-3"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.25 }}
@@ -141,6 +144,21 @@ export function HomePage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
               </svg>
               <span className="relative">New Assessment</span>
+            </button>
+            <button
+              onClick={() => setShowInviteModal(true)}
+              className="group inline-flex items-center gap-2.5 font-semibold px-6 py-4 rounded-2xl transition-all"
+              style={{
+                background: 'rgba(255,255,255,0.04)',
+                border: '1px solid rgba(201,168,76,0.2)',
+                color: 'var(--color-gold)',
+                fontSize: '0.9375rem',
+              }}
+            >
+              <svg className="w-4.5 h-4.5 transition-transform duration-300 group-hover:rotate-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+              </svg>
+              <span>Create Invite Link</span>
             </button>
           </motion.div>
         </motion.div>
@@ -281,6 +299,8 @@ export function HomePage() {
           </motion.div>
         )}
       </div>
+
+      <CreateInviteModal open={showInviteModal} onClose={() => setShowInviteModal(false)} />
     </div>
   );
 }

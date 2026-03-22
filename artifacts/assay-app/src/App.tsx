@@ -15,7 +15,9 @@ import { LoginPage } from "@/pages/LoginPage";
 import { AdminPage } from "@/pages/AdminPage";
 import { AnalyticsPage } from "@/pages/AnalyticsPage";
 import { CoachingPage } from "@/pages/CoachingPage";
+import { CalibrationPage } from "@/pages/CalibrationPage";
 import { AcceptInvitePage } from "@/pages/AcceptInvitePage";
+import { CandidateInvitePage } from "@/pages/CandidateInvitePage";
 import NotFound from "@/pages/not-found";
 
 const queryClient = new QueryClient();
@@ -25,6 +27,7 @@ function Router() {
     <Switch>
       <Route path="/login" component={LoginPage} />
       <Route path="/accept-invite" component={AcceptInvitePage} />
+      <Route path="/invite/:token" component={CandidateInvitePage} />
 
       <Route path="/">
         <ProtectedRoute>
@@ -63,6 +66,12 @@ function Router() {
       <Route path="/coaching/:id">
         <ProtectedRoute>
           <CoachingPage />
+        </ProtectedRoute>
+      </Route>
+
+      <Route path="/calibration/:id">
+        <ProtectedRoute>
+          <CalibrationPage />
         </ProtectedRoute>
       </Route>
 

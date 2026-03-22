@@ -10,6 +10,10 @@ import sentimentRouter from "./sentiment.js";
 import personalityRouter from "./personality.js";
 import analyticsRouter from "./analytics.js";
 import coachingRouter from "./coaching.js";
+import calibrationRouter from "./calibration.js";
+import audioRouter from "./audio.js";
+import invitesRouter from "./invites.js";
+import publicInviteRouter from "./publicInvite.js";
 import { authenticate } from "../middleware/auth.js";
 
 const router: IRouter = Router();
@@ -18,7 +22,7 @@ router.use(authRouter);
 
 // req.path inside this router is relative (e.g. "/healthz", "/auth/login") —
 // do NOT include the "/api" prefix here.
-const publicPaths = ['/auth/', '/healthz'];
+const publicPaths = ['/auth/', '/healthz', '/public/'];
 function isPublicPath(path: string): boolean {
   return publicPaths.some(p => path.startsWith(p));
 }
@@ -38,5 +42,9 @@ router.use(sentimentRouter);
 router.use(personalityRouter);
 router.use(analyticsRouter);
 router.use(coachingRouter);
+router.use(calibrationRouter);
+router.use(audioRouter);
+router.use(invitesRouter);
+router.use(publicInviteRouter);
 
 export default router;

@@ -76,6 +76,7 @@ model InterviewSession {
   startedAt      DateTime? @map("started_at")
   endedAt        DateTime? @map("ended_at")
   voiceProvider  String    @default("openai") @map("voice_provider")
+  audioData      Bytes?    @map("audio_data")
   createdAt      DateTime  @default(now()) @map("created_at")
 
   organization Organization?    @relation(fields: [organizationId], references: [id])
@@ -147,4 +148,48 @@ model Report {
   session InterviewSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
 
   @@map("reports")
+}
+
+model InterviewInvite {
+  id             String    @id @default(uuid())
+  token          String    @unique
+  candidateName  String    @map("candidate_name")
+  candidateEmail String?   @map("candidate_email")
+  roleName       String    @map("role_name")
+  roleLevel      String    @map("role_level")
+  jobDescription String?   @map("job_description")
+  activeGates    Json      @map("active_gates")
+  interviewMode  String    @default("active") @map("interview_mode")
+  status         String    @default("pending")
+  sessionId      String?   @map("session_id")
+  expiresAt      DateTime  @map("expires_at")
+  createdAt      DateTime  @default(now()) @map("created_at")
+
+  @@map("interview_invites")
+}
+
+model CalibrationSession {
+  id        String   @id @default(uuid())
+  reportId  String   @map("report_id")
+  title     String
+  status    String   @default("active")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  notes CalibrationNote[]
+
+  @@map("calibration_sessions")
+}
+
+model CalibrationNote {
+  id                   String   @id @default(uuid())
+  calibrationSessionId String   @map("calibration_session_id")
+  userId               String   @map("user_id")
+  userName             String   @map("user_name")
+  content              String
+  sectionRef           String?  @map("section_ref")
+  createdAt            DateTime @default(now()) @map("created_at")
+
+  session CalibrationSession @relation(fields: [calibrationSessionId], references: [id], onDelete: Cascade)
+
+  @@map("calibration_notes")
 }

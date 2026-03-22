@@ -9,6 +9,7 @@ import { EmotionEngine } from '../lib/emotionEngine';
 import { EmotionHeatmap } from '../components/EmotionHeatmap';
 import type { Observation } from '../types';
 import { GATE_DEFINITIONS } from '../lib/gates';
+import { AudioRecorder } from '../lib/audioRecorder';
 
 type InterviewStatus = 'connecting' | 'idle' | 'ai_speaking' | 'listening' | 'processing';
 type Phase = 'mic_check' | 'interview';
@@ -298,6 +299,8 @@ export function InterviewPage() {
   // Safari grants it autoplay permission even when .play() is called later from
   // an async WebRTC callback.
   const audioElementRef = useRef<HTMLAudioElement | null>(null);
+  const audioRecorderRef = useRef<AudioRecorder | null>(null);
+  const recordingContextRef = useRef<AudioContext | null>(null);
 
   const [phase, setPhase] = useState<Phase>('mic_check');
   const [status, setStatus] = useState<InterviewStatus>('connecting');
@@ -355,7 +358,46 @@ export function InterviewPage() {
         onObservation: addObservation,
         onStatusChange: veStatus => {
           if (veStatus === 'connecting') setStatus('connecting');
-          else if (veStatus === 'connected') setStatus('idle');
+          else if (veStatus === 'connected') {
+            setStatus('idle');
+            // Start recording: mix mic + remote audio into a single stream.
+            // The remote stream may not be available immediately (WebRTC track
+            // can arrive slightly after data-channel opens), so we retry briefly.
+            const startRecording = (attempt = 0) => {
+              try {
+                const micStream = voiceEngineRef.current?.getMicStream();
+                const remoteStream = audioElementRef.current?.srcObject as MediaStream | null;
+                const hasRemote = remoteStream && remoteStream.getAudioTracks().length > 0;
+
+                // Wait up to 2s for remote stream
+                if (!hasRemote && attempt < 4) {
+                  setTimeout(() => startRecording(attempt + 1), 500);
+                  return;
+                }
+
+                if (micStream) {
+                  const recCtx = new AudioContext();
+                  recordingContextRef.current = recCtx;
+                  const dest = recCtx.createMediaStreamDestination();
+                  // Add mic audio
+                  const micSource = recCtx.createMediaStreamSource(micStream);
+                  micSource.connect(dest);
+                  // Add remote (AI) audio if available
+                  if (hasRemote && remoteStream) {
+                    const remoteSource = recCtx.createMediaStreamSource(remoteStream);
+                    remoteSource.connect(dest);
+                  }
+                  const recorder = new AudioRecorder();
+                  recorder.start(dest.stream);
+                  audioRecorderRef.current = recorder;
+                  console.log('[InterviewPage] Audio recording started (mic' + (hasRemote ? ' + remote' : ' only') + ')');
+                }
+              } catch (e) {
+                console.warn('[InterviewPage] Failed to start audio recording:', e);
+              }
+            };
+            startRecording();
+          }
           else if (veStatus === 'speaking') setStatus('ai_speaking');
           else if (veStatus === 'listening') setStatus('listening');
           else if (veStatus === 'processing') setStatus('processing');
@@ -399,6 +441,15 @@ export function InterviewPage() {
       if (voiceEngineRef.current) {
         voiceEngineRef.current.disconnect();
         voiceEngineRef.current = null;
+      }
+      // Cleanup audio recording on unmount
+      if (audioRecorderRef.current?.isRecording()) {
+        audioRecorderRef.current.stop().catch(() => {});
+        audioRecorderRef.current = null;
+      }
+      if (recordingContextRef.current) {
+        recordingContextRef.current.close().catch(() => {});
+        recordingContextRef.current = null;
       }
     };
   }, [phase]);
@@ -512,6 +563,35 @@ export function InterviewPage() {
         } catch {
         } finally {
           engine.disconnect();
+        }
+      }
+
+      // Stop audio recording and upload in background
+      if (audioRecorderRef.current?.isRecording()) {
+        try {
+          const audioBlob = await audioRecorderRef.current.stop();
+          audioRecorderRef.current = null;
+          // Close the recording AudioContext
+          if (recordingContextRef.current) {
+            recordingContextRef.current.close().catch(() => {});
+            recordingContextRef.current = null;
+          }
+          // Convert blob to base64 and upload
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            const base64 = (reader.result as string).split(',')[1]; // strip data:...;base64,
+            if (base64 && session.id) {
+              fetch(`${BASE_URL}api/sessions/${session.id}/audio`, {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ audio: base64 }),
+              }).catch(e => console.warn('[InterviewPage] Audio upload failed:', e));
+            }
+          };
+          reader.readAsDataURL(audioBlob);
+        } catch (e) {
+          console.warn('[InterviewPage] Failed to stop/upload recording:', e);
         }
       }
 
