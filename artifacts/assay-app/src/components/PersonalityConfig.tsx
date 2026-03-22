@@ -86,6 +86,15 @@ export function PersonalityConfig() {
     }));
   };
 
+  if (error && !personality.interviewerName) {
+    return (
+      <div className="text-center py-16">
+        <p className="text-sm mb-4" style={{ color: 'var(--color-red)' }}>Failed to load personality settings</p>
+        <button onClick={() => window.location.reload()} className="btn btn-secondary btn-sm">Retry</button>
+      </div>
+    );
+  }
+
   if (isLoading) {
     return (
       <div className="flex justify-center py-16">

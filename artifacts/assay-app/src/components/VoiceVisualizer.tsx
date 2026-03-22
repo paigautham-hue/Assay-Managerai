@@ -14,7 +14,7 @@ interface VoiceVisualizerProps {
  * premium AI product design.
  */
 export function VoiceVisualizer({ status, audioLevel = 0.5, size }: VoiceVisualizerProps) {
-  const level = Math.min(1, audioLevel);
+  const level = Math.max(0, Math.min(1, audioLevel || 0));
 
   const config = useMemo(() => {
     switch (status) {

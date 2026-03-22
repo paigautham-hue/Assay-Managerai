@@ -74,17 +74,20 @@ router.get('/sessions/:id/audio', async (req: Request, res: Response) => {
  */
 router.head('/sessions/:id/audio', async (req: Request, res: Response) => {
   try {
-    const session = await prisma.interviewSession.findUnique({
-      where: { id: req.params.id },
-      select: { id: true, audioData: true },
-    });
+    // Use raw query to check existence + get length without loading the whole blob
+    const result = await prisma.$queryRaw<{ len: number }[]>`
+      SELECT octet_length(audio_data) as len
+      FROM interview_sessions
+      WHERE id = ${req.params.id} AND audio_data IS NOT NULL
+      LIMIT 1
+    `;
 
-    if (!session || !session.audioData) {
+    if (!result.length) {
       return res.status(404).end();
     }
 
     res.setHeader('Content-Type', 'audio/webm');
-    res.setHeader('Content-Length', session.audioData.length);
+    res.setHeader('Content-Length', Number(result[0].len));
     return res.status(200).end();
   } catch (error) {
     console.error('Head audio error:', error);

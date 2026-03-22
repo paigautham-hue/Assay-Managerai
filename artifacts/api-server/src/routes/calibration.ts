@@ -52,6 +52,7 @@ router.post('/calibration/:id/notes', async (req: Request, res: Response) => {
   try {
     const { content, sectionRef } = req.body;
     if (!content) return res.status(400).json({ error: 'content is required' });
+    if (!req.user) return res.status(401).json({ error: 'Authentication required' });
 
     const session = await prisma.calibrationSession.findUnique({
       where: { id: req.params.id },
@@ -61,8 +62,8 @@ router.post('/calibration/:id/notes', async (req: Request, res: Response) => {
     const note = await prisma.calibrationNote.create({
       data: {
         calibrationSessionId: req.params.id,
-        userId: req.user!.id,
-        userName: req.user!.name,
+        userId: req.user.id,
+        userName: req.user.name,
         content,
         sectionRef: sectionRef || null,
       },
