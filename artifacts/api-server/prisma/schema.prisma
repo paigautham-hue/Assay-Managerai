@@ -75,7 +75,8 @@ model InterviewSession {
   status         String    @default("preparing")
   startedAt      DateTime? @map("started_at")
   endedAt        DateTime? @map("ended_at")
-  voiceProvider  String    @default("openai") @map("voice_provider")
+  voiceProvider  String    @default("gemini") @map("voice_provider")
+  videoEnabled   Boolean   @default(false) @map("video_enabled")
   audioData      Bytes?    @map("audio_data")
   createdAt      DateTime  @default(now()) @map("created_at")
 
@@ -192,4 +193,39 @@ model CalibrationNote {
   session CalibrationSession @relation(fields: [calibrationSessionId], references: [id], onDelete: Cascade)
 
   @@map("calibration_notes")
+}
+
+// ── Self-Learning: Report Feedback ───────────────────────────────────────────
+// Interviewers rate report accuracy after real-world hiring decisions.
+// This data feeds back into prompt tuning and benchmark calibration.
+model ReportFeedback {
+  id              String   @id @default(uuid())
+  reportId        String   @map("report_id")
+  userId          String   @map("user_id")
+  overallAccuracy Int      // 1-5 how accurate was the assessment
+  hireOutcome     String?  @map("hire_outcome") // hired, rejected, withdrew, pending
+  performanceNote String?  @map("performance_note") // post-hire performance notes
+  dimensionFeedback Json?  @map("dimension_feedback") // per-dimension accuracy ratings
+  gateFeedback    Json?    @map("gate_feedback") // were gate decisions correct?
+  comments        String?
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  @@unique([reportId, userId])
+  @@map("report_feedback")
+}
+
+// ── System Learning: Prompt Versions ─────────────────────────────────────────
+// Tracks system prompt evolution so we can A/B test and roll back.
+model SystemPromptVersion {
+  id          String   @id @default(uuid())
+  role        String   // assessor role: advocate, prosecutor, etc.
+  version     Int
+  prompt      String
+  isActive    Boolean  @default(false) @map("is_active")
+  performance Json?    // aggregate accuracy metrics for this version
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@unique([role, version])
+  @@map("system_prompt_versions")
 }

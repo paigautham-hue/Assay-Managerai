@@ -31,10 +31,10 @@ export function ProtectedRoute({ children, requiredRoles, minimumRole }: Protect
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#1A1A2E] flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center" style={{ background: 'var(--color-dark)' }}>
         <div className="flex flex-col items-center gap-4">
           <div className="w-8 h-8 border-2 border-[#C9A84C] border-t-transparent rounded-full animate-spin" />
-          <p className="text-[#8B8B9E] text-sm">Verifying session…</p>
+          <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>Verifying session…</p>
         </div>
       </div>
     );

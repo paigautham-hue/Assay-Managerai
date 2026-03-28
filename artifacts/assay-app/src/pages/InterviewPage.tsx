@@ -3,8 +3,8 @@ import { useLocation } from 'wouter';
 import { useAssayStore } from '../store/useAssayStore';
 import { VoiceVisualizer } from '../components/VoiceVisualizer';
 import { motion, AnimatePresence } from 'framer-motion';
-import { VoiceEngine } from '../lib/voiceEngine';
-import type { VoiceEngineCallbacks, AIPersonality } from '../lib/voiceEngine';
+import { GeminiLiveEngine } from '../lib/geminiLiveEngine';
+import type { GeminiLiveCallbacks, AIPersonality } from '../lib/geminiLiveEngine';
 import { EmotionEngine } from '../lib/emotionEngine';
 import { EmotionHeatmap } from '../components/EmotionHeatmap';
 import type { Observation } from '../types';
@@ -21,7 +21,7 @@ const BASE_URL: string = import.meta.env.BASE_URL || '/';
 
 // ─── Mic Check Screen ─────────────────────────────────────────────────────────
 
-function MicCheckScreen({ onConfirm, onSkip }: { onConfirm: () => void; onSkip: () => void }) {
+function MicCheckScreen({ onConfirm, onSkip, videoEnabled, onToggleVideo }: { onConfirm: () => void; onSkip: () => void; videoEnabled?: boolean; onToggleVideo?: () => void }) {
   const [permission, setPermission] = useState<MicPermission>('idle');
   const [micLevel, setMicLevel] = useState(0);
   const streamRef = useRef<MediaStream | null>(null);
@@ -84,8 +84,8 @@ function MicCheckScreen({ onConfirm, onSkip }: { onConfirm: () => void; onSkip: 
 
   return (
     <div
-      className="min-h-screen flex flex-col items-center justify-center px-6 py-12"
-      style={{ background: '#0D0D1A' }}
+      className="min-h-screen flex flex-col items-center justify-center px-6 safe-top pb-safe"
+      style={{ background: '#0D0D1A', paddingTop: 'max(env(safe-area-inset-top, 0px), 3rem)' }}
     >
       <motion.div
         className="w-full max-w-md text-center"
@@ -192,9 +192,25 @@ function MicCheckScreen({ onConfirm, onSkip }: { onConfirm: () => void; onSkip: 
             </>
           )}
 
+          {/* Video toggle */}
+          {onToggleVideo && (
+            <button
+              onClick={onToggleVideo}
+              className="w-full py-3 min-h-[44px] rounded-lg text-sm font-medium flex items-center justify-center gap-2 active:opacity-60 transition-all"
+              style={{
+                background: videoEnabled ? 'rgba(201,168,76,0.15)' : 'rgba(255,255,255,0.04)',
+                color: videoEnabled ? 'var(--color-gold)' : 'var(--color-text-tertiary)',
+                border: `1px solid ${videoEnabled ? 'rgba(201,168,76,0.3)' : 'rgba(255,255,255,0.08)'}`,
+              }}
+            >
+              <span>{videoEnabled ? '📹' : '📷'}</span>
+              {videoEnabled ? 'Camera Enabled — AI will analyze visual cues' : 'Enable Camera (optional)'}
+            </button>
+          )}
+
           <button
             onClick={handleSkip}
-            className="text-sm w-full py-2"
+            className="text-sm w-full py-3 min-h-[44px] active:opacity-60 transition-opacity"
             style={{ color: 'var(--color-text-tertiary)' }}
           >
             Skip mic check and continue anyway →
@@ -292,13 +308,10 @@ export function InterviewPage() {
   const { session, addTranscriptEntry, updateSessionStatus, addObservation, addEmotionDataPoint, emotionTimeline, setProsodyData, setError } =
     useAssayStore();
 
-  const voiceEngineRef = useRef<VoiceEngine | null>(null);
+  const voiceEngineRef = useRef<GeminiLiveEngine | null>(null);
   const emotionEngineRef = useRef<EmotionEngine | null>(null);
   const transcriptEndRef = useRef<HTMLDivElement>(null);
-  // Pre-created audio element unlocked inside the user-gesture handler so iOS
-  // Safari grants it autoplay permission even when .play() is called later from
-  // an async WebRTC callback.
-  const audioElementRef = useRef<HTMLAudioElement | null>(null);
+  const videoPreviewRef = useRef<HTMLVideoElement | null>(null);
   const audioRecorderRef = useRef<AudioRecorder | null>(null);
   const recordingContextRef = useRef<AudioContext | null>(null);
 
@@ -313,6 +326,8 @@ export function InterviewPage() {
   const [isTablet, setIsTablet] = useState(window.innerWidth >= 768 && window.innerWidth < 1200);
   const [voiceError, setVoiceError] = useState<string | null>(null);
   const [personality, setPersonality] = useState<AIPersonality | undefined>(undefined);
+  const [videoEnabled, setVideoEnabled] = useState(false);
+  const [hasVideo, setHasVideo] = useState(false);
 
   // Fetch AI personality settings on mount
   useEffect(() => {
@@ -332,6 +347,19 @@ export function InterviewPage() {
     window.addEventListener('resize', handler);
     return () => window.removeEventListener('resize', handler);
   }, []);
+
+  // Connect video stream to preview element after it mounts
+  useEffect(() => {
+    if (hasVideo && videoPreviewRef.current && voiceEngineRef.current?.getVideoStream()) {
+      videoPreviewRef.current.srcObject = voiceEngineRef.current.getVideoStream();
+      videoPreviewRef.current.play().catch(() => {});
+    }
+    return () => {
+      if (videoPreviewRef.current) {
+        videoPreviewRef.current.srcObject = null;
+      }
+    };
+  }, [hasVideo]);
 
   // Auto-scroll transcript to bottom when new messages arrive
   useEffect(() => {
@@ -353,50 +381,36 @@ export function InterviewPage() {
     emotionEngineRef.current.connect(addEmotionDataPoint).catch(() => {});
 
     if (VOICE_ENABLED) {
-      const callbacks: VoiceEngineCallbacks = {
+      const callbacks: GeminiLiveCallbacks = {
         onTranscript: addTranscriptEntry,
         onObservation: addObservation,
         onStatusChange: veStatus => {
           if (veStatus === 'connecting') setStatus('connecting');
           else if (veStatus === 'connected') {
             setStatus('idle');
-            // Start recording: mix mic + remote audio into a single stream.
-            // The remote stream may not be available immediately (WebRTC track
-            // can arrive slightly after data-channel opens), so we retry briefly.
-            const startRecording = (attempt = 0) => {
-              try {
-                const micStream = voiceEngineRef.current?.getMicStream();
-                const remoteStream = audioElementRef.current?.srcObject as MediaStream | null;
-                const hasRemote = remoteStream && remoteStream.getAudioTracks().length > 0;
-
-                // Wait up to 2s for remote stream
-                if (!hasRemote && attempt < 4) {
-                  setTimeout(() => startRecording(attempt + 1), 500);
-                  return;
-                }
-
-                if (micStream) {
-                  const recCtx = new AudioContext();
-                  recordingContextRef.current = recCtx;
-                  const dest = recCtx.createMediaStreamDestination();
-                  // Add mic audio
-                  const micSource = recCtx.createMediaStreamSource(micStream);
-                  micSource.connect(dest);
-                  // Add remote (AI) audio if available
-                  if (hasRemote && remoteStream) {
-                    const remoteSource = recCtx.createMediaStreamSource(remoteStream);
-                    remoteSource.connect(dest);
-                  }
-                  const recorder = new AudioRecorder();
-                  recorder.start(dest.stream);
-                  audioRecorderRef.current = recorder;
-                  console.log('[InterviewPage] Audio recording started (mic' + (hasRemote ? ' + remote' : ' only') + ')');
-                }
-              } catch (e) {
-                console.warn('[InterviewPage] Failed to start audio recording:', e);
+            // Start recording mic audio
+            try {
+              const micStream = voiceEngineRef.current?.getMicStream();
+              if (micStream) {
+                const recCtx = new AudioContext();
+                recordingContextRef.current = recCtx;
+                const dest = recCtx.createMediaStreamDestination();
+                const micSource = recCtx.createMediaStreamSource(micStream);
+                micSource.connect(dest);
+                const recorder = new AudioRecorder();
+                recorder.start(dest.stream);
+                audioRecorderRef.current = recorder;
+                console.log('[InterviewPage] Audio recording started');
               }
-            };
-            startRecording();
+            } catch (e) {
+              console.warn('[InterviewPage] Failed to start audio recording:', e);
+            }
+
+            // Set up video preview if video is active (actual stream connection
+            // happens in the useEffect that watches hasVideo, after the <video> mounts)
+            if (voiceEngineRef.current?.isVideoActive()) {
+              setHasVideo(true);
+            }
           }
           else if (veStatus === 'speaking') setStatus('ai_speaking');
           else if (veStatus === 'listening') setStatus('listening');
@@ -411,13 +425,12 @@ export function InterviewPage() {
         onAudioLevel: setAudioLevel,
       };
 
-      voiceEngineRef.current = new VoiceEngine(
+      voiceEngineRef.current = new GeminiLiveEngine(
         session.setup,
         callbacks,
-        audioElementRef.current ?? undefined,
         personality,
       );
-      voiceEngineRef.current.connect().catch(() => setError('Failed to connect to voice system'));
+      voiceEngineRef.current.connect({ enableVideo: videoEnabled }).catch(() => setError('Failed to connect to voice system'));
     } else {
       const t1 = setTimeout(() => setStatus('idle'), 1500);
       const t2 = setTimeout(() => {
@@ -625,22 +638,24 @@ export function InterviewPage() {
   // ── Mic check phase ────────────────────────────────────────────────────────
   if (phase === 'mic_check') {
     const unlockAndStart = () => {
-      // Create the audio element that VoiceEngine will use for remote WebRTC audio.
-      // Doing this synchronously inside the tap handler is the ONLY reliable way to
-      // get iOS Safari to allow .play() later when the async WebRTC track arrives.
-      const audioEl = document.createElement('audio');
-      audioEl.setAttribute('playsinline', 'true');
-      audioEl.muted = true;
-      document.body.appendChild(audioEl);
-      // The play() call here registers this element as gesture-unlocked with iOS.
-      audioEl.play().then(() => { audioEl.muted = false; }).catch(() => { audioEl.muted = false; });
-      audioElementRef.current = audioEl;
+      // Prime AudioContext for iOS Safari autoplay policy
+      try {
+        const ctx = new AudioContext();
+        const buf = ctx.createBuffer(1, 1, 22050);
+        const src = ctx.createBufferSource();
+        src.buffer = buf;
+        src.connect(ctx.destination);
+        src.start();
+        setTimeout(() => ctx.close().catch(() => {}), 100);
+      } catch { /* ignore */ }
       setPhase('interview');
     };
     return (
       <MicCheckScreen
         onConfirm={unlockAndStart}
         onSkip={unlockAndStart}
+        videoEnabled={videoEnabled}
+        onToggleVideo={() => setVideoEnabled(v => !v)}
       />
     );
   }
@@ -715,7 +730,11 @@ export function InterviewPage() {
       <h2 className="heading-sm" style={{ color: 'var(--color-text-primary)' }}>
         Observations{session?.observations.length ? ` (${session.observations.length})` : ''}
       </h2>
-      <button onClick={() => setShowFlagsPanel(false)} style={{ color: 'var(--color-text-secondary)' }}>
+      <button
+        onClick={() => setShowFlagsPanel(false)}
+        className="w-11 h-11 flex items-center justify-center rounded-lg active:bg-white/5"
+        style={{ color: 'var(--color-text-secondary)' }}
+      >
         ✕
       </button>
     </div>
@@ -724,10 +743,15 @@ export function InterviewPage() {
   // ── Interview UI ───────────────────────────────────────────────────────────
   return (
     <div className="min-h-screen overflow-hidden" style={{ background: '#0D0D1A', touchAction: 'manipulation' }}>
-      {/* Header */}
+      {/* Header — handles its own safe-area-inset-top (no NavBar on this page) */}
       <motion.div
-        className="border-b px-4 sm:px-6 py-4 flex items-center justify-between"
-        style={{ borderColor: 'rgba(255,255,255,0.06)', background: 'rgba(13,13,26,0.95)' }}
+        className="border-b px-4 sm:px-6 flex items-center justify-between"
+        style={{
+          borderColor: 'rgba(255,255,255,0.06)',
+          background: 'rgba(13,13,26,0.95)',
+          paddingTop: 'calc(env(safe-area-inset-top, 0px) + 1rem)',
+          paddingBottom: '1rem',
+        }}
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
       >
@@ -750,10 +774,10 @@ export function InterviewPage() {
         </div>
       </motion.div>
 
-      {/* Body */}
+      {/* Body — subtract header height (72px base + safe-area-inset-top) */}
       <div
         className="flex relative"
-        style={{ height: 'calc(100dvh - 72px)' }}
+        style={{ height: 'calc(100dvh - 72px - env(safe-area-inset-top, 0px))' }}
       >
         {/* Main area */}
         <motion.div
@@ -782,6 +806,36 @@ export function InterviewPage() {
               size={isTablet ? 200 : undefined}
             />
           </div>
+
+          {/* Video preview (picture-in-picture style) */}
+          {hasVideo && (
+            <motion.div
+              className="absolute top-4 right-4 z-20 rounded-xl overflow-hidden shadow-2xl"
+              style={{
+                width: isMobile ? 120 : 160,
+                aspectRatio: '4/3',
+                border: '2px solid rgba(201,168,76,0.3)',
+              }}
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.5 }}
+            >
+              <video
+                ref={videoPreviewRef}
+                autoPlay
+                playsInline
+                muted
+                className="w-full h-full object-cover"
+                style={{ transform: 'scaleX(-1)' }}
+              />
+              <div
+                className="absolute bottom-1 left-1 px-1.5 py-0.5 rounded text-[9px] font-bold"
+                style={{ background: 'rgba(0,0,0,0.7)', color: 'var(--color-gold)' }}
+              >
+                LIVE
+              </div>
+            </motion.div>
+          )}
 
           {/* Status pill */}
           <motion.div className="mb-6" key={status} initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}>
@@ -819,7 +873,7 @@ export function InterviewPage() {
                   setVoiceError(null);
                   setStatus('connecting');
                   if (session) {
-                    voiceEngineRef.current = new VoiceEngine(
+                    voiceEngineRef.current = new GeminiLiveEngine(
                       session.setup,
                       {
                         onTranscript: addTranscriptEntry,
@@ -835,14 +889,13 @@ export function InterviewPage() {
                         onError: err => { setVoiceError(err); setStatus('idle'); },
                         onAudioLevel: setAudioLevel,
                       },
-                      audioElementRef.current ?? undefined,
                       personality,
                     );
-                    voiceEngineRef.current.connect().catch(() => {});
+                    voiceEngineRef.current.connect({ enableVideo: videoEnabled }).catch(() => {});
                   }
                 }}
                 className="ml-auto flex-shrink-0 text-xs font-semibold px-3 py-1 rounded-lg"
-                style={{ background: 'rgba(239,68,68,0.2)', color: '#EF4444', border: '1px solid rgba(239,68,68,0.3)' }}
+                style={{ background: 'rgba(239,68,68,0.2)', color: '#EF4444', border: '1px solid rgba(239,68,68,0.3)', minHeight: 44, minWidth: 44 }}
               >
                 Retry
               </button>
@@ -911,7 +964,7 @@ export function InterviewPage() {
           <motion.button
             onClick={() => setShowEndModal(true)}
             disabled={isEndingInterview}
-            className="btn btn-danger px-8 py-3 disabled:opacity-50"
+            className="btn btn-danger px-8 py-4 disabled:opacity-50 disabled:cursor-not-allowed"
             style={{ marginBottom: 'env(safe-area-inset-bottom, 0px)' }}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -930,7 +983,7 @@ export function InterviewPage() {
           {isMobile && !isTablet && !showFlagsPanel && (
             <motion.button
               onClick={() => setShowFlagsPanel(true)}
-              className="mt-4 rounded-full px-5 py-2 text-sm font-semibold"
+              className="mt-4 rounded-full px-5 py-3 text-sm font-semibold min-h-[44px]"
               style={{ background: 'rgba(255,255,255,0.06)', color: 'var(--color-text-secondary)' }}
               whileHover={{ scale: 1.05 }}
             >

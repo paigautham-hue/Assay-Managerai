@@ -28,7 +28,9 @@ export class ErrorBoundary extends Component<Props, State> {
 
   handleReset = () => {
     this.setState({ hasError: false, error: null });
-    window.location.href = '/';
+    // Navigate to root using the app's BASE_URL so Capacitor/sub-path deploys work correctly.
+    const base = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
+    window.location.href = base + '/';
   };
 
   render() {
@@ -96,11 +98,15 @@ export class ErrorBoundary extends Component<Props, State> {
               background: '#C9A84C',
               color: '#0D0D1A',
               border: 'none',
-              borderRadius: 8,
-              padding: '0.625rem 1.5rem',
+              borderRadius: 12,
+              padding: '0.875rem 2rem',
               fontWeight: 700,
               cursor: 'pointer',
-              fontSize: '0.875rem',
+              fontSize: '0.9375rem',
+              minHeight: 44,
+              minWidth: 44,
+              touchAction: 'manipulation',
+              WebkitTapHighlightColor: 'transparent',
             }}
           >
             Return to Home

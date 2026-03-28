@@ -8,11 +8,19 @@ import router from "./routes/index.js";
 const app: Express = express();
 
 const APP_URL = process.env.APP_URL || '';
-const allowedOrigins = [APP_URL, 'http://localhost:5173', 'http://localhost:3000'].filter(Boolean);
+const allowedOrigins = [APP_URL, 'http://localhost:5173', 'http://localhost:3000', 'http://localhost:8080'].filter(Boolean);
 app.use(cors({
   origin: (origin, callback) => {
-    // Allow same-origin (no origin header), explicit allowlist, and Replit/Capacitor domains
-    if (!origin || allowedOrigins.some(o => origin.startsWith(o)) || origin.endsWith('.replit.dev') || origin.endsWith('.repl.co') || origin.endsWith('.replit.app') || origin.startsWith('capacitor://') || origin.startsWith('ionic://') || origin.startsWith('assay://')) {
+    // Allow same-origin (no origin header), explicit allowlist, Manus, and Capacitor/PWA
+    if (
+      !origin ||
+      allowedOrigins.includes(origin) ||
+      origin.endsWith('.manus.space') ||
+      origin.endsWith('.manus.app') ||
+      origin.startsWith('capacitor://') ||
+      origin.startsWith('ionic://') ||
+      origin.startsWith('assay://')
+    ) {
       callback(null, true);
     } else {
       console.warn(`[CORS] Blocked origin: ${origin}`);

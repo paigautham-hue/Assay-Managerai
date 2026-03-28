@@ -51,8 +51,10 @@ interface AssayStore {
   addObservation: (obs: Omit<Observation, 'id'>) => void;
   addEmotionDataPoint: (point: EmotionDataPoint) => void;
   setProsodyData: (data: ProsodyData) => void;
+  setSession: (session: InterviewSession) => void;
   setReport: (report: AssayReport) => void;
   loadReports: () => Promise<void>;
+  loadReportsFresh: () => Promise<void>;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
   reset: () => void;
@@ -81,7 +83,7 @@ export const useAssayStore = create<AssayStore>((set, get) => ({
       status: 'preparing',
       transcript: [],
       observations: [],
-      voiceProvider: 'openai',
+      voiceProvider: 'gemini',
     };
     set({ session, currentView: 'interview' });
 
@@ -89,7 +91,7 @@ export const useAssayStore = create<AssayStore>((set, get) => ({
       id,
       setup: session.setup,
       status: 'preparing',
-      voiceProvider: 'openai',
+      voiceProvider: 'gemini',
     });
   },
 
@@ -144,6 +146,12 @@ export const useAssayStore = create<AssayStore>((set, get) => ({
     set({ session: { ...session, prosodyData: data } });
   },
 
+  // Directly hydrate a session from an external source (e.g. candidate invite flow
+  // where the server already created the DB record).
+  setSession: (session) => {
+    set({ session, currentView: 'interview' });
+  },
+
   setReport: (report) => {
     set((state) => ({
       report,
@@ -170,7 +178,20 @@ export const useAssayStore = create<AssayStore>((set, get) => ({
     }
   },
 
+  loadReportsFresh: async () => {
+    try {
+      set({ isLoading: true });
+      const res = await fetch(apiUrl('reports'), { credentials: 'include' });
+      if (!res.ok) throw new Error(`Failed to load reports: ${res.status}`);
+      const reports: AssayReport[] = await res.json();
+      set({ reports, reportsLoaded: true, isLoading: false });
+    } catch (err) {
+      console.warn('Could not load reports from DB:', err);
+      set({ isLoading: false });
+    }
+  },
+
   setLoading: (isLoading) => set({ isLoading }),
   setError: (error) => set({ error }),
-  reset: () => set({ currentView: 'home', session: null, report: null, isLoading: false, error: null, emotionTimeline: [] }),
+  reset: () => set({ currentView: 'home', session: null, report: null, reports: [], isLoading: false, error: null, emotionTimeline: [], reportsLoaded: false }),
 }));

@@ -66,7 +66,7 @@ export function AcceptInvitePage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-12" style={{ background: '#0D0D1A' }}>
+    <div className="min-h-screen flex items-center justify-center px-4 py-12 safe-top pb-safe" style={{ background: '#0D0D1A' }}>
       <motion.div className="w-full max-w-sm" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}>
         <div className="text-center mb-8">
           <div className="w-14 h-14 rounded-2xl bg-[#C9A84C]/10 border border-[#C9A84C]/20 flex items-center justify-center mx-auto mb-4">
@@ -86,7 +86,7 @@ export function AcceptInvitePage() {
               <div className="text-3xl mb-3">⚠️</div>
               <p className="text-white font-semibold mb-1">Invitation Problem</p>
               <p className="text-[#8B8B9E] text-sm mb-4">{loadError}</p>
-              <button onClick={() => navigate('/login')} className="text-[#C9A84C] text-sm hover:underline">Go to login →</button>
+              <button onClick={() => navigate('/login')} className="text-[#C9A84C] text-sm hover:underline active:opacity-60 py-2 px-4 min-h-[44px]">Go to login →</button>
             </div>
           ) : invite ? (
             <>
@@ -103,7 +103,7 @@ export function AcceptInvitePage() {
                   <label className="block text-[#8B8B9E] text-xs font-medium mb-1">Email</label>
                   <input
                     type="email" value={invite.email} disabled
-                    className="w-full bg-white/5 border border-white/8 rounded-xl px-4 py-2.5 text-[#8B8B9E] text-sm opacity-70"
+                    className="w-full bg-white/5 border border-white/8 rounded-xl px-4 py-2.5 text-[#8B8B9E] text-base opacity-70 min-h-[44px]"
                   />
                 </div>
                 <div>
@@ -111,7 +111,9 @@ export function AcceptInvitePage() {
                   <input
                     type="text" value={name} onChange={e => setName(e.target.value)} required autoFocus
                     placeholder="Your full name"
-                    className="w-full bg-[#0D0D1A] border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm placeholder-[#4A4A5E] focus:outline-none focus:border-[#C9A84C]/50 transition-colors"
+                    autoCapitalize="words" autoCorrect="off" spellCheck={false}
+                    className="w-full bg-[#0D0D1A] border border-white/10 rounded-xl px-4 py-2.5 text-white text-base placeholder-[#4A4A5E] focus:outline-none focus:border-[#C9A84C]/50 transition-colors"
+                    style={{ WebkitAppearance: 'none' }}
                   />
                 </div>
                 <div>
@@ -119,7 +121,9 @@ export function AcceptInvitePage() {
                   <input
                     type="password" value={password} onChange={e => setPassword(e.target.value)} required
                     placeholder="Min. 8 characters"
-                    className="w-full bg-[#0D0D1A] border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm placeholder-[#4A4A5E] focus:outline-none focus:border-[#C9A84C]/50 transition-colors"
+                    autoComplete="new-password" autoCapitalize="none" autoCorrect="off" spellCheck={false}
+                    className="w-full bg-[#0D0D1A] border border-white/10 rounded-xl px-4 py-2.5 text-white text-base placeholder-[#4A4A5E] focus:outline-none focus:border-[#C9A84C]/50 transition-colors"
+                    style={{ WebkitAppearance: 'none' }}
                   />
                 </div>
                 <div>
@@ -127,7 +131,9 @@ export function AcceptInvitePage() {
                   <input
                     type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} required
                     placeholder="Repeat password"
-                    className="w-full bg-[#0D0D1A] border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm placeholder-[#4A4A5E] focus:outline-none focus:border-[#C9A84C]/50 transition-colors"
+                    autoComplete="new-password" autoCapitalize="none" autoCorrect="off" spellCheck={false}
+                    className="w-full bg-[#0D0D1A] border border-white/10 rounded-xl px-4 py-2.5 text-white text-base placeholder-[#4A4A5E] focus:outline-none focus:border-[#C9A84C]/50 transition-colors"
+                    style={{ WebkitAppearance: 'none' }}
                   />
                 </div>
 
@@ -135,7 +141,7 @@ export function AcceptInvitePage() {
 
                 <button
                   type="submit" disabled={isSubmitting}
-                  className="w-full py-2.5 rounded-xl bg-[#C9A84C] text-[#0D0D1A] font-semibold text-sm hover:bg-[#D4B56A] disabled:opacity-50 transition-colors flex items-center justify-center gap-2 mt-2"
+                  className="w-full py-3 rounded-xl bg-[#C9A84C] text-[#0D0D1A] font-semibold text-sm hover:bg-[#D4B56A] active:bg-[#B8943D] disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2 mt-2 min-h-[44px]"
                 >
                   {isSubmitting && <span className="w-4 h-4 border-2 border-[#0D0D1A] border-t-transparent rounded-full animate-spin" />}
                   Create Account & Join

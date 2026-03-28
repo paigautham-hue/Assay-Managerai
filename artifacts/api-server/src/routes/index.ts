@@ -14,6 +14,8 @@ import calibrationRouter from "./calibration.js";
 import audioRouter from "./audio.js";
 import invitesRouter from "./invites.js";
 import publicInviteRouter from "./publicInvite.js";
+import geminiRouter from "./gemini.js";
+import feedbackRouter from "./feedback.js";
 import { authenticate } from "../middleware/auth.js";
 
 const router: IRouter = Router();
@@ -46,5 +48,7 @@ router.use(calibrationRouter);
 router.use(audioRouter);
 router.use(invitesRouter);
 router.use(publicInviteRouter);
+router.use(geminiRouter);
+router.use(feedbackRouter);
 
 export default router;

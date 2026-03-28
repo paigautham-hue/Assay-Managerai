@@ -72,7 +72,7 @@ export function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-dark flex items-center justify-center px-4 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-dark flex items-center justify-center px-4 relative overflow-hidden safe-top pb-safe">
       {/* Animated background */}
       <div className="fixed inset-0 pointer-events-none">
         <div className="absolute w-[500px] h-[500px] rounded-full opacity-[0.04]" style={{ background: 'radial-gradient(circle, var(--color-gold), transparent 70%)', top: '-15%', right: '-10%', animation: 'breathe 10s ease-in-out infinite' }} />
@@ -129,7 +129,12 @@ export function LoginPage() {
                   onChange={(e) => setName(e.target.value)}
                   required
                   placeholder="Jane Smith"
-                  className="w-full bg-white/5 border border-white/10 rounded-lg px-3.5 py-3 text-white placeholder:text-[#8B8B9E]/50 text-sm focus:outline-none focus:border-[#C9A84C]/50 focus:ring-1 focus:ring-[#C9A84C]/20 transition-all min-h-[44px]"
+                  autoComplete="name"
+                  autoCapitalize="words"
+                  autoCorrect="off"
+                  spellCheck={false}
+                  className="w-full bg-white/5 border border-white/10 rounded-lg px-3.5 py-3 text-white placeholder:text-[#8B8B9E]/50 text-base focus:outline-none focus:border-[#C9A84C]/50 focus:ring-1 focus:ring-[#C9A84C]/20 transition-all min-h-[44px]"
+                  style={{ WebkitAppearance: 'none' }}
                 />
               </div>
             )}
@@ -137,12 +142,17 @@ export function LoginPage() {
               <label className="block text-xs font-medium text-[#8B8B9E] mb-1.5">Email</label>
               <input
                 type="email"
+                inputMode="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 placeholder="you@company.com"
                 autoComplete="email"
-                className="w-full bg-white/5 border border-white/10 rounded-lg px-3.5 py-3 text-white placeholder:text-[#8B8B9E]/50 text-sm focus:outline-none focus:border-[#C9A84C]/50 focus:ring-1 focus:ring-[#C9A84C]/20 transition-all min-h-[44px]"
+                autoCapitalize="none"
+                autoCorrect="off"
+                spellCheck={false}
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-3.5 py-3 text-white placeholder:text-[#8B8B9E]/50 text-base focus:outline-none focus:border-[#C9A84C]/50 focus:ring-1 focus:ring-[#C9A84C]/20 transition-all min-h-[44px]"
+                style={{ WebkitAppearance: 'none' }}
               />
             </div>
             <div>
@@ -154,7 +164,11 @@ export function LoginPage() {
                 required
                 placeholder="••••••••"
                 autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
-                className="w-full bg-white/5 border border-white/10 rounded-lg px-3.5 py-3 text-white placeholder:text-[#8B8B9E]/50 text-sm focus:outline-none focus:border-[#C9A84C]/50 focus:ring-1 focus:ring-[#C9A84C]/20 transition-all min-h-[44px]"
+                autoCapitalize="none"
+                autoCorrect="off"
+                spellCheck={false}
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-3.5 py-3 text-white placeholder:text-[#8B8B9E]/50 text-base focus:outline-none focus:border-[#C9A84C]/50 focus:ring-1 focus:ring-[#C9A84C]/20 transition-all min-h-[44px]"
+                style={{ WebkitAppearance: 'none' }}
               />
             </div>
 

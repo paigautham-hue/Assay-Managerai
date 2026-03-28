@@ -1,6 +1,16 @@
 import { Router } from 'express';
 import type { Request, Response } from 'express';
 import prisma from '../db/prisma.js';
+import { signToken } from '../middleware/auth.js';
+
+const IS_PROD = process.env.NODE_ENV === 'production';
+const CANDIDATE_COOKIE_OPTS = {
+  httpOnly: true,
+  secure: IS_PROD,
+  sameSite: (IS_PROD ? 'none' : 'lax') as 'none' | 'lax',
+  maxAge: 4 * 60 * 60 * 1000, // 4-hour ephemeral session for candidate
+  path: '/',
+};
 
 const router = Router();
 
@@ -124,9 +134,22 @@ router.post('/public/invite/:token/start', async (req: Request, res: Response) =
       }
     }
 
+    // Issue an ephemeral JWT for the candidate so they can call authenticated
+    // endpoints (voice session, transcript saves, assessment stream) during
+    // the interview without needing a real user account.
+    const candidateUser = {
+      id: `candidate_${session.id}`,
+      email: '',
+      name: (candidateName || invite.candidateName || 'Candidate').trim(),
+      role: 'interviewer',
+    };
+    const candidateToken = signToken(candidateUser);
+    res.cookie('assay_token', candidateToken, CANDIDATE_COOKIE_OPTS);
+
     return res.status(201).json({
       session,
       clientSecret,
+      candidateUser,
     });
   } catch (error) {
     console.error('Start invite interview error:', error);

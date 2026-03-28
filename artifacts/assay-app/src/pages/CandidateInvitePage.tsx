@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useRoute, useLocation } from 'wouter';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useAuth } from '@/context/AuthContext';
+import { useAssayStore } from '@/store/useAssayStore';
+import type { InterviewSession, InterviewSetup, GateName } from '@/types';
 
 const BASE_URL = import.meta.env.BASE_URL || '/';
 const apiUrl = (path: string) => `${BASE_URL}api/${path}`;
@@ -24,6 +27,8 @@ export function CandidateInvitePage() {
   const [, params] = useRoute('/invite/:token');
   const [, navigate] = useLocation();
   const token = params?.token;
+  const { refresh } = useAuth();
+  const setSession = useAssayStore(s => s.setSession);
 
   const [invite, setInvite] = useState<InviteData | null>(null);
   const [pageState, setPageState] = useState<PageState>('loading');
@@ -70,13 +75,37 @@ export function CandidateInvitePage() {
       const res = await fetch(apiUrl(`public/invite/${token}/start`), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        // credentials: 'include' required so the server's Set-Cookie (candidate JWT)
+        // is stored by the browser/WKWebView for subsequent authenticated API calls.
+        credentials: 'include',
         body: JSON.stringify({ candidateName: candidateName.trim() }),
       });
 
       if (res.ok) {
         const data = await res.json();
-        // Store session data and navigate to interview
-        sessionStorage.setItem('inviteSession', JSON.stringify(data));
+
+        // Build a frontend InterviewSession from the server-created DB record.
+        const dbSession = data.session;
+        const setup = dbSession.setup as InterviewSetup;
+        const session: InterviewSession = {
+          id: dbSession.id,
+          setup: {
+            ...setup,
+            activeGates: (setup.activeGates ?? []) as GateName[],
+          },
+          status: 'preparing',
+          transcript: [],
+          observations: [],
+          voiceProvider: 'gemini',
+        };
+
+        // Hydrate the Zustand store so InterviewPage finds the session.
+        setSession(session);
+
+        // Reload auth context — the server set an ephemeral candidate JWT cookie
+        // so /auth/me now returns a valid user with role 'interviewer'.
+        await refresh();
+
         navigate('/interview');
       } else {
         const err = await res.json().catch(() => ({ error: 'Failed to start' }));
@@ -91,7 +120,7 @@ export function CandidateInvitePage() {
 
   return (
     <div
-      className="min-h-screen relative overflow-hidden flex items-center justify-center"
+      className="min-h-screen relative overflow-hidden flex items-center justify-center safe-top pb-safe"
       style={{ background: 'linear-gradient(170deg, #0D0D1A 0%, #0F1028 40%, #111130 70%, #0D0D1A 100%)' }}
     >
       {/* Background effects */}
@@ -238,12 +267,15 @@ export function CandidateInvitePage() {
                       value={candidateName}
                       onChange={(e) => setCandidateName(e.target.value)}
                       placeholder="Enter your full name"
-                      className="w-full px-4 py-3 rounded-xl text-sm outline-none transition-all focus:ring-2"
+                      autoCapitalize="words"
+                      autoCorrect="off"
+                      spellCheck={false}
+                      className="w-full px-4 py-3 rounded-xl text-base outline-none transition-all focus:ring-2 focus:ring-[#C9A84C]/30 min-h-[44px]"
                       style={{
                         background: 'rgba(255,255,255,0.04)',
                         border: '1px solid rgba(255,255,255,0.08)',
                         color: 'var(--color-text-primary)',
-                        focusRingColor: 'rgba(201,168,76,0.3)',
+                        WebkitAppearance: 'none',
                       }}
                     />
                   </div>
