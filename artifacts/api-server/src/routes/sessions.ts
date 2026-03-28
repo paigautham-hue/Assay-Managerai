@@ -15,7 +15,7 @@ router.post('/sessions', async (req: Request, res: Response) => {
         id: id || undefined,
         setup,
         status: status || 'preparing',
-        voiceProvider: voiceProvider || 'openai',
+        voiceProvider: voiceProvider || 'gemini',
         organizationId: organizationId || null,
       },
     });
