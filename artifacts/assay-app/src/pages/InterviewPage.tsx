@@ -16,7 +16,7 @@ type Phase = 'mic_check' | 'interview';
 type MicPermission = 'idle' | 'requesting' | 'granted' | 'denied';
 
 const VOICE_ENABLED = true;
-const HUME_API_KEY: string | null = import.meta.env.VITE_HUME_API_KEY || null;
+const HUME_API_KEY: string | null = null; // Fetched from backend /hume-token endpoint
 const BASE_URL: string = import.meta.env.BASE_URL || '/';
 
 // ─── Mic Check Screen ─────────────────────────────────────────────────────────
@@ -367,15 +367,12 @@ export function InterviewPage() {
 
   // Connect video stream to preview element after it mounts
   useEffect(() => {
-    if (hasVideo && videoPreviewRef.current && voiceEngineRef.current?.getVideoStream()) {
-      videoPreviewRef.current.srcObject = voiceEngineRef.current.getVideoStream();
-      videoPreviewRef.current.play().catch(() => {});
+    const videoEl = videoPreviewRef.current;
+    if (hasVideo && videoEl && voiceEngineRef.current?.getVideoStream()) {
+      videoEl.srcObject = voiceEngineRef.current.getVideoStream();
+      videoEl.play().catch(() => {});
     }
-    return () => {
-      if (videoPreviewRef.current) {
-        videoPreviewRef.current.srcObject = null;
-      }
-    };
+    return () => { if (videoEl) videoEl.srcObject = null; };
   }, [hasVideo]);
 
   // Auto-scroll transcript to bottom when new messages arrive
@@ -761,43 +758,91 @@ export function InterviewPage() {
     </div>
   );
 
+  // Ambient background glow based on interview status
+  const ambientGlow = {
+    ai_speaking: 'radial-gradient(ellipse 80% 60% at 50% 40%, rgba(212,175,55,0.04) 0%, transparent 70%)',
+    listening: 'radial-gradient(ellipse 80% 60% at 50% 40%, rgba(96,165,250,0.03) 0%, transparent 70%)',
+    processing: 'radial-gradient(ellipse 80% 60% at 50% 40%, rgba(167,139,250,0.03) 0%, transparent 70%)',
+    connecting: 'radial-gradient(ellipse 80% 60% at 50% 40%, rgba(167,139,250,0.03) 0%, transparent 70%)',
+    idle: 'radial-gradient(ellipse 80% 60% at 50% 40%, rgba(100,116,139,0.02) 0%, transparent 70%)',
+    reconnecting: 'radial-gradient(ellipse 80% 60% at 50% 40%, rgba(245,158,11,0.04) 0%, transparent 70%)',
+  }[status];
+
+  // Status pill glow
+  const statusPillGlow = {
+    ai_speaking: '0 0 12px rgba(212,175,55,0.3), 0 0 24px rgba(212,175,55,0.1)',
+    listening: '0 0 12px rgba(96,165,250,0.3), 0 0 24px rgba(96,165,250,0.1)',
+    processing: '0 0 12px rgba(167,139,250,0.25), 0 0 24px rgba(167,139,250,0.08)',
+    connecting: '0 0 12px rgba(167,139,250,0.2)',
+    idle: '0 0 8px rgba(52,211,153,0.2)',
+    reconnecting: '0 0 12px rgba(245,158,11,0.3), 0 0 24px rgba(245,158,11,0.1)',
+  }[status];
+
   // ── Interview UI ───────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen overflow-hidden" style={{ background: '#0D0D1A', touchAction: 'manipulation' }}>
+    <div
+      className="min-h-screen overflow-hidden relative"
+      style={{
+        background: '#0D0D1A',
+        touchAction: 'manipulation',
+      }}
+    >
+      {/* Ambient background glow layer */}
+      <div
+        className="fixed inset-0 pointer-events-none z-0"
+        style={{
+          background: ambientGlow,
+          transition: 'background 2.5s ease-in-out',
+        }}
+      />
+
       {/* Header — handles its own safe-area-inset-top (no NavBar on this page) */}
       <motion.div
-        className="border-b px-4 sm:px-6 flex items-center justify-between"
+        className="relative z-10 px-4 sm:px-6 flex flex-col"
         style={{
-          borderColor: 'rgba(255,255,255,0.06)',
           background: 'rgba(13,13,26,0.95)',
           paddingTop: 'calc(env(safe-area-inset-top, 0px) + 1rem)',
-          paddingBottom: '1rem',
+          paddingBottom: '0',
         }}
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <div className="min-w-0">
-          <h1 className="text-base sm:text-xl font-bold truncate" style={{ color: 'var(--color-text-primary)' }}>
-            {session?.setup.candidateName} · {session?.setup.roleName}
-          </h1>
-          <p className="text-xs sm:text-sm mt-0.5" style={{ color: 'var(--color-text-secondary)' }}>
-            Mode:{' '}
-            <span className="text-gold font-semibold">
-              {session?.setup.interviewMode === 'active' ? 'AI-Led' : 'Shadow'}
-            </span>
-          </p>
+        <div className="flex items-center justify-between pb-4">
+          <div className="min-w-0">
+            <h1 className="text-base sm:text-xl font-bold truncate" style={{ color: 'var(--color-text-primary)' }}>
+              {session?.setup.candidateName} · {session?.setup.roleName}
+            </h1>
+            <p className="text-xs sm:text-sm mt-0.5" style={{ color: 'var(--color-text-secondary)' }}>
+              Mode:{' '}
+              <span className="text-gold font-semibold">
+                {session?.setup.interviewMode === 'active' ? 'AI-Led' : 'Shadow'}
+              </span>
+            </p>
+          </div>
+          <div className="text-right flex-shrink-0 ml-4">
+            <p
+              className="text-2xl sm:text-3xl font-bold text-gold"
+              style={{ fontFamily: '"SF Mono", "Fira Code", "Cascadia Code", "Consolas", monospace', fontVariantNumeric: 'tabular-nums' }}
+            >
+              {formatTime(duration)}
+            </p>
+            <p className="text-xs mt-0.5" style={{ color: 'var(--color-text-tertiary)' }}>
+              Duration
+            </p>
+          </div>
         </div>
-        <div className="text-right flex-shrink-0 ml-4">
-          <p className="text-2xl sm:text-3xl font-bold text-gold">{formatTime(duration)}</p>
-          <p className="text-xs mt-0.5" style={{ color: 'var(--color-text-tertiary)' }}>
-            Duration
-          </p>
-        </div>
+        {/* Gold accent line under header */}
+        <div
+          style={{
+            height: '1px',
+            background: 'linear-gradient(90deg, transparent, rgba(201,168,76,0.4) 20%, rgba(212,175,55,0.6) 50%, rgba(201,168,76,0.4) 80%, transparent)',
+          }}
+        />
       </motion.div>
 
       {/* Body — subtract header height (72px base + safe-area-inset-top) */}
       <div
-        className="flex relative"
+        className="flex relative z-[1]"
         style={{ height: 'calc(100dvh - 72px - env(safe-area-inset-top, 0px))' }}
       >
         {/* Main area */}
@@ -862,7 +907,12 @@ export function InterviewPage() {
           <motion.div className="mb-6" key={status} initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}>
             <div
               className="inline-flex items-center gap-2 rounded-full px-4 py-2"
-              style={{ background: 'rgba(0,0,0,0.4)', border: '1px solid rgba(255,255,255,0.08)' }}
+              style={{
+                background: 'rgba(0,0,0,0.4)',
+                border: '1px solid rgba(255,255,255,0.08)',
+                boxShadow: statusPillGlow,
+                transition: 'box-shadow 1s ease-in-out',
+              }}
             >
               <span
                 className="w-2 h-2 rounded-full animate-pulse-subtle"
@@ -890,10 +940,11 @@ export function InterviewPage() {
                 </p>
               </div>
               <button
-                onClick={() => {
+                onClick={async () => {
                   setVoiceError(null);
                   setStatus('connecting');
                   if (session) {
+                    await voiceEngineRef.current?.disconnect();
                     voiceEngineRef.current = new GeminiLiveEngine(
                       session.setup,
                       {
@@ -926,10 +977,13 @@ export function InterviewPage() {
 
           {/* Transcript */}
           <div
-            className="w-full max-w-2xl rounded-xl overflow-y-auto p-4 sm:p-6 mb-6 space-y-4"
+            className="w-full max-w-2xl overflow-y-auto p-4 sm:p-6 mb-6 space-y-4"
             style={{
-              background: 'rgba(0,0,0,0.4)',
-              border: '1px solid rgba(255,255,255,0.06)',
+              background: 'rgba(255,255,255,0.02)',
+              backdropFilter: 'blur(40px) saturate(180%)',
+              WebkitBackdropFilter: 'blur(40px) saturate(180%)',
+              border: '1px solid rgba(255,255,255,0.04)',
+              borderRadius: '16px',
               height: isMobile ? '40dvh' : isTablet ? '35dvh' : '24rem',
               WebkitOverflowScrolling: 'touch' as any,
             }}
@@ -990,7 +1044,7 @@ export function InterviewPage() {
                 const muted = voiceEngineRef.current?.toggleMute();
                 if (muted !== undefined) setIsMuted(muted);
               }}
-              className="flex items-center justify-center rounded-xl transition-colors"
+              className={`flex items-center justify-center rounded-xl transition-colors ${isMuted ? 'interview-mute-pulse' : ''}`}
               style={{
                 width: 52,
                 height: 52,
@@ -1019,7 +1073,7 @@ export function InterviewPage() {
             <motion.button
               onClick={() => setShowEndModal(true)}
               disabled={isEndingInterview}
-              className="btn btn-danger px-8 py-4 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn btn-danger px-8 py-4 disabled:opacity-50 disabled:cursor-not-allowed interview-end-btn"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
@@ -1053,8 +1107,10 @@ export function InterviewPage() {
             className="overflow-y-auto flex-shrink-0"
             style={{
               flex: '0 0 40%',
-              background: 'var(--color-surface)',
-              borderLeft: '1px solid rgba(255,255,255,0.06)',
+              background: 'rgba(255,255,255,0.02)',
+              backdropFilter: 'blur(40px) saturate(180%)',
+              WebkitBackdropFilter: 'blur(40px) saturate(180%)',
+              borderLeft: '1px solid rgba(255,255,255,0.04)',
               WebkitOverflowScrolling: 'touch' as any,
             }}
             initial={{ x: 80, opacity: 0 }}
@@ -1079,8 +1135,10 @@ export function InterviewPage() {
           <motion.div
             className="w-80 overflow-y-auto flex-shrink-0"
             style={{
-              background: 'var(--color-surface)',
-              borderLeft: '1px solid rgba(255,255,255,0.06)',
+              background: 'rgba(255,255,255,0.02)',
+              backdropFilter: 'blur(40px) saturate(180%)',
+              WebkitBackdropFilter: 'blur(40px) saturate(180%)',
+              borderLeft: '1px solid rgba(255,255,255,0.04)',
             }}
             initial={{ x: 80, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
@@ -1125,7 +1183,9 @@ export function InterviewPage() {
             <motion.div
               className="fixed inset-x-0 bottom-0 z-40 rounded-t-2xl overflow-hidden"
               style={{
-                background: 'var(--color-surface)',
+                background: 'rgba(255,255,255,0.03)',
+                backdropFilter: 'blur(40px) saturate(180%)',
+                WebkitBackdropFilter: 'blur(40px) saturate(180%)',
                 maxHeight: '70dvh',
                 paddingBottom: 'env(safe-area-inset-bottom, 0px)',
                 display: 'flex',
@@ -1178,6 +1238,23 @@ export function InterviewPage() {
           />
         )}
       </AnimatePresence>
+
+      {/* Interview page styles */}
+      <style>{`
+        @keyframes mute-pulse {
+          0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.4); }
+          50% { box-shadow: 0 0 0 8px rgba(239,68,68,0); }
+        }
+        .interview-mute-pulse {
+          animation: mute-pulse 2s ease-in-out infinite;
+        }
+        .interview-end-btn {
+          transition: box-shadow 0.3s ease;
+        }
+        .interview-end-btn:hover {
+          box-shadow: 0 0 20px rgba(239,68,68,0.35), 0 0 40px rgba(239,68,68,0.15);
+        }
+      `}</style>
     </div>
   );
 }

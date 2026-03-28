@@ -103,7 +103,7 @@ export function CandidateInvitePage() {
         setSession(session);
 
         // Reload auth context — the server set an ephemeral candidate JWT cookie
-        // so /auth/me now returns a valid user with role 'interviewer'.
+        // so /auth/me now returns a valid user with role 'candidate'.
         await refresh();
 
         navigate('/interview');

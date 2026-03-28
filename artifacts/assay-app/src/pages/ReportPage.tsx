@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useLocation, useParams } from 'wouter';
 import { useAssayStore } from '../store/useAssayStore';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { DIMENSION_DISPLAY_NAMES } from '../types';
 import type { PsychologicalScreening, TranscriptEntry } from '../types';
 import type { ProsodyData } from '../types';
@@ -14,18 +14,34 @@ import {
   ResponsiveContainer, PieChart, Pie, Legend,
 } from 'recharts';
 
+function AnimatedNumber({ value, duration = 1000, decimals = 2 }: { value: number; duration?: number; decimals?: number }) {
+  const [display, setDisplay] = useState(0);
+  useEffect(() => {
+    if (isNaN(value) || value === 0) { setDisplay(0); return; }
+    const start = Date.now();
+    let raf: number;
+    const tick = () => {
+      const progress = Math.min((Date.now() - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setDisplay(value * eased);
+      if (progress < 1) raf = requestAnimationFrame(tick);
+    };
+    tick();
+    return () => cancelAnimationFrame(raf);
+  }, [value, duration]);
+  return <span className="tabular-nums">{display.toFixed(decimals)}</span>;
+}
+
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 
 function SkeletonBlock({ w = '100%', h = 16, className = '' }: { w?: string | number; h?: number; className?: string }) {
   return (
     <div
-      className={className}
+      className={`skeleton-gold ${className}`}
       style={{
         width: w,
         height: h,
         borderRadius: 6,
-        background: 'rgba(255,255,255,0.06)',
-        animation: 'pulse 1.8s ease-in-out infinite',
       }}
     />
   );
@@ -72,9 +88,10 @@ interface SectionProps {
 }
 
 const sectionBase: React.CSSProperties = {
-  background: 'rgba(255,255,255,0.03)',
-  backdropFilter: 'blur(24px)',
-  border: '1px solid rgba(255,255,255,0.06)',
+  background: 'rgba(18,18,42,0.5)',
+  backdropFilter: 'blur(24px) saturate(180%)',
+  WebkitBackdropFilter: 'blur(24px) saturate(180%)',
+  border: '1px solid rgba(255,255,255,0.08)',
   borderRadius: '12px',
   marginBottom: '1.5rem',
 };
@@ -94,15 +111,25 @@ function ExpandableSection({ title, children, isExpandable = false, defaultOpen 
   return (
     <motion.div style={{ ...sectionBase, overflow: 'hidden' }} className="mb-6" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} viewport={{ once: true }}>
       <button onClick={() => setIsOpen(!isOpen)} className="w-full px-8 py-6 flex items-center justify-between transition-colors duration-200 hover:bg-white/[0.03] active:bg-white/[0.06] min-h-[44px]">
-
         <h2 className="heading-md text-gold flex items-center gap-3">{icon} {title}</h2>
         <motion.span animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.3 }} className="text-2xl" style={{ color: 'var(--color-text-tertiary)' }}>▼</motion.span>
       </button>
-      {isOpen && (
-        <div className="px-8 pb-6" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-          {children}
-        </div>
-      )}
+      <AnimatePresence initial={false}>
+        {isOpen && (
+          <motion.div
+            key="content"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+            style={{ overflow: 'hidden' }}
+          >
+            <div className="px-8 pb-6" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+              {children}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }
@@ -112,10 +139,10 @@ function ExpandableSection({ title, children, isExpandable = false, defaultOpen 
 function DarkTooltip({ active, payload, label }: any) {
   if (!active || !payload?.length) return null;
   return (
-    <div style={{ background: '#1a1a2e', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 8, padding: '8px 12px', fontSize: 12 }}>
-      <p style={{ color: '#ccc', marginBottom: 4 }}>{label}</p>
+    <div style={{ background: 'var(--color-surface)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 8, padding: '8px 12px', fontSize: 12 }}>
+      <p style={{ color: 'var(--color-text-secondary)', marginBottom: 4 }}>{label}</p>
       {payload.map((p: any, i: number) => (
-        <p key={i} style={{ color: p.fill || p.color || '#fff' }}>
+        <p key={i} style={{ color: p.fill || p.color || 'var(--color-text-primary)' }}>
           {p.name}: {typeof p.value === 'number' ? p.value.toFixed(2) : p.value}
         </p>
       ))}
@@ -155,7 +182,7 @@ function DeceptionMeter({ level }: { level: string }) {
             className="flex-1 py-2 rounded text-center text-xs font-bold uppercase tracking-wide"
             style={{
               background: active ? deceptionColor(l) : 'rgba(255,255,255,0.06)',
-              color: active ? '#0D0D1A' : 'rgba(255,255,255,0.25)',
+              color: active ? 'var(--color-dark)' : 'rgba(255,255,255,0.25)',
               transition: 'all 0.3s',
             }}
           >
@@ -168,7 +195,7 @@ function DeceptionMeter({ level }: { level: string }) {
 }
 
 function StringList({ items, color }: { items: string[]; color: string }) {
-  if (!items.length) return <p className="text-sm" style={{ color: 'rgba(255,255,255,0.3)' }}>None detected</p>;
+  if (!items.length) return <p className="text-sm" style={{ color: 'var(--color-text-tertiary)' }}>None detected</p>;
   return (
     <ul className="space-y-1">
       {items.map((item, i) => (
@@ -228,7 +255,7 @@ function PsychologicalRiskSection({ profile }: { profile: PsychologicalScreening
                 <XAxis
                   type="number"
                   domain={[0, 10]}
-                  tick={{ fill: '#666', fontSize: 11 }}
+                  tick={{ fill: 'var(--color-text-tertiary)', fontSize: 11 }}
                   axisLine={{ stroke: 'rgba(255,255,255,0.08)' }}
                   tickLine={false}
                   ticks={[0, 2, 4, 6, 8, 10]}
@@ -236,7 +263,7 @@ function PsychologicalRiskSection({ profile }: { profile: PsychologicalScreening
                 <YAxis
                   dataKey="name"
                   type="category"
-                  tick={{ fill: '#aaa', fontSize: 12 }}
+                  tick={{ fill: 'var(--color-text-secondary)', fontSize: 12 }}
                   axisLine={false}
                   tickLine={false}
                   width={120}
@@ -253,7 +280,7 @@ function PsychologicalRiskSection({ profile }: { profile: PsychologicalScreening
             {/* Legend & score labels */}
             <div className="grid grid-cols-3 gap-3 mt-3">
               {darkTriadData.map(item => (
-                <div key={item.name} className="rounded-lg p-3 text-center" style={{ background: 'rgba(0,0,0,0.3)', border: `1px solid ${triadColor(item.score)}33` }}>
+                <div key={item.name} className="rounded-lg p-3 text-center" style={{ background: 'var(--color-surface)', border: `1px solid ${triadColor(item.score)}33` }}>
                   <p className="text-xs uppercase tracking-wide mb-1" style={{ color: 'var(--color-text-tertiary)' }}>{item.name}</p>
                   <p className="text-2xl font-bold" style={{ color: triadColor(item.score) }}>{item.score.toFixed(1)}</p>
                   <p className="text-xs mt-1" style={{ color: triadColor(item.score) }}>{triadLabel(item.score)}</p>
@@ -304,8 +331,8 @@ function PsychologicalRiskSection({ profile }: { profile: PsychologicalScreening
             <ResponsiveContainer width="100%" height={130}>
               <BarChart data={stressData} layout="vertical" margin={{ top: 0, right: 24, left: 0, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" horizontal={false} />
-                <XAxis type="number" domain={[0, 10]} tick={{ fill: '#666', fontSize: 11 }} axisLine={{ stroke: 'rgba(255,255,255,0.08)' }} tickLine={false} ticks={[0, 2, 4, 6, 8, 10]} />
-                <YAxis dataKey="name" type="category" tick={{ fill: '#aaa', fontSize: 12 }} axisLine={false} tickLine={false} width={70} />
+                <XAxis type="number" domain={[0, 10]} tick={{ fill: 'var(--color-text-tertiary)', fontSize: 11 }} axisLine={{ stroke: 'rgba(255,255,255,0.08)' }} tickLine={false} ticks={[0, 2, 4, 6, 8, 10]} />
+                <YAxis dataKey="name" type="category" tick={{ fill: 'var(--color-text-secondary)', fontSize: 12 }} axisLine={false} tickLine={false} width={70} />
                 <Tooltip content={<DarkTooltip />} />
                 <Bar dataKey="score" radius={[0, 4, 4, 0]} fill="#60A5FA" maxBarSize={24} />
               </BarChart>
@@ -414,19 +441,19 @@ function ProsodyAnalyticsSection({ prosody }: { prosody: ProsodyData }) {
             <p className="text-sm font-semibold mt-1" style={{ color: overall.color }}>{overall.label}</p>
           </div>
 
-          <div className="rounded-lg p-4 text-center" style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.06)' }}>
+          <div className="rounded-lg p-4 text-center" style={{ background: 'var(--color-surface)', border: '1px solid rgba(255,255,255,0.06)' }}>
             <p className="text-xs uppercase tracking-wide mb-1" style={{ color: 'var(--color-text-tertiary)' }}>Dominant Emotion</p>
-            <p className="text-xs font-bold mt-2" style={{ color: '#C9A84C' }}>{metrics.dominantEmotion || '—'}</p>
+            <p className="text-xs font-bold mt-2" style={{ color: 'var(--color-gold)' }}>{metrics.dominantEmotion || '—'}</p>
           </div>
 
-          <div className="rounded-lg p-4 text-center" style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.06)' }}>
+          <div className="rounded-lg p-4 text-center" style={{ background: 'var(--color-surface)', border: '1px solid rgba(255,255,255,0.06)' }}>
             <p className="text-xs uppercase tracking-wide mb-1" style={{ color: 'var(--color-text-tertiary)' }}>Authenticity</p>
             <p className="text-2xl font-bold" style={{ color: '#60A5FA' }}>
               {metrics.authenticityScore !== undefined ? `${(metrics.authenticityScore * 100).toFixed(0)}%` : '—'}
             </p>
           </div>
 
-          <div className="rounded-lg p-4 text-center" style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.06)' }}>
+          <div className="rounded-lg p-4 text-center" style={{ background: 'var(--color-surface)', border: '1px solid rgba(255,255,255,0.06)' }}>
             <p className="text-xs uppercase tracking-wide mb-1" style={{ color: 'var(--color-text-tertiary)' }}>Stress Signals</p>
             <p className="text-2xl font-bold" style={{ color: metrics.stressIndicators?.length ? '#F87171' : '#34D399' }}>
               {metrics.stressIndicators?.length ?? 0}
@@ -463,8 +490,8 @@ function ProsodyAnalyticsSection({ prosody }: { prosody: ProsodyData }) {
                         if (!active || !payload?.length) return null;
                         const pct = ((payload[0].value as number / totalEmotionScore) * 100).toFixed(0);
                         return (
-                          <div style={{ background: '#1a1a2e', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 8, padding: '8px 12px', fontSize: 12 }}>
-                            <p style={{ color: '#ccc' }}>{payload[0].name}</p>
+                          <div style={{ background: 'var(--color-surface)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 8, padding: '8px 12px', fontSize: 12 }}>
+                            <p style={{ color: 'var(--color-text-secondary)' }}>{payload[0].name}</p>
                             <p style={{ color: payload[0].payload.fill || '#fff' }}>{pct}% of detected emotions</p>
                           </div>
                         );
@@ -480,7 +507,7 @@ function ProsodyAnalyticsSection({ prosody }: { prosody: ProsodyData }) {
                   return (
                     <div key={emotion.name}>
                       <div className="flex justify-between text-xs mb-1">
-                        <span style={{ color: '#ccc' }}>{emotion.name}</span>
+                        <span style={{ color: 'var(--color-text-secondary)' }}>{emotion.name}</span>
                         <span style={{ color }}>{pct.toFixed(0)}%</span>
                       </div>
                       <div className="h-1.5 rounded-full" style={{ background: 'rgba(255,255,255,0.06)' }}>
@@ -511,8 +538,8 @@ function ProsodyAnalyticsSection({ prosody }: { prosody: ProsodyData }) {
               <ResponsiveContainer width="100%" height={120}>
                 <BarChart data={sentimentSummaryData} margin={{ top: 0, right: 8, left: -20, bottom: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
-                  <XAxis dataKey="name" tick={{ fill: '#aaa', fontSize: 12 }} axisLine={false} tickLine={false} />
-                  <YAxis tick={{ fill: '#666', fontSize: 11 }} axisLine={false} tickLine={false} />
+                  <XAxis dataKey="name" tick={{ fill: 'var(--color-text-secondary)', fontSize: 12 }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fill: 'var(--color-text-tertiary)', fontSize: 11 }} axisLine={false} tickLine={false} />
                   <Tooltip content={<DarkTooltip />} />
                   <Bar dataKey="count" radius={4} maxBarSize={48}>
                     {sentimentSummaryData.map((entry, idx) => (
@@ -808,19 +835,47 @@ export function ReportPage() {
           </motion.div>
         )}
 
-        {/* Gate Status Banner */}
+        {/* Gate Status Banner — dramatic animated reveal */}
         <motion.div
-          className="rounded-xl p-8 mb-6 text-center"
-          style={{ background: gateBg, border: `2px solid ${gateColor}` }}
-          initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+          className="rounded-xl p-8 mb-6 text-center relative overflow-hidden"
+          style={{ background: gateBg }}
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ type: 'spring', stiffness: 200, damping: 20, delay: 0.2 }}
         >
-          <p className="text-sm font-semibold uppercase tracking-wide mb-2" style={{ color: gateColor }}>Overall Assessment</p>
-          <h2 className="heading-lg mb-2" style={{ color: gateColor }}>
-            {report.gateBanner.status === 'passed' ? '✓ Clear to Advance' : report.gateBanner.status === 'flagged' ? '⚠️ Proceed With Caution' : '✗ Do Not Advance'}
-          </h2>
-          <p className="text-lg font-semibold" style={{ color: gateColor }}>
-            {report.pyramidScore.overall.toFixed(2)} / 5.0 Overall Score
-          </p>
+          {/* Animated border sweep */}
+          <motion.div
+            className="absolute inset-0 rounded-xl pointer-events-none"
+            style={{
+              border: `2px solid ${gateColor}`,
+              borderRadius: 'inherit',
+            }}
+            initial={{ clipPath: 'inset(0 100% 0 0)' }}
+            animate={{ clipPath: 'inset(0 0 0 0)' }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.4 }}
+          />
+          {/* Fill fade-in */}
+          <motion.div
+            className="absolute inset-0 rounded-xl pointer-events-none"
+            style={{ background: gateBg }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.8 }}
+          />
+          <motion.div
+            className="relative z-10"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.6 }}
+          >
+            <p className="text-sm font-semibold uppercase tracking-wide mb-2" style={{ color: gateColor }}>Overall Assessment</p>
+            <h2 className="heading-lg mb-2" style={{ color: gateColor }}>
+              {report.gateBanner.status === 'passed' ? '✓ Clear to Advance' : report.gateBanner.status === 'flagged' ? '⚠️ Proceed With Caution' : '✗ Do Not Advance'}
+            </h2>
+            <p className="text-lg font-semibold tabular-nums" style={{ color: gateColor }}>
+              <AnimatedNumber value={report.pyramidScore.overall} duration={1200} /> / 5.0 Overall Score
+            </p>
+          </motion.div>
         </motion.div>
 
         {/* Case Against */}
@@ -858,10 +913,10 @@ export function ReportPage() {
                 </div>
               ))}
             </div>
-            <div className="rounded-lg p-6 text-center mt-8" style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.06)' }}>
+            <div className="rounded-lg p-6 text-center mt-8" style={{ background: 'var(--color-surface)', border: '1px solid rgba(255,255,255,0.06)' }}>
               <p className="text-sm uppercase tracking-wide mb-2" style={{ color: 'var(--color-text-tertiary)' }}>Overall Score</p>
-              <motion.div className="text-5xl font-bold text-gold mb-2" initial={{ scale: 0 }} whileInView={{ scale: 1 }} transition={{ duration: 0.6, ease: 'backOut' }} viewport={{ once: true }}>
-                {report.pyramidScore.overall.toFixed(2)}
+              <motion.div className="text-5xl font-bold text-gold mb-2 tabular-nums" initial={{ scale: 0 }} whileInView={{ scale: 1 }} transition={{ duration: 0.6, ease: 'backOut' }} viewport={{ once: true }}>
+                <AnimatedNumber value={report.pyramidScore.overall} duration={1200} />
               </motion.div>
               <p style={{ color: 'var(--color-text-secondary)' }}>out of 5.0</p>
               {report.pyramidScore.purityRating && (
@@ -890,9 +945,9 @@ export function ReportPage() {
             {report.gateDetails.map(gate => {
               const col = gate.confidence === 'PASS' ? 'var(--color-green)' : gate.confidence === 'FLAG' ? 'var(--color-amber)' : gate.confidence === 'FAIL' ? 'var(--color-red)' : 'var(--color-text-tertiary)';
               return (
-                <motion.div key={gate.gate} className="rounded-lg p-4" style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.06)' }} initial={{ opacity: 0, x: -10 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
+                <motion.div key={gate.gate} className="rounded-lg p-4" style={{ background: 'var(--color-surface)', border: '1px solid rgba(255,255,255,0.06)' }} initial={{ opacity: 0, x: -10 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
                   <div className="flex items-center gap-3 mb-2">
-                    <span className="inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold" style={{ background: col, color: '#0D0D1A' }}>
+                    <span className="inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold" style={{ background: col, color: 'var(--color-dark)' }}>
                       {gate.confidence === 'PASS' ? '✓' : gate.confidence === 'FLAG' ? '○' : gate.confidence === 'FAIL' ? '✗' : '?'}
                     </span>
                     <h4 className="font-bold" style={{ color: 'var(--color-text-primary)' }}>
@@ -921,7 +976,7 @@ export function ReportPage() {
         <ExpandableSection title="Deep Assessment by Dimension" icon="🔬" isExpandable defaultOpen={false}>
           <div className="space-y-4 pt-4">
             {report.deepAssessment.map(assessment => (
-              <motion.div key={assessment.dimension} className="rounded-lg p-4" style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.06)' }} initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
+              <motion.div key={assessment.dimension} className="rounded-lg p-4" style={{ background: 'var(--color-surface)', border: '1px solid rgba(255,255,255,0.06)' }} initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
                 <h4 className="font-bold mb-2" style={{ color: 'var(--color-text-primary)' }}>{DIMENSION_DISPLAY_NAMES[assessment.dimension] || assessment.dimension}</h4>
                 <p className="text-sm leading-relaxed mb-3" style={{ color: 'var(--color-text-secondary)' }}>{assessment.narrative}</p>
                 {assessment.strengths.length > 0 && (
@@ -968,7 +1023,7 @@ export function ReportPage() {
           <ExpandableSection title="The Deliberation" icon="👨‍⚖️" isExpandable defaultOpen={false}>
             <div className="space-y-4 pt-4">
               {report.deliberation.assessorVerdicts.map(assessor => (
-                <motion.div key={assessor.role} className="rounded-lg p-4" style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.06)' }} initial={{ opacity: 0, x: -10 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
+                <motion.div key={assessor.role} className="rounded-lg p-4" style={{ background: 'var(--color-surface)', border: '1px solid rgba(255,255,255,0.06)' }} initial={{ opacity: 0, x: -10 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
                   <div className="flex items-center gap-3 mb-2">
                     <h4 className="font-bold capitalize" style={{ color: 'var(--color-text-primary)' }}>{assessor.role.replace(/_/g, ' ')}</h4>
                     <span className="text-xs px-2 py-0.5 rounded font-medium" style={{
@@ -1028,6 +1083,29 @@ export function ReportPage() {
           <button onClick={() => navigate('/setup')} className="btn btn-primary px-8">Start New Assessment</button>
         </motion.div>
       </div>
+
+      {/* Sticky floating PDF export FAB */}
+      <motion.button
+        onClick={() => generateExecutivePDF(report)}
+        className="fixed bottom-6 right-6 z-50 flex items-center gap-2 px-5 py-3 rounded-full font-semibold text-sm shadow-lg"
+        style={{
+          background: 'linear-gradient(135deg, var(--color-gold) 0%, var(--color-gold-light) 100%)',
+          color: 'var(--color-dark)',
+          boxShadow: '0 4px 20px rgba(201,168,76,0.4), 0 2px 8px rgba(0,0,0,0.3)',
+          marginBottom: 'env(safe-area-inset-bottom, 0px)',
+        }}
+        initial={{ opacity: 0, y: 40, scale: 0.8 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ delay: 1, type: 'spring', stiffness: 200 }}
+        whileHover={{ scale: 1.05, boxShadow: '0 6px 28px rgba(201,168,76,0.5), 0 3px 12px rgba(0,0,0,0.3)' }}
+        whileTap={{ scale: 0.95 }}
+        title="Export executive summary as PDF"
+      >
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M8 1v9M8 10L5 7M8 10l3-3M2 12v1.5A1.5 1.5 0 003.5 15h9a1.5 1.5 0 001.5-1.5V12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+        PDF
+      </motion.button>
     </div>
   );
 }

@@ -18,6 +18,58 @@ const itemVariants = {
 const BASE_URL = import.meta.env.BASE_URL || '/';
 const apiUrl = (path: string) => `${BASE_URL}api/${path}`;
 
+function AnimatedNumber({ value, duration = 1000 }: { value: number; duration?: number }) {
+  const [display, setDisplay] = useState(0);
+  useEffect(() => {
+    const numVal = typeof value === 'string' ? parseFloat(value) : value;
+    if (isNaN(numVal) || numVal === 0) { setDisplay(0); return; }
+    const start = Date.now();
+    let raf: number;
+    const tick = () => {
+      const progress = Math.min((Date.now() - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3); // ease-out-cubic
+      setDisplay(Math.round(numVal * eased * 100) / 100);
+      if (progress < 1) raf = requestAnimationFrame(tick);
+    };
+    tick();
+    return () => cancelAnimationFrame(raf);
+  }, [value, duration]);
+
+  // Format: show decimals only if the original value has them
+  const hasDecimals = value % 1 !== 0;
+  return <span className="tabular-nums">{hasDecimals ? display.toFixed(2) : Math.round(display)}</span>;
+}
+
+function SkeletonStatCard() {
+  return (
+    <div
+      className="relative rounded-xl p-5 sm:p-6 overflow-hidden"
+      style={{ background: 'var(--color-surface)', border: '1px solid rgba(255,255,255,0.06)' }}
+    >
+      <div className="skeleton-gold h-3 w-24 mb-4 rounded" />
+      <div className="skeleton-gold h-8 w-16 rounded" />
+    </div>
+  );
+}
+
+function SkeletonReportRow() {
+  return (
+    <div
+      className="relative rounded-xl p-5 sm:p-6 overflow-hidden"
+      style={{ background: 'var(--color-surface)', border: '1px solid rgba(255,255,255,0.06)' }}
+    >
+      <div className="flex items-center gap-4">
+        <div className="skeleton-gold w-11 h-11 rounded-full flex-shrink-0" />
+        <div className="flex-1 space-y-2">
+          <div className="skeleton-gold h-4 w-40 rounded" />
+          <div className="skeleton-gold h-3 w-28 rounded" />
+        </div>
+        <div className="skeleton-gold h-6 w-10 rounded" />
+      </div>
+    </div>
+  );
+}
+
 export function HomePage() {
   const [, navigate] = useLocation();
   const { reports, loadReports, isLoading } = useAssayStore();
@@ -58,7 +110,7 @@ export function HomePage() {
   ];
 
   return (
-    <div className="min-h-screen relative overflow-hidden" style={{ background: 'linear-gradient(170deg, #0D0D1A 0%, #0F1028 40%, #111130 70%, #0D0D1A 100%)' }}>
+    <div className="min-h-screen relative overflow-hidden bg-gradient-dark">
       {/* Cinematic background layers */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         {/* Primary gold aurora */}
@@ -121,11 +173,7 @@ export function HomePage() {
           </motion.div>
 
           <h1 className="mb-4" style={{ fontSize: 'clamp(3rem, 7vw, 4.5rem)', fontWeight: 800, letterSpacing: '-0.04em', lineHeight: 1.05 }}>
-            <span style={{
-              background: 'linear-gradient(135deg, #D4B85A 0%, #F5E6A3 30%, #C9A84C 60%, #B8943D 100%)',
-              WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
-              filter: 'drop-shadow(0 2px 4px rgba(201,168,76,0.2))',
-            }}>ASSAY</span>
+            <span className="text-gold-gradient" style={{ filter: 'drop-shadow(0 2px 4px rgba(201,168,76,0.2))' }}>ASSAY</span>
           </h1>
 
           <motion.p
@@ -146,9 +194,10 @@ export function HomePage() {
           >
             <button
               onClick={() => navigate('/setup')}
-              className="group relative inline-flex items-center gap-3 font-bold text-[#0D0D1A] px-8 py-4 rounded-2xl overflow-hidden active:scale-[0.97] transition-transform min-h-[44px]"
+              className="btn-magnetic group relative inline-flex items-center gap-3 font-bold px-8 py-4 rounded-2xl active:scale-[0.97] min-h-[44px]"
               style={{
-                background: 'linear-gradient(135deg, #D4B85A 0%, #C9A84C 50%, #B8943D 100%)',
+                background: 'linear-gradient(135deg, var(--color-gold) 0%, var(--color-gold-light) 50%, var(--color-gold) 100%)',
+                color: 'var(--color-dark)',
                 boxShadow: '0 4px 20px rgba(201,168,76,0.35), 0 1px 3px rgba(0,0,0,0.2)',
                 fontSize: '1.0625rem',
               }}
@@ -178,8 +227,12 @@ export function HomePage() {
           </motion.div>
         </motion.div>
 
-        {/* Stats grid */}
-        {reports.length > 0 && (
+        {/* Stats grid — skeleton loading or real data */}
+        {isLoading ? (
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-12 sm:mb-16">
+            {[1, 2, 3, 4].map(i => <SkeletonStatCard key={i} />)}
+          </div>
+        ) : reports.length > 0 ? (
           <motion.div
             className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-12 sm:mb-16"
             variants={containerVariants}
@@ -200,15 +253,22 @@ export function HomePage() {
                 <div className="absolute top-0 right-0 w-24 h-24 rounded-full opacity-[0.06] transition-opacity group-hover:opacity-[0.12]" style={{ background: `radial-gradient(circle, ${stat.color}, transparent 70%)`, transform: 'translate(30%, -30%)' }} />
                 <p className="text-[11px] font-semibold uppercase tracking-wider mb-2" style={{ color: 'var(--color-text-tertiary)' }}>{stat.label}</p>
                 <p className="text-2xl sm:text-3xl font-bold" style={{ color: stat.color }}>
-                  {stat.value}<span className="text-base sm:text-lg ml-0.5 font-medium" style={{ color: 'var(--color-text-tertiary)' }}>{stat.unit}</span>
+                  <AnimatedNumber value={Number(stat.value)} /><span className="text-base sm:text-lg ml-0.5 font-medium" style={{ color: 'var(--color-text-tertiary)' }}>{stat.unit}</span>
                 </p>
               </motion.div>
             ))}
           </motion.div>
-        )}
+        ) : null}
 
         {/* Reports list */}
-        {reports.length > 0 ? (
+        {isLoading ? (
+          <div className="mb-8">
+            <div className="skeleton-gold h-6 w-48 rounded mb-6" />
+            <div className="space-y-3">
+              {[1, 2, 3].map(i => <SkeletonReportRow key={i} />)}
+            </div>
+          </div>
+        ) : reports.length > 0 ? (
           <motion.div
             className="mb-8"
             variants={containerVariants}
@@ -223,7 +283,7 @@ export function HomePage() {
                   <motion.div
                     key={report.id}
                     variants={itemVariants}
-                    className="relative rounded-xl p-5 sm:p-6 card-hover cursor-pointer overflow-hidden min-h-[44px]"
+                    className="relative rounded-xl p-5 sm:p-6 card-lift cursor-pointer overflow-hidden min-h-[44px]"
                     style={{
                       background: 'var(--color-surface)',
                       border: '1px solid rgba(255,255,255,0.06)',
@@ -246,7 +306,7 @@ export function HomePage() {
                         </div>
                       </div>
                       <div className="flex items-center gap-2 sm:gap-3 ml-3 flex-shrink-0">
-                        <span className="text-sm sm:text-base font-bold" style={{ color: statusColor }}>
+                        <span className="text-sm sm:text-base font-bold tabular-nums" style={{ color: statusColor }}>
                           {report.pyramidScore.overall.toFixed(1)}
                         </span>
                         <svg className="w-4 h-4" style={{ color: 'var(--color-text-tertiary)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">

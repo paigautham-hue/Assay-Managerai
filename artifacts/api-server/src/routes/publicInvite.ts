@@ -87,7 +87,7 @@ router.post('/public/invite/:token/start', async (req: Request, res: Response) =
       data: {
         setup,
         status: 'preparing',
-        voiceProvider: 'openai',
+        voiceProvider: 'gemini',
       },
     });
 
@@ -96,43 +96,6 @@ router.post('/public/invite/:token/start', async (req: Request, res: Response) =
       where: { id: invite.id },
       data: { status: 'started', sessionId: session.id },
     });
-
-    // Create OpenAI Realtime session for WebRTC
-    let clientSecret = null;
-    if (process.env.OPENAI_API_KEY) {
-      try {
-        const response = await fetch('https://api.openai.com/v1/realtime/sessions', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            model: 'gpt-realtime',
-            modalities: ['text', 'audio'],
-            instructions: `You are conducting an executive interview for the role of ${setup.roleName} (${setup.roleLevel}).`,
-            voice: 'coral',
-            input_audio_format: 'pcm16',
-            output_audio_format: 'pcm16',
-            input_audio_transcription: { model: 'whisper-1' },
-            turn_detection: {
-              type: 'server_vad',
-              threshold: 0.5,
-              prefix_padding_ms: 500,
-              silence_duration_ms: 800,
-              eagerness: 'medium',
-            },
-          }),
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          clientSecret = data.client_secret?.value || data.client_secret;
-        }
-      } catch (err) {
-        console.warn('Failed to create OpenAI realtime session:', err);
-      }
-    }
 
     // Issue an ephemeral JWT for the candidate so they can call authenticated
     // endpoints (voice session, transcript saves, assessment stream) during
@@ -148,7 +111,6 @@ router.post('/public/invite/:token/start', async (req: Request, res: Response) =
 
     return res.status(201).json({
       session,
-      clientSecret,
       candidateUser,
     });
   } catch (error) {

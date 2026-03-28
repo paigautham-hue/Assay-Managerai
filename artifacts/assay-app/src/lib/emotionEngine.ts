@@ -235,7 +235,7 @@ export class EmotionEngine {
     }
 
     // Only stop mic tracks if we own the stream (not shared from VoiceEngine)
-    if (this.micStream && !this.ownsMicStream) {
+    if (this.micStream && this.ownsMicStream) {
       this.micStream.getTracks().forEach(t => t.stop());
     }
     this.micStream = null;

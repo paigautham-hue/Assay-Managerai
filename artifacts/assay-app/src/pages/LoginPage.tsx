@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/context/AuthContext';
 
 const BASE_URL = import.meta.env.BASE_URL || '/';
@@ -71,13 +71,17 @@ export function LoginPage() {
     window.location.href = apiUrl('auth/google');
   }
 
+  const inputFocusStyle = {
+    WebkitAppearance: 'none' as const,
+  };
+
   return (
     <div className="min-h-screen bg-gradient-dark flex items-center justify-center px-4 relative overflow-hidden safe-top pb-safe">
       {/* Animated background */}
       <div className="fixed inset-0 pointer-events-none">
         <div className="absolute w-[500px] h-[500px] rounded-full opacity-[0.04]" style={{ background: 'radial-gradient(circle, var(--color-gold), transparent 70%)', top: '-15%', right: '-10%', animation: 'breathe 10s ease-in-out infinite' }} />
-        <div className="absolute w-[350px] h-[350px] rounded-full opacity-[0.03]" style={{ background: 'radial-gradient(circle, #60A5FA, transparent 70%)', bottom: '-5%', left: '-8%', animation: 'breathe 14s ease-in-out infinite reverse' }} />
-        <div className="absolute w-[250px] h-[250px] rounded-full opacity-[0.02]" style={{ background: 'radial-gradient(circle, #A78BFA, transparent 70%)', top: '40%', left: '60%', animation: 'breathe 12s ease-in-out infinite' }} />
+        <div className="absolute w-[350px] h-[350px] rounded-full opacity-[0.03]" style={{ background: 'radial-gradient(circle, var(--color-blue, #60A5FA), transparent 70%)', bottom: '-5%', left: '-8%', animation: 'breathe 14s ease-in-out infinite reverse' }} />
+        <div className="absolute w-[250px] h-[250px] rounded-full opacity-[0.02]" style={{ background: 'radial-gradient(circle, var(--color-purple, #A78BFA), transparent 70%)', top: '40%', left: '60%', animation: 'breathe 12s ease-in-out infinite' }} />
         <div className="absolute inset-0 opacity-[0.012]" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.4) 1px, transparent 0)', backgroundSize: '48px 48px' }} />
       </div>
 
@@ -89,57 +93,89 @@ export function LoginPage() {
       >
         <div className="text-center mb-8">
           <motion.div
-            className="inline-flex items-center justify-center w-14 h-14 rounded-2xl mb-5 relative"
+            className="inline-flex items-center justify-center w-14 h-14 rounded-2xl mb-5 relative overflow-hidden"
             style={{ background: 'rgba(201,168,76,0.1)', border: '1px solid rgba(201,168,76,0.2)' }}
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.1, type: 'spring', stiffness: 200 }}
           >
             <div className="absolute inset-0 rounded-2xl animate-pulse-ring" style={{ border: '2px solid rgba(201,168,76,0.15)' }} />
-            <span className="text-[#C9A84C] font-bold text-2xl">A</span>
+            {/* Shimmer sweep on the logo mark */}
+            <div
+              className="absolute inset-0"
+              style={{
+                background: 'linear-gradient(90deg, transparent 0%, rgba(212,175,55,0.4) 50%, transparent 100%)',
+                animation: 'shimmer-logo 2.5s ease-in-out 0.5s 1 forwards',
+                opacity: 0,
+              }}
+            />
+            <span style={{ color: 'var(--color-gold)' }} className="font-bold text-2xl relative z-10">A</span>
           </motion.div>
-          <h1 className="text-3xl font-bold tracking-tight" style={{ background: 'linear-gradient(135deg, var(--color-gold) 0%, #E8D48B 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>ASSAY</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-gold-gradient">ASSAY</h1>
           <p className="text-sm mt-2" style={{ color: 'var(--color-text-secondary)' }}>Premium AI-powered executive assessment</p>
         </div>
 
-        <div className="rounded-2xl p-8" style={{ background: 'rgba(18,18,42,0.8)', backdropFilter: 'blur(24px) saturate(180%)', WebkitBackdropFilter: 'blur(24px) saturate(180%)', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 8px 32px rgba(0,0,0,0.4), 0 0 80px rgba(201,168,76,0.03)' }}>
-          <div className="flex rounded-lg bg-white/5 p-1 mb-6">
+        <div className="glassmorphism rounded-2xl p-8" style={{ boxShadow: '0 8px 32px rgba(0,0,0,0.4), 0 0 80px rgba(201,168,76,0.03)' }}>
+          {/* Tab switcher with animated indicator */}
+          <div className="flex rounded-lg p-1 mb-6 relative" style={{ background: 'rgba(255,255,255,0.05)' }}>
             {(['login', 'register'] as Mode[]).map((m) => (
               <button
                 key={m}
                 onClick={() => { setMode(m); setError(''); }}
-                className={`flex-1 py-3 text-sm font-medium rounded-md transition-all min-h-[44px] ${
-                  mode === m
-                    ? 'bg-[#C9A84C] text-[#1A1A2E]'
-                    : 'text-[#8B8B9E] hover:text-white'
-                }`}
+                className="flex-1 py-3 text-sm font-medium rounded-md transition-colors relative z-10 min-h-[44px]"
+                style={{
+                  color: mode === m ? 'var(--color-dark)' : 'var(--color-text-tertiary)',
+                }}
               >
                 {m === 'login' ? 'Sign In' : 'Register'}
               </button>
             ))}
+            {/* Animated gold pill indicator */}
+            <motion.div
+              className="absolute top-1 bottom-1 rounded-md"
+              style={{ background: 'var(--color-gold)', width: 'calc(50% - 4px)' }}
+              layoutId="login-tab-indicator"
+              animate={{ left: mode === 'login' ? 4 : 'calc(50% + 0px)' }}
+              transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+            />
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            {mode === 'register' && (
-              <div>
-                <label className="block text-xs font-medium text-[#8B8B9E] mb-1.5">Full Name</label>
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  required
-                  placeholder="Jane Smith"
-                  autoComplete="name"
-                  autoCapitalize="words"
-                  autoCorrect="off"
-                  spellCheck={false}
-                  className="w-full bg-white/5 border border-white/10 rounded-lg px-3.5 py-3 text-white placeholder:text-[#8B8B9E]/50 text-base focus:outline-none focus:border-[#C9A84C]/50 focus:ring-1 focus:ring-[#C9A84C]/20 transition-all min-h-[44px]"
-                  style={{ WebkitAppearance: 'none' }}
-                />
-              </div>
-            )}
+            <AnimatePresence mode="popLayout">
+              {mode === 'register' && (
+                <motion.div
+                  key="name-field"
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <label className="block text-xs font-medium mb-1.5" style={{ color: 'var(--color-text-tertiary)' }}>Full Name</label>
+                  <input
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    required
+                    placeholder="Jane Smith"
+                    autoComplete="name"
+                    autoCapitalize="words"
+                    autoCorrect="off"
+                    spellCheck={false}
+                    className="w-full border rounded-lg px-3.5 py-3 text-base transition-all min-h-[44px] focus:outline-none"
+                    style={{
+                      ...inputFocusStyle,
+                      background: 'rgba(255,255,255,0.05)',
+                      borderColor: 'rgba(255,255,255,0.1)',
+                      color: 'var(--color-text-primary)',
+                    }}
+                    onFocus={(e) => { e.target.style.borderColor = 'rgba(212,175,55,0.5)'; e.target.style.boxShadow = '0 0 0 2px rgba(212,175,55,0.2)'; }}
+                    onBlur={(e) => { e.target.style.borderColor = 'rgba(255,255,255,0.1)'; e.target.style.boxShadow = 'none'; }}
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
             <div>
-              <label className="block text-xs font-medium text-[#8B8B9E] mb-1.5">Email</label>
+              <label className="block text-xs font-medium mb-1.5" style={{ color: 'var(--color-text-tertiary)' }}>Email</label>
               <input
                 type="email"
                 inputMode="email"
@@ -151,12 +187,19 @@ export function LoginPage() {
                 autoCapitalize="none"
                 autoCorrect="off"
                 spellCheck={false}
-                className="w-full bg-white/5 border border-white/10 rounded-lg px-3.5 py-3 text-white placeholder:text-[#8B8B9E]/50 text-base focus:outline-none focus:border-[#C9A84C]/50 focus:ring-1 focus:ring-[#C9A84C]/20 transition-all min-h-[44px]"
-                style={{ WebkitAppearance: 'none' }}
+                className="w-full border rounded-lg px-3.5 py-3 text-base transition-all min-h-[44px] focus:outline-none"
+                style={{
+                  ...inputFocusStyle,
+                  background: 'rgba(255,255,255,0.05)',
+                  borderColor: 'rgba(255,255,255,0.1)',
+                  color: 'var(--color-text-primary)',
+                }}
+                onFocus={(e) => { e.target.style.borderColor = 'rgba(212,175,55,0.5)'; e.target.style.boxShadow = '0 0 0 2px rgba(212,175,55,0.2)'; }}
+                onBlur={(e) => { e.target.style.borderColor = 'rgba(255,255,255,0.1)'; e.target.style.boxShadow = 'none'; }}
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-[#8B8B9E] mb-1.5">Password</label>
+              <label className="block text-xs font-medium mb-1.5" style={{ color: 'var(--color-text-tertiary)' }}>Password</label>
               <input
                 type="password"
                 value={password}
@@ -167,8 +210,15 @@ export function LoginPage() {
                 autoCapitalize="none"
                 autoCorrect="off"
                 spellCheck={false}
-                className="w-full bg-white/5 border border-white/10 rounded-lg px-3.5 py-3 text-white placeholder:text-[#8B8B9E]/50 text-base focus:outline-none focus:border-[#C9A84C]/50 focus:ring-1 focus:ring-[#C9A84C]/20 transition-all min-h-[44px]"
-                style={{ WebkitAppearance: 'none' }}
+                className="w-full border rounded-lg px-3.5 py-3 text-base transition-all min-h-[44px] focus:outline-none"
+                style={{
+                  ...inputFocusStyle,
+                  background: 'rgba(255,255,255,0.05)',
+                  borderColor: 'rgba(255,255,255,0.1)',
+                  color: 'var(--color-text-primary)',
+                }}
+                onFocus={(e) => { e.target.style.borderColor = 'rgba(212,175,55,0.5)'; e.target.style.boxShadow = '0 0 0 2px rgba(212,175,55,0.2)'; }}
+                onBlur={(e) => { e.target.style.borderColor = 'rgba(255,255,255,0.1)'; e.target.style.boxShadow = 'none'; }}
               />
             </div>
 
@@ -181,7 +231,13 @@ export function LoginPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full bg-[#C9A84C] hover:bg-[#D4B85A] text-[#1A1A2E] font-semibold py-3 rounded-lg text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed min-h-[44px]"
+              className="w-full font-semibold py-3 rounded-lg text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed min-h-[44px]"
+              style={{
+                background: 'var(--color-gold)',
+                color: 'var(--color-dark)',
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--color-gold-light)'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = 'var(--color-gold)'; }}
             >
               {isSubmitting ? 'Please wait…' : mode === 'login' ? 'Sign In' : 'Create Account'}
             </button>
@@ -191,16 +247,23 @@ export function LoginPage() {
             <>
               <div className="relative my-5">
                 <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-white/5" />
+                  <div className="w-full" style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }} />
                 </div>
                 <div className="relative flex justify-center text-xs">
-                  <span className="bg-[#12122A] px-3 text-[#8B8B9E]">or continue with</span>
+                  <span className="px-3" style={{ background: 'transparent', color: 'var(--color-text-tertiary)' }}>or continue with</span>
                 </div>
               </div>
 
               <button
                 onClick={handleGoogleLogin}
-                className="w-full flex items-center justify-center gap-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-medium py-3 rounded-lg text-sm transition-all min-h-[44px]"
+                className="w-full flex items-center justify-center gap-2.5 border font-medium py-3 rounded-lg text-sm transition-all min-h-[44px]"
+                style={{
+                  background: 'rgba(255,255,255,0.05)',
+                  borderColor: 'rgba(255,255,255,0.1)',
+                  color: 'var(--color-text-primary)',
+                }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; }}
               >
                 <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
                   <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z" fill="#4285F4"/>
@@ -214,7 +277,7 @@ export function LoginPage() {
           )}
 
           {mode === 'register' && (
-            <p className="text-[#8B8B9E] text-xs text-center mt-4">
+            <p className="text-xs text-center mt-4" style={{ color: 'var(--color-text-tertiary)' }}>
               The first account created becomes the Owner.
             </p>
           )}

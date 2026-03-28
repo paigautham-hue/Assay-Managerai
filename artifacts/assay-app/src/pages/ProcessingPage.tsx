@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'wouter';
 import { useAssayStore } from '../store/useAssayStore';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useMotionValue, useTransform, animate } from 'framer-motion';
 
 const BASE_URL = import.meta.env.BASE_URL || '/';
 const apiUrl = (path: string) => `${BASE_URL}api/${path}`;
@@ -44,6 +44,32 @@ function ElapsedTimer({ startedAt }: { startedAt: number }) {
   return <span>{formatDuration(elapsed)}</span>;
 }
 
+/** Smoothly animated number that counts up */
+function AnimatedNumber({ value }: { value: number }) {
+  const motionVal = useMotionValue(0);
+  const display = useTransform(motionVal, (v) => `${Math.round(v)}%`);
+
+  useEffect(() => {
+    const controls = animate(motionVal, value, { duration: 0.6, ease: 'easeOut' });
+    return controls.stop;
+  }, [value, motionVal]);
+
+  return <motion.span>{display}</motion.span>;
+}
+
+/** Blinking cursor for active subtitle */
+function TypingCursor() {
+  return (
+    <motion.span
+      style={{ color: 'var(--color-gold)', fontWeight: 700 }}
+      animate={{ opacity: [1, 1, 0, 0, 1] }}
+      transition={{ duration: 1, repeat: Infinity, times: [0, 0.45, 0.5, 0.95, 1] }}
+    >
+      |
+    </motion.span>
+  );
+}
+
 export function ProcessingPage() {
   const [, navigate] = useLocation();
   const { session, setReport, setError } = useAssayStore();
@@ -56,6 +82,7 @@ export function ProcessingPage() {
   const [phase, setPhase] = useState<'running' | 'complete' | 'error'>('running');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isRedirecting, setIsRedirecting] = useState(false);
+  const [showCompletionFlash, setShowCompletionFlash] = useState(false);
 
   const updateAssessor = (role: string, update: Partial<AssessorStatus>) => {
     setAssessorStatuses(prev => ({ ...prev, [role]: { ...prev[role], ...update } }));
@@ -68,6 +95,7 @@ export function ProcessingPage() {
     }
 
     abortRef.current = false;
+    const controller = new AbortController();
 
     const runStream = async () => {
       let response: Response;
@@ -76,6 +104,7 @@ export function ProcessingPage() {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
+          signal: controller.signal,
           body: JSON.stringify({
             transcript: session.transcript,
             setup: session.setup,
@@ -131,11 +160,12 @@ export function ProcessingPage() {
 
           case 'report_complete': {
             setReport(data.report);
+            setShowCompletionFlash(true);
             setPhase('complete');
             setIsRedirecting(true);
             setTimeout(() => {
               if (!abortRef.current) navigate(`/report/${data.reportId}`);
-            }, 1800);
+            }, 2400);
             break;
           }
 
@@ -184,6 +214,7 @@ export function ProcessingPage() {
 
     return () => {
       abortRef.current = true;
+      controller.abort();
     };
   }, []);
 
@@ -193,10 +224,24 @@ export function ProcessingPage() {
 
   return (
     <div className="bg-gradient-dark min-h-screen flex flex-col items-center justify-center px-4 relative overflow-hidden">
+      {/* Golden completion flash overlay */}
+      <AnimatePresence>
+        {showCompletionFlash && (
+          <motion.div
+            className="fixed inset-0 z-50 pointer-events-none"
+            style={{ background: 'radial-gradient(circle at center, var(--color-gold), transparent 70%)' }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: [0, 0.35, 0] }}
+            transition={{ duration: 1.2, ease: 'easeOut' }}
+            onAnimationComplete={() => setShowCompletionFlash(false)}
+          />
+        )}
+      </AnimatePresence>
+
       {/* Background orbs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 opacity-5 rounded-full blur-3xl animate-spin-slow" style={{ background: 'var(--color-gold)' }} />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 opacity-5 rounded-full blur-3xl animate-spin-slow" style={{ background: '#60A5FA', animationDirection: 'reverse' }} />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 opacity-5 rounded-full blur-3xl animate-spin-slow" style={{ background: 'var(--color-blue)', animationDirection: 'reverse' }} />
       </div>
 
       <motion.div
@@ -207,7 +252,7 @@ export function ProcessingPage() {
       >
         {/* Header */}
         <div className="text-center mb-10">
-          <h1 className="heading-xl mb-3" style={{ color: '#F0F0F5' }}>
+          <h1 className="heading-xl mb-3" style={{ color: 'var(--color-text-primary)' }}>
             The Assay Chamber is{' '}
             <span className="text-gold">Deliberating</span>
           </h1>
@@ -216,135 +261,202 @@ export function ProcessingPage() {
           </p>
         </div>
 
-        {/* Progress bar */}
+        {/* Progress bar with glow trail */}
         {phase === 'running' && (
           <motion.div className="mb-8" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
             <div className="flex justify-between text-xs mb-2" style={{ color: 'var(--color-text-tertiary)' }}>
               <span>{completedCount} of {totalAssessors} assessors complete</span>
-              <span>{progressPercent}%</span>
+              <AnimatedNumber value={progressPercent} />
             </div>
-            <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.08)' }}>
+            <div className="relative h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--color-border-subtle)' }}>
               <motion.div
-                className="h-full rounded-full"
-                style={{ background: 'var(--color-gold)' }}
+                className="h-full rounded-full relative"
+                style={{
+                  background: 'linear-gradient(90deg, var(--color-gold), var(--color-gold-light))',
+                  boxShadow: '0 0 12px var(--color-gold)',
+                }}
                 initial={{ width: 0 }}
                 animate={{ width: `${progressPercent}%` }}
-                transition={{ duration: 0.4 }}
+                transition={{ duration: 0.6, ease: 'easeOut' }}
+              />
+              {/* Orbital dot on progress bar edge */}
+              <motion.div
+                className="absolute top-1/2 -translate-y-1/2"
+                style={{
+                  left: `${progressPercent}%`,
+                  width: 10,
+                  height: 10,
+                  marginLeft: -5,
+                  borderRadius: '50%',
+                  background: 'var(--color-gold-light)',
+                  boxShadow: '0 0 16px var(--color-gold), 0 0 6px var(--color-gold)',
+                }}
+                animate={{ scale: [1, 1.4, 1] }}
+                transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
               />
             </div>
           </motion.div>
         )}
 
-        {/* Assessor list */}
-        <div className="space-y-3 mb-10">
-          {ASSESSORS.map((assessor, index) => {
-            const status = assessorStatuses[assessor.role] ?? { state: 'pending' };
-            const isActive = status.state === 'active';
-            const isDone = status.state === 'complete';
-            const isError = status.state === 'error';
+        {/* Assessor list with glassmorphism panel */}
+        <div
+          className="rounded-2xl p-4 mb-10"
+          style={{
+            background: 'rgba(255, 255, 255, 0.03)',
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+            border: '1px solid var(--color-border-subtle)',
+            boxShadow: 'var(--shadow-lg)',
+          }}
+        >
+          <div className="space-y-3">
+            {ASSESSORS.map((assessor, index) => {
+              const status = assessorStatuses[assessor.role] ?? { state: 'pending' };
+              const isActive = status.state === 'active';
+              const isDone = status.state === 'complete';
+              const isError = status.state === 'error';
 
-            return (
-              <motion.div
-                key={assessor.role}
-                className="relative flex items-center gap-4 p-4 rounded-xl transition-all duration-500"
-                style={{
-                  background: isActive ? 'rgba(201,168,76,0.12)' : isDone ? 'rgba(52,211,153,0.08)' : isError ? 'rgba(248,113,113,0.08)' : 'rgba(0,0,0,0.2)',
-                  border: `1px solid ${isActive ? 'rgba(201,168,76,0.45)' : isDone ? 'rgba(52,211,153,0.35)' : isError ? 'rgba(248,113,113,0.35)' : 'rgba(255,255,255,0.06)'}`,
-                  opacity: status.state === 'pending' ? 0.45 : 1,
-                }}
-                initial={{ opacity: 0, x: -16 }}
-                animate={{ opacity: status.state === 'pending' ? 0.45 : 1, x: 0 }}
-                transition={{ delay: index * 0.1, duration: 0.35 }}
-              >
-                {/* Icon */}
-                <div className="relative flex-shrink-0">
-                  <AnimatePresence mode="wait">
-                    {isActive ? (
-                      <motion.div
-                        key="active"
-                        className="w-12 h-12 rounded-full flex items-center justify-center text-2xl"
-                        style={{ background: 'rgba(201,168,76,0.25)', boxShadow: '0 0 16px rgba(201,168,76,0.4)' }}
-                        initial={{ scale: 0.7, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        exit={{ scale: 0.7, opacity: 0 }}
-                      >
-                        {assessor.icon}
-                      </motion.div>
-                    ) : isDone ? (
-                      <motion.div
-                        key="done"
-                        className="w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold"
-                        style={{ background: 'var(--color-green)', color: '#0D0D1A' }}
-                        initial={{ scale: 0.7, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        exit={{ scale: 0.7, opacity: 0 }}
-                      >
-                        ✓
-                      </motion.div>
-                    ) : isError ? (
-                      <motion.div
-                        key="error"
-                        className="w-12 h-12 rounded-full flex items-center justify-center text-xl"
-                        style={{ background: 'rgba(248,113,113,0.2)', color: '#F87171' }}
-                        initial={{ scale: 0.7, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        exit={{ scale: 0.7, opacity: 0 }}
-                      >
-                        ✕
-                      </motion.div>
-                    ) : (
-                      <motion.div
-                        key="pending"
-                        className="w-12 h-12 rounded-full flex items-center justify-center text-2xl"
-                        style={{ background: 'rgba(255,255,255,0.05)' }}
-                      >
-                        {assessor.icon}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
+              return (
+                <motion.div
+                  key={assessor.role}
+                  className="relative flex items-center gap-4 p-4 rounded-xl"
+                  style={{
+                    background: isActive
+                      ? 'rgba(201,168,76,0.12)'
+                      : isDone
+                        ? 'rgba(52,211,153,0.08)'
+                        : isError
+                          ? `rgba(248,113,113,0.08)`
+                          : 'rgba(0,0,0,0.2)',
+                    border: isActive
+                      ? '1.5px solid rgba(201,168,76,0.55)'
+                      : isDone
+                        ? '1px solid rgba(52,211,153,0.35)'
+                        : isError
+                          ? `1px solid var(--color-red)`
+                          : '1px solid var(--color-border-subtle)',
+                    opacity: status.state === 'pending' ? 0.45 : 1,
+                    boxShadow: isActive
+                      ? '0 0 20px rgba(201,168,76,0.15), inset 0 0 20px rgba(201,168,76,0.05)'
+                      : 'none',
+                    transition: 'box-shadow 0.5s ease, border-color 0.5s ease, background 0.5s ease',
+                  }}
+                  initial={{ opacity: 0, x: -16 }}
+                  animate={{
+                    opacity: status.state === 'pending' ? 0.45 : 1,
+                    x: 0,
+                    ...(isActive ? {
+                      boxShadow: [
+                        '0 0 16px rgba(201,168,76,0.12), inset 0 0 16px rgba(201,168,76,0.04)',
+                        '0 0 28px rgba(201,168,76,0.25), inset 0 0 28px rgba(201,168,76,0.08)',
+                        '0 0 16px rgba(201,168,76,0.12), inset 0 0 16px rgba(201,168,76,0.04)',
+                      ],
+                    } : {}),
+                  }}
+                  transition={{
+                    delay: index * 0.1,
+                    duration: 0.35,
+                    ...(isActive ? { boxShadow: { duration: 2.5, repeat: Infinity, ease: 'easeInOut' } } : {}),
+                  }}
+                >
+                  {/* Icon */}
+                  <div className="relative flex-shrink-0">
+                    <AnimatePresence mode="wait">
+                      {isActive ? (
+                        <motion.div
+                          key="active"
+                          className="w-12 h-12 rounded-full flex items-center justify-center text-2xl"
+                          style={{ background: 'rgba(201,168,76,0.25)', boxShadow: '0 0 16px rgba(201,168,76,0.4)' }}
+                          initial={{ scale: 0.7, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          exit={{ scale: 0.7, opacity: 0 }}
+                          transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+                        >
+                          {assessor.icon}
+                        </motion.div>
+                      ) : isDone ? (
+                        <motion.div
+                          key="done"
+                          className="w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold"
+                          style={{ background: 'var(--color-green)', color: 'var(--color-dark)' }}
+                          initial={{ scale: 0, opacity: 0, rotate: -90 }}
+                          animate={{ scale: 1, opacity: 1, rotate: 0 }}
+                          exit={{ scale: 0.7, opacity: 0 }}
+                          transition={{ type: 'spring', stiffness: 350, damping: 18 }}
+                        >
+                          ✓
+                        </motion.div>
+                      ) : isError ? (
+                        <motion.div
+                          key="error"
+                          className="w-12 h-12 rounded-full flex items-center justify-center text-xl"
+                          style={{ background: 'rgba(248,113,113,0.2)', color: 'var(--color-red)' }}
+                          initial={{ scale: 0.7, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          exit={{ scale: 0.7, opacity: 0 }}
+                          transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+                        >
+                          ✕
+                        </motion.div>
+                      ) : (
+                        <motion.div
+                          key="pending"
+                          className="w-12 h-12 rounded-full flex items-center justify-center text-2xl"
+                          style={{ background: 'var(--color-border-subtle)' }}
+                        >
+                          {assessor.icon}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
 
-                {/* Name + subtitle */}
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-bold text-base" style={{
-                    color: isActive ? 'var(--color-gold)' : isDone ? 'var(--color-green)' : isError ? '#F87171' : 'var(--color-text-tertiary)',
-                  }}>
-                    {assessor.displayName}
-                  </h3>
-                  <p className="text-sm truncate" style={{ color: isActive ? 'var(--color-text-secondary)' : 'var(--color-text-tertiary)' }}>
-                    {isActive ? assessor.subtitle : isDone ? 'Assessment complete' : isError ? 'Assessment failed — skipped' : 'Waiting...'}
-                  </p>
-                </div>
+                  {/* Name + subtitle */}
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-bold text-base" style={{
+                      color: isActive ? 'var(--color-gold)' : isDone ? 'var(--color-green)' : isError ? 'var(--color-red)' : 'var(--color-text-tertiary)',
+                    }}>
+                      {assessor.displayName}
+                    </h3>
+                    <p className="text-sm truncate" style={{ color: isActive ? 'var(--color-text-secondary)' : 'var(--color-text-tertiary)' }}>
+                      {isActive ? (
+                        <>
+                          {assessor.subtitle}
+                          <TypingCursor />
+                        </>
+                      ) : isDone ? 'Assessment complete' : isError ? 'Assessment failed — skipped' : 'Waiting...'}
+                    </p>
+                  </div>
 
-                {/* Timing / spinner */}
-                <div className="flex-shrink-0 text-right">
-                  {isActive && status.startedAt && (
-                    <div className="flex items-center gap-2">
-                      <div className="flex gap-1">
-                        {[0, 1, 2].map(dot => (
-                          <motion.div
-                            key={dot}
-                            className="w-1.5 h-1.5 rounded-full"
-                            style={{ background: 'var(--color-gold)' }}
-                            animate={{ opacity: [0.3, 1, 0.3] }}
-                            transition={{ duration: 1.2, delay: dot * 0.25, repeat: Infinity }}
-                          />
-                        ))}
+                  {/* Timing / spinner */}
+                  <div className="flex-shrink-0 text-right">
+                    {isActive && status.startedAt && (
+                      <div className="flex items-center gap-2">
+                        <div className="flex gap-1">
+                          {[0, 1, 2].map(dot => (
+                            <motion.div
+                              key={dot}
+                              className="w-1.5 h-1.5 rounded-full"
+                              style={{ background: 'var(--color-gold)' }}
+                              animate={{ opacity: [0.3, 1, 0.3] }}
+                              transition={{ duration: 1.2, delay: dot * 0.25, repeat: Infinity }}
+                            />
+                          ))}
+                        </div>
+                        <span className="text-xs font-mono" style={{ color: 'var(--color-gold)' }}>
+                          <ElapsedTimer startedAt={status.startedAt} />
+                        </span>
                       </div>
-                      <span className="text-xs font-mono" style={{ color: 'var(--color-gold)' }}>
-                        <ElapsedTimer startedAt={status.startedAt} />
+                    )}
+                    {(isDone || isError) && status.duration !== undefined && (
+                      <span className="text-xs font-mono" style={{ color: isDone ? 'var(--color-green)' : 'var(--color-red)', opacity: 0.8 }}>
+                        {formatDuration(status.duration)}
                       </span>
-                    </div>
-                  )}
-                  {(isDone || isError) && status.duration !== undefined && (
-                    <span className="text-xs font-mono" style={{ color: isDone ? 'var(--color-green)' : '#F87171', opacity: 0.8 }}>
-                      {formatDuration(status.duration)}
-                    </span>
-                  )}
-                </div>
-              </motion.div>
-            );
-          })}
+                    )}
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
         </div>
 
         {/* Complete / error banners */}
@@ -352,12 +464,22 @@ export function ProcessingPage() {
           {phase === 'complete' && (
             <motion.div
               className="rounded-xl p-6 text-center"
-              style={{ background: 'rgba(201,168,76,0.1)', border: '1px solid rgba(201,168,76,0.5)' }}
+              style={{
+                background: 'rgba(201,168,76,0.1)',
+                border: '1px solid rgba(201,168,76,0.5)',
+                boxShadow: '0 0 40px rgba(201,168,76,0.15)',
+              }}
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 25 }}
             >
-              <p className="text-lg font-bold text-gold mb-1">Deliberation Complete</p>
+              <motion.p
+                className="text-lg font-bold text-gold mb-1"
+                animate={{ scale: [1, 1.04, 1] }}
+                transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+              >
+                Deliberation Complete
+              </motion.p>
               <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>
                 {isRedirecting ? 'Redirecting to your assessment report...' : 'Generating comprehensive report...'}
               </p>
@@ -367,11 +489,11 @@ export function ProcessingPage() {
           {phase === 'error' && (
             <motion.div
               className="rounded-xl p-6 text-center"
-              style={{ background: 'rgba(248,113,113,0.1)', border: '1px solid rgba(248,113,113,0.4)' }}
+              style={{ background: 'rgba(248,113,113,0.1)', border: `1px solid var(--color-red)` }}
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
             >
-              <p className="text-lg font-bold mb-2" style={{ color: '#F87171' }}>Assessment Error</p>
+              <p className="text-lg font-bold mb-2" style={{ color: 'var(--color-red)' }}>Assessment Error</p>
               <p className="text-sm mb-4" style={{ color: 'var(--color-text-secondary)' }}>
                 {errorMessage || 'An error occurred during the assessment process.'}
               </p>

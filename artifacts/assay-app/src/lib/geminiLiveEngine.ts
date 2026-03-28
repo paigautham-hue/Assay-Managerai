@@ -881,6 +881,7 @@ ${gateInstructions}
 
     if (this.unmuteMicTimeout) clearTimeout(this.unmuteMicTimeout);
     this.unmuteMicTimeout = setTimeout(() => {
+      if (this.userMuted) { this.unmuteMicTimeout = null; return; }
       this.micMuted = false;
       if (this.micGainNode && this.audioContext) {
         this.micGainNode.gain.setValueAtTime(1.0, this.audioContext.currentTime);
@@ -1040,6 +1041,7 @@ ${gateInstructions}
     this.ephemeralToken = null;
     this.hasGreeted = false;
     this.userMuted = false;
+    this.micMuted = false;
   }
 
   // ─── Utilities ──────────────────────────────────────────────────────────────

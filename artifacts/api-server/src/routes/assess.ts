@@ -390,9 +390,17 @@ Active Gates: ${setup.activeGates?.join(', ') || 'standard gates'}`;
 // Legacy synchronous endpoint (kept for backward compat)
 router.post('/assess', async (req: Request, res: Response) => {
   try {
-    const { transcript, setup, observations } = req.body;
+    const { transcript, setup, observations, sessionId } = req.body;
     if (!transcript || !Array.isArray(transcript)) return res.status(400).json({ error: 'transcript array is required' });
     if (!setup) return res.status(400).json({ error: 'setup is required' });
+
+    // Candidates may only assess their own session
+    if (req.user?.role === 'candidate') {
+      const ownSessionId = req.user.id.replace(/^candidate_/, '');
+      if (!sessionId || sessionId !== ownSessionId) {
+        return res.status(403).json({ error: 'Candidates may only access their own session' });
+      }
+    }
 
     const { transcriptText, setupContext } = prepareTranscriptContext(transcript, setup);
 
@@ -444,6 +452,16 @@ router.post('/assess/stream', async (req: Request, res: Response) => {
 
   try {
     const { transcript, setup, observations, sessionId, prosodyData } = req.body;
+
+    // Candidates may only assess their own session
+    if (req.user?.role === 'candidate') {
+      const ownSessionId = req.user.id.replace(/^candidate_/, '');
+      if (!sessionId || sessionId !== ownSessionId) {
+        sendEvent('error', { message: 'Candidates may only access their own session' });
+        res.end();
+        return;
+      }
+    }
 
     if (!transcript || !Array.isArray(transcript) || !setup) {
       sendEvent('error', { message: 'transcript and setup are required' });
