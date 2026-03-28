@@ -52,4 +52,10 @@ if (process.env.NODE_ENV === "production") {
   }
 }
 
+// Global error handler — must be registered after all routes
+app.use((err: any, _req: any, res: any, _next: any) => {
+  console.error('[server] Unhandled error:', err);
+  res.status(500).json({ error: process.env.NODE_ENV === 'production' ? 'Internal server error' : err.message });
+});
+
 export default app;

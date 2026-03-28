@@ -141,7 +141,7 @@ router.post('/public/invite/:token/start', async (req: Request, res: Response) =
       id: `candidate_${session.id}`,
       email: '',
       name: (candidateName || invite.candidateName || 'Candidate').trim(),
-      role: 'interviewer',
+      role: 'candidate',
     };
     const candidateToken = signToken(candidateUser);
     res.cookie('assay_token', candidateToken, CANDIDATE_COOKIE_OPTS);

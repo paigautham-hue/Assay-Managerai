@@ -215,6 +215,12 @@ const ASSESSOR_JSON_SCHEMA = `{
   "dissent": "optional disagreement with consensus"
 }`;
 
+const LLM_TIMEOUT_MS = 60_000; // 60-second timeout for all LLM API calls
+
+function createTimeoutSignal(): AbortSignal {
+  return AbortSignal.timeout(LLM_TIMEOUT_MS);
+}
+
 async function callAnthropic(config: AssessorConfig, transcriptText: string, setupContext: string): Promise<any> {
   if (!process.env.ANTHROPIC_API_KEY) throw new Error('ANTHROPIC_API_KEY not configured');
   const userPrompt = buildUserPrompt(config.displayName, transcriptText, setupContext);
@@ -222,6 +228,7 @@ async function callAnthropic(config: AssessorConfig, transcriptText: string, set
     method: 'POST',
     headers: { 'x-api-key': process.env.ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
     body: JSON.stringify({ model: config.model, max_tokens: 8000, system: config.systemPrompt, messages: [{ role: 'user', content: userPrompt }] }),
+    signal: createTimeoutSignal(),
   });
   if (!res.ok) { const err = await res.text(); throw new Error(`Anthropic API error ${res.status}: ${err.substring(0, 200)}`); }
   const data = await res.json();
@@ -235,6 +242,7 @@ async function callOpenAI(config: AssessorConfig, transcriptText: string, setupC
     method: 'POST',
     headers: { 'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({ model: config.model, max_tokens: 8000, messages: [{ role: 'system', content: config.systemPrompt }, { role: 'user', content: userPrompt }] }),
+    signal: createTimeoutSignal(),
   });
   if (!res.ok) { const err = await res.text(); throw new Error(`OpenAI API error ${res.status}: ${err.substring(0, 200)}`); }
   const data = await res.json();
@@ -244,12 +252,14 @@ async function callOpenAI(config: AssessorConfig, transcriptText: string, setupC
 async function callGoogle(config: AssessorConfig, transcriptText: string, setupContext: string): Promise<any> {
   if (!process.env.GOOGLE_API_KEY) throw new Error('GOOGLE_API_KEY not configured');
   const userPrompt = buildUserPrompt(config.displayName, transcriptText, setupContext);
+  // Use x-goog-api-key header instead of putting the key in URL query params
   const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/${config.model}:generateContent?key=${process.env.GOOGLE_API_KEY}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/${config.model}:generateContent`,
     {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'x-goog-api-key': process.env.GOOGLE_API_KEY },
       body: JSON.stringify({ systemInstruction: { parts: { text: config.systemPrompt } }, contents: { parts: [{ text: userPrompt }] }, generationConfig: { maxOutputTokens: 8000 } }),
+      signal: createTimeoutSignal(),
     }
   );
   if (!res.ok) { const err = await res.text(); throw new Error(`Google API error ${res.status}: ${err.substring(0, 200)}`); }
@@ -339,6 +349,7 @@ async function callChairman(verdicts: any[], transcriptText: string, setupContex
         method: 'POST',
         headers: { 'x-api-key': process.env.ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
         body: JSON.stringify({ model: 'claude-sonnet-4-5-20250929', max_tokens: 4000, messages: [{ role: 'user', content: prompt }] }),
+        signal: createTimeoutSignal(),
       });
       if (res.ok) return extractJSON((await res.json()).content[0]?.text || '');
     }
@@ -347,6 +358,7 @@ async function callChairman(verdicts: any[], transcriptText: string, setupContex
         method: 'POST',
         headers: { 'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({ model: 'gpt-5.4', max_tokens: 4000, messages: [{ role: 'user', content: prompt }] }),
+        signal: createTimeoutSignal(),
       });
       if (res.ok) return extractJSON((await res.json()).choices[0]?.message?.content || '');
     }
@@ -383,6 +395,10 @@ router.post('/assess', async (req: Request, res: Response) => {
     if (!setup) return res.status(400).json({ error: 'setup is required' });
 
     const { transcriptText, setupContext } = prepareTranscriptContext(transcript, setup);
+
+    if (!transcriptText || transcriptText.length < 200) {
+      return res.status(400).json({ error: 'Insufficient interview data. The transcript must contain at least 200 characters for a reliable assessment.' });
+    }
 
     const results = await Promise.allSettled(ASSESSOR_CONFIGS.map(config => callAssessorWithFallback(config, transcriptText, setupContext)));
     const verdicts: any[] = [];
@@ -437,6 +453,12 @@ router.post('/assess/stream', async (req: Request, res: Response) => {
 
     const { transcriptText, setupContext } = prepareTranscriptContext(transcript, setup);
 
+    if (!transcriptText || transcriptText.length < 200) {
+      sendEvent('error', { message: 'Insufficient interview data. The transcript must contain at least 200 characters for a reliable assessment.' });
+      res.end();
+      return;
+    }
+
     sendEvent('start', { sessionId, assessorCount: ASSESSOR_CONFIGS.length });
 
     const verdicts: any[] = [];
@@ -444,10 +466,16 @@ router.post('/assess/stream', async (req: Request, res: Response) => {
 
     // Start all assessors in parallel — stream events as each completes
     const assessorPromises = ASSESSOR_CONFIGS.map(async (config, index) => {
+      // Abort expensive LLM calls if the client has disconnected
+      if (clientDisconnected) return;
+
       const startedAt = Date.now();
       sendEvent('assessor_start', { role: config.role, displayName: config.displayName, index });
 
       const result = await callAssessorWithFallback(config, transcriptText, setupContext);
+
+      // Check again after the (potentially long) API call returns
+      if (clientDisconnected) return;
       const duration = Date.now() - startedAt;
 
       if ('verdict' in result) {
@@ -484,6 +512,13 @@ router.post('/assess/stream', async (req: Request, res: Response) => {
 
     if (verdicts.length === 0) {
       sendEvent('error', { message: 'All assessors failed', details: errors });
+      res.end();
+      return;
+    }
+
+    // Abort if client disconnected before chairman synthesis
+    if (clientDisconnected) {
+      console.warn('[assess/stream] Client disconnected before chairman synthesis — aborting');
       res.end();
       return;
     }

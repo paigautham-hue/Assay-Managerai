@@ -31,6 +31,24 @@ router.post('/calibration', async (req: Request, res: Response) => {
   }
 });
 
+// ─── Get calibration sessions for a report ───────────────────────────────────
+// NOTE: This route MUST be registered before `/calibration/:id` to prevent
+// "by-report" from being captured as an :id parameter (route shadowing).
+router.get('/calibration/by-report/:reportId', async (req: Request, res: Response) => {
+  try {
+    const sessions = await prisma.calibrationSession.findMany({
+      where: { reportId: req.params.reportId },
+      include: { notes: { orderBy: { createdAt: 'asc' } } },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    res.json(sessions);
+  } catch (err: any) {
+    console.error('[CALIBRATION] Get by report error:', err);
+    res.status(500).json({ error: 'Failed to fetch calibration sessions' });
+  }
+});
+
 // ─── Get calibration session with notes ──────────────────────────────────────
 router.get('/calibration/:id', async (req: Request, res: Response) => {
   try {
@@ -157,22 +175,6 @@ router.patch('/calibration/:id', async (req: Request, res: Response) => {
   } catch (err: any) {
     console.error('[CALIBRATION] Update error:', err);
     res.status(500).json({ error: 'Failed to update calibration session' });
-  }
-});
-
-// ─── Get calibration sessions for a report ───────────────────────────────────
-router.get('/calibration/by-report/:reportId', async (req: Request, res: Response) => {
-  try {
-    const sessions = await prisma.calibrationSession.findMany({
-      where: { reportId: req.params.reportId },
-      include: { notes: { orderBy: { createdAt: 'asc' } } },
-      orderBy: { createdAt: 'desc' },
-    });
-
-    res.json(sessions);
-  } catch (err: any) {
-    console.error('[CALIBRATION] Get by report error:', err);
-    res.status(500).json({ error: 'Failed to fetch calibration sessions' });
   }
 });
 

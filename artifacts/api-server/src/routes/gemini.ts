@@ -44,7 +44,11 @@ router.post('/gemini-token', async (_req: Request, res: Response) => {
     }
 
     const data = await response.json() as Record<string, any>;
-    return res.json({ token: data.ephemeralToken?.token || data.token });
+    const token = data.ephemeralToken?.token || data.token;
+    if (!token) {
+      return res.status(502).json({ error: 'Invalid token response from Google' });
+    }
+    return res.json({ token });
   } catch (error) {
     console.error('[gemini-token] Error:', error);
     return res.status(500).json({ error: 'Internal error minting token' });

@@ -280,6 +280,18 @@ export function CandidateInvitePage() {
                     />
                   </div>
 
+                  {/* Requirements */}
+                  <div className="mb-6 space-y-2">
+                    <p className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: 'var(--color-text-tertiary)' }}>Before You Begin</p>
+                    <div className="space-y-1.5 text-xs" style={{ color: 'var(--color-text-secondary)' }}>
+                      <div className="flex items-start gap-2"><span>🎤</span><span>A working microphone is required</span></div>
+                      <div className="flex items-start gap-2"><span>🔇</span><span>Find a quiet environment with minimal background noise</span></div>
+                      <div className="flex items-start gap-2"><span>⏱</span><span>Allow 45-90 minutes for the full interview</span></div>
+                      <div className="flex items-start gap-2"><span>🌐</span><span>Stable internet connection recommended</span></div>
+                      <div className="flex items-start gap-2"><span>💻</span><span>Use Chrome, Safari, or Edge for the best experience</span></div>
+                    </div>
+                  </div>
+
                   {/* Start button */}
                   <button
                     onClick={handleStart}

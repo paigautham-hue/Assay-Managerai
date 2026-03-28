@@ -15,13 +15,28 @@ const itemVariants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } },
 };
 
+const BASE_URL = import.meta.env.BASE_URL || '/';
+const apiUrl = (path: string) => `${BASE_URL}api/${path}`;
+
 export function HomePage() {
   const [, navigate] = useLocation();
   const { reports, loadReports, isLoading } = useAssayStore();
   const [showInviteModal, setShowInviteModal] = useState(false);
+  const [activeCount, setActiveCount] = useState(0);
 
   useEffect(() => {
     loadReports();
+  }, []);
+
+  // Fetch active interview sessions count
+  useEffect(() => {
+    fetch(apiUrl('sessions'), { credentials: 'include' })
+      .then(res => res.ok ? res.json() : [])
+      .then((sessions: Array<{ status?: string }>) => {
+        const active = sessions.filter(s => s.status === 'active' || s.status === 'preparing');
+        setActiveCount(active.length);
+      })
+      .catch(() => {}); // non-critical
   }, []);
 
   const stats = {
@@ -32,7 +47,7 @@ export function HomePage() {
     avgScore: reports.length > 0
       ? (reports.reduce((sum, r) => sum + r.pyramidScore.overall, 0) / reports.length).toFixed(2)
       : 0,
-    active: 0,
+    active: activeCount,
   };
 
   const statsMeta = [

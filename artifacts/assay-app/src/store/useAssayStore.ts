@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 import type { InterviewSession, AssayReport, InterviewSetup, TranscriptEntry, Observation, GateName } from '../types';
 import type { ProsodyData, EmotionDataPoint } from '../lib/emotionEngine';
 import { v4 as uuidv4 } from 'uuid';
@@ -60,7 +61,7 @@ interface AssayStore {
   reset: () => void;
 }
 
-export const useAssayStore = create<AssayStore>((set, get) => ({
+export const useAssayStore = create<AssayStore>()(persist((set, get) => ({
   currentView: 'home',
   session: null,
   report: null,
@@ -109,31 +110,33 @@ export const useAssayStore = create<AssayStore>((set, get) => ({
   },
 
   addTranscriptEntry: (entry) => {
-    const session = get().session;
-    if (!session) return;
-    const id = uuidv4();
-    set({
-      session: {
-        ...session,
-        transcript: [...session.transcript, { ...entry, id }],
-      },
+    set((state) => {
+      if (!state.session) return state;
+      const id = `t-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+      const newEntry = { ...entry, id };
+      const updatedSession = {
+        ...state.session,
+        transcript: [...state.session.transcript, newEntry],
+      };
+      // Fire-and-forget server persist
+      dbPost(`sessions/${state.session.id}/transcript`, newEntry);
+      return { session: updatedSession };
     });
-
-    dbPost(`sessions/${session.id}/transcript`, { ...entry, id });
   },
 
   addObservation: (obs) => {
-    const session = get().session;
-    if (!session) return;
-    const id = uuidv4();
-    set({
-      session: {
-        ...session,
-        observations: [...session.observations, { ...obs, id }],
-      },
+    set((state) => {
+      if (!state.session) return state;
+      const id = `o-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+      const newObs = { ...obs, id };
+      const updatedSession = {
+        ...state.session,
+        observations: [...state.session.observations, newObs],
+      };
+      // Fire-and-forget server persist
+      dbPost(`sessions/${state.session.id}/observations`, newObs);
+      return { session: updatedSession };
     });
-
-    dbPost(`sessions/${session.id}/observations`, { ...obs, id });
   },
 
   addEmotionDataPoint: (point) => {
@@ -194,4 +197,23 @@ export const useAssayStore = create<AssayStore>((set, get) => ({
   setLoading: (isLoading) => set({ isLoading }),
   setError: (error) => set({ error }),
   reset: () => set({ currentView: 'home', session: null, report: null, reports: [], isLoading: false, error: null, emotionTimeline: [], reportsLoaded: false }),
+}), {
+  name: 'assay-store',
+  storage: {
+    getItem: (name) => {
+      const str = sessionStorage.getItem(name);
+      return str ? JSON.parse(str) : null;
+    },
+    setItem: (name, value) => {
+      sessionStorage.setItem(name, JSON.stringify(value));
+    },
+    removeItem: (name) => {
+      sessionStorage.removeItem(name);
+    },
+  },
+  partialize: (state: AssayStore) => ({
+    session: state.session,
+    reports: state.reports,
+    reportsLoaded: state.reportsLoaded,
+  } as AssayStore),
 }));

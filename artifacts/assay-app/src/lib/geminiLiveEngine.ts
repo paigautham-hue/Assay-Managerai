@@ -48,8 +48,8 @@ const GEMINI_MODEL = 'gemini-2.5-flash-preview-native-audio-dialog';
 const WS_BASE = 'wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1beta.GenerativeService.BidiGenerateContent';
 
 // Reconnection constants
-const MAX_RECONNECT_ATTEMPTS = 5;
-const RECONNECT_BASE_DELAY_MS = 1000; // Exponential backoff: 1s, 2s, 4s, 8s, 16s
+const MAX_RECONNECT_ATTEMPTS = 20;
+const RECONNECT_BASE_DELAY_MS = 1000; // Exponential backoff: 1s, 2s, 4s, ...
 
 export class GeminiLiveEngine {
   private ws: WebSocket | null = null;
@@ -67,12 +67,14 @@ export class GeminiLiveEngine {
   private analyserNode: AnalyserNode | null = null;
   private micGainNode: GainNode | null = null;
   private audioLevelInterval: ReturnType<typeof setInterval> | null = null;
+  private pcmBuffer: Int16Array | null = null;
 
   // Audio output playback
   private playbackContext: AudioContext | null = null;
   private playbackQueue: Float32Array[] = [];
   private isPlaying = false;
   private nextPlayTime = 0;
+  private playbackChunkCount = 0;
 
   // Video capture
   private videoCanvas: HTMLCanvasElement | null = null;
@@ -85,6 +87,8 @@ export class GeminiLiveEngine {
   private micMuted = false;
   private unmuteMicTimeout: ReturnType<typeof setTimeout> | null = null;
   private readonly MIC_UNMUTE_DELAY_MS = 600;
+  // User-initiated mute (separate from echo-prevention mute)
+  private userMuted = false;
 
   // Session resumption (handles 10-min connection limit)
   private sessionHandle: string | null = null;
@@ -96,6 +100,11 @@ export class GeminiLiveEngine {
   private ephemeralToken: string | null = null;
 
   private personality?: AIPersonality;
+
+  // Event handlers for cleanup
+  private visibilityHandler: (() => void) | null = null;
+  private onlineHandler: (() => void) | null = null;
+  private offlineHandler: (() => void) | null = null;
 
   constructor(
     setup: InterviewSetup,
@@ -110,6 +119,20 @@ export class GeminiLiveEngine {
   /** Expose the mic stream so EmotionEngine can share it. */
   getMicStream(): MediaStream | null {
     return this.micStream;
+  }
+
+  // ─── Safe Send Wrapper ──────────────────────────────────────────────────────
+
+  private safeSend(data: string): boolean {
+    try {
+      if (this.ws?.readyState === WebSocket.OPEN) {
+        this.ws.send(data);
+        return true;
+      }
+    } catch (e) {
+      console.warn('[GeminiLive] Send failed:', e);
+    }
+    return false;
   }
 
   // ─── System Prompt ──────────────────────────────────────────────────────────
@@ -143,6 +166,12 @@ PACING:
 - ONE question per turn. Let silence work for you — don't fill gaps.
 - Use ${this.setup.candidateName}'s name once every 3–4 exchanges, never robotically.
 - Mirror their energy: if they're animated, match it. If they're reflective, slow down.
+
+CULTURAL AWARENESS:
+- Communication styles vary across cultures. In collectivist cultures, "we" language reflects cultural norms, not lack of personal contribution — probe gently with "What would your manager say was YOUR specific impact?" rather than penalizing pronoun choice.
+- Some cultures consider self-promotion inappropriate. If the candidate understates their role, try: "If I called your former boss right now, what would they say you were best at?"
+- Assess substance and outcomes, not communication style. A quietly competent leader is not less capable than a charismatic one.
+- Never penalize accent, speech pace, or language proficiency unless communication is a core requirement of the role.
 
 ═══ INTERVIEW ARCHITECTURE ═══
 
@@ -181,10 +210,16 @@ TECHNIQUES:
 
 ` : ''}PHASE ${isSenior ? '5' : '4'} — MOTIVATION & VISION (~10 min)
 - "What would make you look back in 3 years and say 'that was the best decision I made'?"
-- "What are you running toward? And — honestly — what are you running from?"
+- "What are you most excited about building next? And what would you change about your current situation if you could?"
 
 PHASE ${isSenior ? '6' : '5'} — FINANCIAL FIT (~3 min)
 - "Let's talk about expectations. What does fair look like to you?"
+
+═══ INTERVIEW DURATION SCALING ═══
+- For interviews under 45 minutes: Move efficiently through phases. One strong story per phase.
+- For interviews 45-75 minutes: Standard depth. 2-3 stories per phase.
+- For interviews over 75 minutes: Go deep. Spend extra time in Phases 1 and 3 (evidence-gathering). Ask for multiple examples per theme. Explore contradictions. Do NOT rush to financial fit — save it for the final 5 minutes regardless of total duration.
+- NEVER end the interview abruptly. If you sense the conversation is winding down naturally, transition to Phase ${isSenior ? '6' : '5'} (Financial Fit) and close warmly.
 
 ═══ HIDDEN ASSESSMENT SIGNALS ═══
 Throughout the conversation, you are calibrating these without ever mentioning them:
@@ -195,7 +230,19 @@ ${gateInstructions}
 - NEVER use interview jargon ("competency," "behavioral question," "assessment").
 - NEVER ask multiple questions in one turn.
 - If they give a vague answer: "I want to understand the specifics — take me inside that room."
-- End the conversation warmly. They should feel like they just had one of the best conversations of their career.`;
+- End the conversation warmly. They should feel like they just had one of the best conversations of their career.
+
+═══ LEGAL COMPLIANCE ═══
+- NEVER ask about or follow up on: age, marital/family status, children, religion, disability, health conditions, national origin, race, sexual orientation, pregnancy, or any other legally protected characteristic.
+- If the candidate volunteers protected information, acknowledge briefly and redirect: "I appreciate you sharing that. Let's talk about..."
+- Do not factor protected information into any observations or assessments.
+
+═══ CANDIDATE EDGE CASES ═══
+- NERVOUS CANDIDATE: Normalize it. "Interviews always feel high-stakes — just think of this as a conversation about work you're passionate about." Give extra warmup time. Never penalize nervousness in your observations.
+- TERSE CANDIDATE: Don't rapid-fire questions. Use silence (pause 3-5 seconds). Try different angles: "Help me picture it — what was the room like? Who else was there?" If still terse after 3 attempts, note as observation and move on.
+- HOSTILE/UPSET CANDIDATE: Do NOT escalate. "I can see this topic matters a lot to you. Let's step back for a moment." Shift to a lighter topic. If hostility continues: "Would you like to take a quick break?" Note the response as observation without judgment.
+- CANDIDATE ASKS PERSONAL QUESTIONS: Deflect naturally: "Ha — I've spent enough time with great leaders to know what exceptional looks like. But today is about you. Tell me about..."
+- REHEARSED ANSWERS: If an answer sounds overly polished (smooth, no sensory detail, matches frameworks too precisely), test with spontaneous recall: "That's a great framework. Now tell me about a time it completely fell apart."`;
 
     // Personality overrides
     if (this.personality) {
@@ -216,6 +263,12 @@ ${gateInstructions}
   // ─── Connection ─────────────────────────────────────────────────────────────
 
   async connect(options?: { enableVideo?: boolean }): Promise<void> {
+    // Re-entrance guard
+    if (this.isConnected || this.ws) {
+      console.warn('[GeminiLive] Already connected or connecting');
+      return;
+    }
+
     this.callbacks.onStatusChange('connecting');
     this.videoEnabled = options?.enableVideo ?? false;
     this.intentionalDisconnect = false;
@@ -241,6 +294,14 @@ ${gateInstructions}
         },
       });
 
+      // Add mic track ended listener
+      this.micStream.getTracks().forEach(track => {
+        track.addEventListener('ended', () => {
+          this.callbacks.onError('Microphone disconnected. Please reconnect your audio device.');
+          this.callbacks.onStatusChange('error');
+        });
+      });
+
       // 3. Get camera if video enabled
       if (this.videoEnabled) {
         try {
@@ -260,6 +321,38 @@ ${gateInstructions}
 
       // 5. Connect WebSocket
       this.connectWebSocket();
+
+      // 6. Add visibilitychange handler for iOS Safari
+      this.visibilityHandler = () => {
+        if (document.visibilityState === 'visible' && !this.intentionalDisconnect) {
+          // Resume AudioContexts that iOS may have suspended
+          if (this.audioContext?.state === 'suspended') this.audioContext.resume().catch(() => {});
+          if (this.playbackContext?.state === 'suspended') this.playbackContext.resume().catch(() => {});
+          // Check if WebSocket died while backgrounded
+          if (this.ws && this.ws.readyState !== WebSocket.OPEN && this.ws.readyState !== WebSocket.CONNECTING) {
+            console.log('[GeminiLive] WebSocket dead after visibility change, reconnecting');
+            this.ws = null;
+            this.isConnected = false;
+            this.attemptReconnect();
+          }
+        }
+      };
+      document.addEventListener('visibilitychange', this.visibilityHandler);
+
+      // 7. Add online/offline detection
+      this.offlineHandler = () => {
+        console.log('[GeminiLive] Browser went offline');
+        this.callbacks.onStatusChange('reconnecting');
+      };
+      this.onlineHandler = () => {
+        console.log('[GeminiLive] Browser came back online');
+        if (!this.isConnected && !this.intentionalDisconnect) {
+          this.reconnectAttempts = 0; // Fresh start
+          this.attemptReconnect();
+        }
+      };
+      window.addEventListener('offline', this.offlineHandler);
+      window.addEventListener('online', this.onlineHandler);
 
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : 'Connection failed';
@@ -290,6 +383,10 @@ ${gateInstructions}
   private onWsOpen() {
     if (!this.ws || this.ws.readyState !== WebSocket.OPEN) return;
     console.log('[GeminiLive] WebSocket connected, sending setup');
+
+    // Clear playback state on reconnect
+    this.clearPlaybackQueue();
+    this.isSpeaking = false;
 
     // Build setup message
     const setupMessage: Record<string, any> = {
@@ -326,7 +423,7 @@ ${gateInstructions}
       },
     };
 
-    this.ws.send(JSON.stringify(setupMessage));
+    this.safeSend(JSON.stringify(setupMessage));
   }
 
   private onWsMessage(event: MessageEvent) {
@@ -350,8 +447,7 @@ ${gateInstructions}
         // Only send greeting on first connect, not on reconnects
         if (!this.hasGreeted) {
           this.hasGreeted = true;
-          if (!this.ws || this.ws.readyState !== WebSocket.OPEN) return;
-          this.ws.send(JSON.stringify({
+          this.safeSend(JSON.stringify({
             clientContent: {
               turns: [{
                 role: 'user',
@@ -459,13 +555,13 @@ ${gateInstructions}
       return;
     }
 
-    // If we have a session handle, attempt reconnection (expected ~10 min drops)
-    if (this.sessionHandle && this.reconnectAttempts < MAX_RECONNECT_ATTEMPTS) {
+    // Attempt reconnection (don't gate solely on sessionHandle)
+    if (this.reconnectAttempts < MAX_RECONNECT_ATTEMPTS) {
       this.attemptReconnect();
       return;
     }
 
-    // No session handle or max retries exceeded — report error
+    // Max retries exceeded — report error
     if (event.code !== 1000) {
       this.callbacks.onError(`Connection closed: ${event.reason || 'Unknown error'}`);
     }
@@ -475,6 +571,13 @@ ${gateInstructions}
   // ─── Reconnection with Session Resumption ──────────────────────────────────
 
   private async attemptReconnect() {
+    // Don't attempt reconnection if browser is offline — wait for online event
+    if (!navigator.onLine) {
+      console.log('[GeminiLive] Browser is offline, waiting for online event');
+      this.callbacks.onStatusChange('reconnecting');
+      return;
+    }
+
     this.reconnectAttempts++;
     const delay = RECONNECT_BASE_DELAY_MS * Math.pow(2, this.reconnectAttempts - 1);
     console.log(`[GeminiLive] Reconnecting in ${delay}ms (attempt ${this.reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS})`);
@@ -486,11 +589,15 @@ ${gateInstructions}
 
     this.reconnectTimer = setTimeout(async () => {
       try {
-        // Mint a fresh ephemeral token for the reconnection
+        // Mint a fresh ephemeral token for the reconnection with fetch timeout
+        const controller = new AbortController();
+        const fetchTimeout = setTimeout(() => controller.abort(), 10000);
         const tokenRes = await fetch(`${import.meta.env.BASE_URL}api/gemini-token`, {
           method: 'POST',
           credentials: 'include',
+          signal: controller.signal,
         });
+        clearTimeout(fetchTimeout);
         if (!tokenRes.ok) throw new Error('Failed to refresh token');
         const { token } = await tokenRes.json();
         this.ephemeralToken = token;
@@ -519,6 +626,14 @@ ${gateInstructions}
     if (this.audioContext.state === 'suspended') {
       await this.audioContext.resume();
     }
+
+    // AudioContext statechange handler for iOS
+    this.audioContext.onstatechange = () => {
+      if (this.audioContext?.state === 'suspended' && !this.intentionalDisconnect) {
+        this.audioContext.resume().catch(() => {});
+      }
+    };
+
     const source = this.audioContext.createMediaStreamSource(this.micStream);
 
     // Gain node for echo prevention
@@ -532,6 +647,9 @@ ${gateInstructions}
     // ScriptProcessor to capture raw PCM samples
     // (AudioWorklet would be better but ScriptProcessor works everywhere)
     this.scriptProcessor = this.audioContext.createScriptProcessor(4096, 1, 1);
+
+    // Pre-allocate PCM buffer for reuse
+    this.pcmBuffer = new Int16Array(4096);
 
     // Silent output node — ScriptProcessor requires connection to destination to fire
     // onaudioprocess, but we must NOT play mic audio through speakers (feedback loop).
@@ -558,23 +676,30 @@ ${gateInstructions}
     if (!this.scriptProcessor) return;
 
     this.scriptProcessor.onaudioprocess = (e) => {
-      if (!this.isConnected || !this.ws || this.ws.readyState !== WebSocket.OPEN) return;
+      if (!this.isConnected || !this.ws) return;
       if (this.micMuted) return;
+
+      // WebSocket backpressure — skip frame if send buffer backed up
+      if (this.ws.bufferedAmount > 65536) return;
 
       const inputData = e.inputBuffer.getChannelData(0);
 
-      // Convert Float32 [-1, 1] to Int16
-      const pcm16 = new Int16Array(inputData.length);
+      // Convert Float32 [-1, 1] to Int16 using pre-allocated buffer
+      const pcm16 = this.pcmBuffer && this.pcmBuffer.length >= inputData.length
+        ? this.pcmBuffer
+        : new Int16Array(inputData.length);
       for (let i = 0; i < inputData.length; i++) {
         const s = Math.max(-1, Math.min(1, inputData[i]));
         pcm16[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
       }
 
-      // Convert to base64
-      const base64 = this.arrayBufferToBase64(pcm16.buffer);
+      // Convert to base64 (only the portion we filled)
+      // Slice the PCM buffer to only the filled portion, cast to ArrayBuffer for type safety
+      const pcmBytes = new Uint8Array(pcm16.buffer, 0, inputData.length * 2).slice();
+      const base64 = this.arrayBufferToBase64(pcmBytes.buffer as ArrayBuffer);
 
       // Send to Gemini using mediaChunks array format
-      this.ws.send(JSON.stringify({
+      this.safeSend(JSON.stringify({
         realtimeInput: {
           mediaChunks: [{
             data: base64,
@@ -599,6 +724,13 @@ ${gateInstructions}
     if (this.playbackContext.state === 'suspended') {
       this.playbackContext.resume().catch(() => {});
     }
+
+    // AudioContext statechange handler for iOS
+    this.playbackContext.onstatechange = () => {
+      if (this.playbackContext?.state === 'suspended' && !this.intentionalDisconnect) {
+        this.playbackContext.resume().catch(() => {});
+      }
+    };
   }
 
   private enqueueAudio(base64Data: string) {
@@ -616,6 +748,13 @@ ${gateInstructions}
     const float32 = new Float32Array(int16.length);
     for (let i = 0; i < int16.length; i++) {
       float32[i] = int16[i] / 0x8000;
+    }
+
+    // Playback queue size limit
+    if (this.playbackQueue.length > 50) {
+      console.warn('[GeminiLive] Playback queue overflow, dropping old chunks');
+      this.playbackQueue.splice(0, this.playbackQueue.length - 10);
+      this.nextPlayTime = 0;
     }
 
     this.playbackQueue.push(float32);
@@ -638,7 +777,14 @@ ${gateInstructions}
     source.start(startTime);
     this.nextPlayTime = startTime + buffer.duration;
 
+    // nextPlayTime drift fix — periodically re-anchor
+    this.playbackChunkCount++;
+    if (this.playbackChunkCount % 100 === 0) {
+      this.nextPlayTime = Math.max(this.nextPlayTime, this.playbackContext.currentTime);
+    }
+
     source.onended = () => {
+      source.disconnect();
       if (this.playbackQueue.length > 0) {
         this.playNextChunk();
       }
@@ -648,6 +794,7 @@ ${gateInstructions}
   private clearPlaybackQueue() {
     this.playbackQueue = [];
     this.nextPlayTime = 0;
+    this.playbackChunkCount = 0;
     // Close and recreate playback context to stop all in-flight audio
     if (this.playbackContext) {
       this.playbackContext.close().catch(() => {});
@@ -655,6 +802,12 @@ ${gateInstructions}
       if (this.playbackContext.state === 'suspended') {
         this.playbackContext.resume().catch(() => {});
       }
+      // Re-add statechange handler
+      this.playbackContext.onstatechange = () => {
+        if (this.playbackContext?.state === 'suspended' && !this.intentionalDisconnect) {
+          this.playbackContext.resume().catch(() => {});
+        }
+      };
     }
   }
 
@@ -679,7 +832,7 @@ ${gateInstructions}
     if (!this.videoElement || !this.videoCanvas || !this.videoCtx) return;
 
     this.videoInterval = setInterval(() => {
-      if (!this.isConnected || !this.ws || this.ws.readyState !== WebSocket.OPEN) return;
+      if (!this.isConnected || !this.ws) return;
       if (!this.videoElement || !this.videoCanvas || !this.videoCtx) return;
 
       // Draw current video frame to canvas
@@ -690,16 +843,14 @@ ${gateInstructions}
       const base64 = dataUrl.split(',')[1];
 
       // Send to Gemini using mediaChunks array format
-      if (this.ws?.readyState === WebSocket.OPEN) {
-        this.ws.send(JSON.stringify({
-          realtimeInput: {
-            mediaChunks: [{
-              data: base64,
-              mimeType: 'image/jpeg',
-            }],
-          },
-        }));
-      }
+      this.safeSend(JSON.stringify({
+        realtimeInput: {
+          mediaChunks: [{
+            data: base64,
+            mimeType: 'image/jpeg',
+          }],
+        },
+      }));
     }, 1000 / VIDEO_FPS);
   }
 
@@ -725,6 +876,9 @@ ${gateInstructions}
   }
 
   private unmuteMicDelayed() {
+    // Don't unmute if user has explicitly muted
+    if (this.userMuted) return;
+
     if (this.unmuteMicTimeout) clearTimeout(this.unmuteMicTimeout);
     this.unmuteMicTimeout = setTimeout(() => {
       this.micMuted = false;
@@ -734,6 +888,34 @@ ${gateInstructions}
       this.micStream?.getTracks().forEach(t => { t.enabled = true; });
       this.unmuteMicTimeout = null;
     }, this.MIC_UNMUTE_DELAY_MS);
+  }
+
+  /** Allow candidate to mute/unmute themselves */
+  toggleMute(): boolean {
+    if (this.userMuted) {
+      // User is unmuting
+      this.userMuted = false;
+      this.micMuted = false;
+      if (this.micGainNode && this.audioContext) {
+        this.micGainNode.gain.setValueAtTime(1.0, this.audioContext.currentTime);
+      }
+      this.micStream?.getTracks().forEach(t => { t.enabled = true; });
+      return false; // now unmuted
+    } else {
+      // User is muting
+      this.userMuted = true;
+      this.micMuted = true;
+      if (this.micGainNode && this.audioContext) {
+        this.micGainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
+      }
+      this.micStream?.getTracks().forEach(t => { t.enabled = false; });
+      return true; // now muted
+    }
+  }
+
+  /** Check if mic is currently muted by user */
+  isMicMuted(): boolean {
+    return this.micMuted;
   }
 
   // ─── Tool Calls (for real-time observations) ───────────────────────────────
@@ -758,8 +940,8 @@ ${gateInstructions}
       }
     }
 
-    if (responses.length > 0 && this.ws?.readyState === WebSocket.OPEN) {
-      this.ws.send(JSON.stringify({
+    if (responses.length > 0) {
+      this.safeSend(JSON.stringify({
         toolResponse: { functionResponses: responses },
       }));
     }
@@ -785,6 +967,22 @@ ${gateInstructions}
     if (this.reconnectTimer) {
       clearTimeout(this.reconnectTimer);
       this.reconnectTimer = null;
+    }
+
+    // Remove visibility handler
+    if (this.visibilityHandler) {
+      document.removeEventListener('visibilitychange', this.visibilityHandler);
+      this.visibilityHandler = null;
+    }
+
+    // Remove online/offline handlers
+    if (this.offlineHandler) {
+      window.removeEventListener('offline', this.offlineHandler);
+      this.offlineHandler = null;
+    }
+    if (this.onlineHandler) {
+      window.removeEventListener('online', this.onlineHandler);
+      this.onlineHandler = null;
     }
 
     // Stop video
@@ -822,6 +1020,9 @@ ${gateInstructions}
     this.playbackContext = null;
     this.playbackQueue = [];
     this.nextPlayTime = 0;
+    this.playbackChunkCount = 0;
+
+    this.pcmBuffer = null;
 
     this.micStream?.getTracks().forEach(t => t.stop());
     this.micStream = null;
@@ -838,16 +1039,18 @@ ${gateInstructions}
     this.sessionHandle = null;
     this.ephemeralToken = null;
     this.hasGreeted = false;
+    this.userMuted = false;
   }
 
   // ─── Utilities ──────────────────────────────────────────────────────────────
 
   private arrayBufferToBase64(buffer: ArrayBuffer): string {
     const bytes = new Uint8Array(buffer);
-    let binary = '';
-    for (let i = 0; i < bytes.length; i++) {
-      binary += String.fromCharCode(bytes[i]);
+    const CHUNK = 0x8000;
+    const chunks: string[] = [];
+    for (let i = 0; i < bytes.length; i += CHUNK) {
+      chunks.push(String.fromCharCode.apply(null, bytes.subarray(i, Math.min(i + CHUNK, bytes.length)) as unknown as number[]));
     }
-    return btoa(binary);
+    return btoa(chunks.join(''));
   }
 }

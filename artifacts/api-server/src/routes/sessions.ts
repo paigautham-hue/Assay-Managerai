@@ -27,9 +27,33 @@ router.post('/sessions', async (req: Request, res: Response) => {
   }
 });
 
-router.get('/sessions', async (_req: Request, res: Response) => {
+router.get('/sessions', async (req: Request, res: Response) => {
   try {
+    // Candidate-role users can only see their own session.
+    // Their user.id is formatted as `candidate_<sessionId>`.
+    if (req.user?.role === 'candidate') {
+      const candidateSessionId = req.user.id.replace(/^candidate_/, '');
+      const session = await prisma.interviewSession.findUnique({
+        where: { id: candidateSessionId },
+        include: {
+          reports: { select: { id: true, candidateName: true, roleName: true, createdAt: true, reportData: true } },
+          _count: { select: { transcripts: true, observations: true } },
+        },
+      });
+      return res.json(session ? [session] : []);
+    }
+
+    // TODO: InterviewSession has no userId field — ownership filtering by user
+    // is not possible with the current schema. Sessions are scoped to
+    // organizationId at best. Add a userId/createdById column to
+    // InterviewSession to enable proper per-user filtering.
+    const where: Record<string, unknown> = {};
+    if (req.user?.organizationId) {
+      where.organizationId = req.user.organizationId;
+    }
+
     const sessions = await prisma.interviewSession.findMany({
+      where,
       orderBy: { createdAt: 'desc' },
       include: {
         reports: { select: { id: true, candidateName: true, roleName: true, createdAt: true, reportData: true } },

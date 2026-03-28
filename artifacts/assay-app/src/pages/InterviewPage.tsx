@@ -328,6 +328,7 @@ export function InterviewPage() {
   const [personality, setPersonality] = useState<AIPersonality | undefined>(undefined);
   const [videoEnabled, setVideoEnabled] = useState(false);
   const [hasVideo, setHasVideo] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
 
   // Fetch AI personality settings on mount
   useEffect(() => {
@@ -346,6 +347,22 @@ export function InterviewPage() {
     };
     window.addEventListener('resize', handler);
     return () => window.removeEventListener('resize', handler);
+  }, []);
+
+  // Show user-facing messages for online/offline events
+  useEffect(() => {
+    const handleOnline = () => {
+      // Engine handles reconnection automatically
+    };
+    const handleOffline = () => {
+      setVoiceError('You are offline. The interview will resume automatically when your connection returns.');
+    };
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
   }, []);
 
   // Connect video stream to preview element after it mounts
@@ -965,24 +982,57 @@ export function InterviewPage() {
             <div ref={transcriptEndRef} />
           </div>
 
-          {/* End interview button */}
-          <motion.button
-            onClick={() => setShowEndModal(true)}
-            disabled={isEndingInterview}
-            className="btn btn-danger px-8 py-4 disabled:opacity-50 disabled:cursor-not-allowed"
-            style={{ marginBottom: 'env(safe-area-inset-bottom, 0px)' }}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            {isEndingInterview ? (
-              <span className="flex items-center gap-2">
-                <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin-slow" />
-                Ending Interview...
-              </span>
-            ) : (
-              'End Interview & Generate Report'
-            )}
-          </motion.button>
+          {/* Interview controls */}
+          <div className="flex items-center gap-3" style={{ marginBottom: 'env(safe-area-inset-bottom, 0px)' }}>
+            {/* Mute / Unmute button */}
+            <motion.button
+              onClick={() => {
+                const muted = voiceEngineRef.current?.toggleMute();
+                if (muted !== undefined) setIsMuted(muted);
+              }}
+              className="flex items-center justify-center rounded-xl transition-colors"
+              style={{
+                width: 52,
+                height: 52,
+                minWidth: 44,
+                minHeight: 44,
+                background: isMuted ? 'rgba(239,68,68,0.15)' : 'rgba(255,255,255,0.06)',
+                border: `1px solid ${isMuted ? 'rgba(239,68,68,0.3)' : 'rgba(255,255,255,0.08)'}`,
+                color: isMuted ? '#EF4444' : 'var(--color-text-secondary)',
+              }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              title={isMuted ? 'Unmute microphone' : 'Mute microphone'}
+            >
+              {isMuted ? (
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 19L5 5m14 0v4a2 2 0 01-2 2M12 19c-3.314 0-6-2.686-6-6v-1m12 0v1c0 .394-.038.779-.11 1.152M12 19v3m-4 0h8M9 9V5a3 3 0 016 0v4" />
+                </svg>
+              ) : (
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-14 0M12 19v3m-4 0h8M12 15a3 3 0 003-3V5a3 3 0 00-6 0v7a3 3 0 003 3z" />
+                </svg>
+              )}
+            </motion.button>
+
+            {/* End interview button */}
+            <motion.button
+              onClick={() => setShowEndModal(true)}
+              disabled={isEndingInterview}
+              className="btn btn-danger px-8 py-4 disabled:opacity-50 disabled:cursor-not-allowed"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              {isEndingInterview ? (
+                <span className="flex items-center gap-2">
+                  <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin-slow" />
+                  Ending Interview...
+                </span>
+              ) : (
+                'End Interview & Generate Report'
+              )}
+            </motion.button>
+          </div>
 
           {/* Mobile observations toggle (not shown on tablet — observations always visible) */}
           {isMobile && !isTablet && !showFlagsPanel && (

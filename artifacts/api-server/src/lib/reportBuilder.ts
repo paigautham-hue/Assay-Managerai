@@ -48,8 +48,8 @@ export function calculatePyramidScore(dimensionScores: Record<string, { score: n
     totalWeight += d.weight;
   }
   const overall = totalWeight > 0 ? weightedSum / totalWeight : 0;
-  const characterScore = dimensionScores['character']?.score ?? 5;
-  const handsOnScore = dimensionScores['hands_on_accountability']?.score ?? 5;
+  const characterScore = dimensionScores['character']?.score ?? 2.5;
+  const handsOnScore = dimensionScores['hands_on_accountability']?.score ?? 2.5;
   return {
     overall: Math.round(overall * 100) / 100,
     meetsBar: overall >= 4.0 && characterScore >= 3.0 && handsOnScore >= 3.0,
