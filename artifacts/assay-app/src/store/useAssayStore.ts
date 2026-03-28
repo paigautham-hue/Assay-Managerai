@@ -91,7 +91,7 @@ export const useAssayStore = create<AssayStore>((set, get) => ({
       id,
       setup: session.setup,
       status: 'preparing',
-      voiceProvider: 'openai',
+      voiceProvider: 'gemini',
     });
   },
 

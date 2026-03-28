@@ -1,54 +1,61 @@
 # ── Stage 1: Build ────────────────────────────────────────────────────────────
-FROM node:20-slim AS build
+# This Dockerfile is designed to be built from the REPOSITORY ROOT, not from
+# artifacts/. Use: docker build -f artifacts/Dockerfile .
+FROM node:22-slim AS build
 
 WORKDIR /app
 
-# Install OpenSSL for Prisma
+# Install system deps for Prisma + pnpm
 RUN apt-get update && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
+RUN corepack enable && corepack prepare pnpm@latest --activate
 
-# Copy package files first for layer caching
-COPY package.json ./
-COPY api-server/package.json ./api-server/
-COPY assay-app/package.json ./assay-app/
+# Copy workspace config first for layer caching
+COPY package.json pnpm-workspace.yaml pnpm-lock.yaml* ./
+COPY artifacts/api-server/package.json ./artifacts/api-server/
+COPY artifacts/assay-app/package.json ./artifacts/assay-app/
 
-# Install all dependencies
-RUN npm install --workspaces --include-workspace-root 2>/dev/null || \
-    (cd api-server && npm install && cd ../assay-app && npm install)
+# Install dependencies (--frozen-lockfile if lock exists, else install fresh)
+RUN pnpm install --no-frozen-lockfile 2>/dev/null || pnpm install
 
-# Copy source code
+# Copy all source
 COPY . .
 
 # Generate Prisma client
-RUN cd api-server && npx prisma generate --schema=./prisma/schema.prisma
+RUN cd artifacts/api-server && pnpm prisma:generate
 
-# Build frontend
-RUN cd assay-app && BASE_PATH=/ npm run build
+# Build frontend (BASE_PATH=/ for self-hosted deployment)
+RUN cd artifacts/assay-app && BASE_PATH=/ pnpm build
 
-# Build backend
-RUN cd api-server && npm run build
+# Build backend (esbuild bundles all deps into a single CJS file)
+RUN cd artifacts/api-server && pnpm build
 
 # ── Stage 2: Runtime ──────────────────────────────────────────────────────────
-FROM node:20-slim AS runtime
+# The esbuild output is self-contained (all deps inlined), so we only need
+# Node.js, the built bundle, the Prisma engine binary, and the frontend assets.
+FROM node:22-slim AS runtime
 
 WORKDIR /app
 
-# Install OpenSSL for Prisma runtime
+# OpenSSL for Prisma engine
 RUN apt-get update && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
 
-# Copy built artifacts
-COPY --from=build /app/api-server/dist ./artifacts/api-server/dist
-COPY --from=build /app/api-server/src/generated ./artifacts/api-server/src/generated
-COPY --from=build /app/api-server/prisma ./artifacts/api-server/prisma
-COPY --from=build /app/assay-app/dist/public ./artifacts/assay-app/dist/public
+# Copy built backend (self-contained CJS bundle — no node_modules needed)
+COPY --from=build /app/artifacts/api-server/dist ./artifacts/api-server/dist
 
-# Copy package files for any runtime needs
-COPY --from=build /app/api-server/package.json ./artifacts/api-server/
-COPY --from=build /app/package.json ./
+# Copy Prisma engine + schema (needed for runtime queries and migrations)
+COPY --from=build /app/artifacts/api-server/src/generated ./artifacts/api-server/src/generated
+COPY --from=build /app/artifacts/api-server/prisma ./artifacts/api-server/prisma
+
+# Copy built frontend static assets
+COPY --from=build /app/artifacts/assay-app/dist/public ./artifacts/assay-app/dist/public
+
+# Prisma CLI is needed for db push on startup — install it standalone
+RUN npm install -g prisma@5
 
 ENV NODE_ENV=production
 ENV PORT=8080
 
 EXPOSE 8080
 
-# Run database migrations and start server
-CMD ["sh", "-c", "cd artifacts/api-server && npx prisma db push --schema=./prisma/schema.prisma --accept-data-loss --skip-generate && cd /app && node artifacts/api-server/dist/index.cjs"]
+# Run migrations then start server
+CMD ["sh", "-c", "prisma db push --schema=./artifacts/api-server/prisma/schema.prisma --skip-generate && node artifacts/api-server/dist/index.cjs"]

@@ -14,7 +14,7 @@ app.use(cors({
     // Allow same-origin (no origin header), explicit allowlist, Manus, and Capacitor/PWA
     if (
       !origin ||
-      allowedOrigins.some(o => origin.startsWith(o)) ||
+      allowedOrigins.includes(origin) ||
       origin.endsWith('.manus.space') ||
       origin.endsWith('.manus.app') ||
       origin.startsWith('capacitor://') ||

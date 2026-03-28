@@ -22,10 +22,12 @@ export function ReportFeedback({ reportId }: ReportFeedbackProps) {
   const [comments, setComments] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async () => {
     if (accuracy === 0) return;
     setIsSubmitting(true);
+    setError(null);
     try {
       const res = await fetch(`${BASE_URL}api/feedback`, {
         method: 'POST',
@@ -40,8 +42,12 @@ export function ReportFeedback({ reportId }: ReportFeedbackProps) {
       });
       if (res.ok) {
         setSubmitted(true);
+      } else {
+        const data = await res.json().catch(() => ({ error: 'Failed to submit' }));
+        setError(data.error || 'Failed to submit feedback');
       }
     } catch (e) {
+      setError('Network error — please try again');
       console.warn('Failed to submit feedback:', e);
     } finally {
       setIsSubmitting(false);
@@ -112,7 +118,7 @@ export function ReportFeedback({ reportId }: ReportFeedbackProps) {
                     <button
                       key={n}
                       onClick={() => setAccuracy(n)}
-                      className="flex-1 py-3 rounded-lg text-sm font-semibold transition-all min-h-[44px]"
+                      className="flex-1 py-3 rounded-lg text-sm font-semibold transition-all min-h-[44px] active:scale-95"
                       style={{
                         background: accuracy === n ? 'rgba(201,168,76,0.2)' : 'rgba(255,255,255,0.04)',
                         color: accuracy === n ? 'var(--color-gold)' : 'var(--color-text-tertiary)',
@@ -140,7 +146,7 @@ export function ReportFeedback({ reportId }: ReportFeedbackProps) {
                     <button
                       key={opt.value}
                       onClick={() => setOutcome(opt.value)}
-                      className="py-2.5 px-3 rounded-lg text-xs font-medium flex items-center gap-2 transition-all min-h-[44px]"
+                      className="py-2.5 px-3 rounded-lg text-xs font-medium flex items-center gap-2 transition-all min-h-[44px] active:scale-95"
                       style={{
                         background: outcome === opt.value ? 'rgba(201,168,76,0.15)' : 'rgba(255,255,255,0.04)',
                         color: outcome === opt.value ? 'var(--color-gold)' : 'var(--color-text-tertiary)',
@@ -172,6 +178,16 @@ export function ReportFeedback({ reportId }: ReportFeedbackProps) {
                   }}
                 />
               </div>
+
+              {/* Error message */}
+              {error && (
+                <div
+                  className="rounded-lg px-4 py-3 text-xs"
+                  style={{ background: 'rgba(239,68,68,0.1)', color: '#EF4444', border: '1px solid rgba(239,68,68,0.2)' }}
+                >
+                  {error}
+                </div>
+              )}
 
               {/* Submit */}
               <button

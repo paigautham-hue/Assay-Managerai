@@ -4,10 +4,11 @@ import prisma from '../db/prisma.js';
 
 const router = Router();
 
+const VALID_OUTCOMES = ['hired', 'rejected', 'withdrew', 'pending'];
+
 /**
  * POST /feedback
  * Submit feedback on a report's accuracy (self-learning loop).
- * Only authenticated users who have viewed the report can submit feedback.
  */
 router.post('/feedback', async (req: Request, res: Response) => {
   try {
@@ -16,12 +17,23 @@ router.post('/feedback', async (req: Request, res: Response) => {
 
     const { reportId, overallAccuracy, hireOutcome, performanceNote, dimensionFeedback, gateFeedback, comments } = req.body;
 
-    if (!reportId || !overallAccuracy) {
+    if (!reportId || overallAccuracy === undefined || overallAccuracy === null) {
       return res.status(400).json({ error: 'reportId and overallAccuracy are required' });
     }
 
-    if (overallAccuracy < 1 || overallAccuracy > 5) {
-      return res.status(400).json({ error: 'overallAccuracy must be between 1 and 5' });
+    const accuracy = Math.round(Number(overallAccuracy));
+    if (isNaN(accuracy) || accuracy < 1 || accuracy > 5) {
+      return res.status(400).json({ error: 'overallAccuracy must be an integer between 1 and 5' });
+    }
+
+    if (hireOutcome && !VALID_OUTCOMES.includes(hireOutcome)) {
+      return res.status(400).json({ error: `hireOutcome must be one of: ${VALID_OUTCOMES.join(', ')}` });
+    }
+
+    // Verify report exists
+    const report = await prisma.report.findUnique({ where: { id: reportId }, select: { id: true } });
+    if (!report) {
+      return res.status(404).json({ error: 'Report not found' });
     }
 
     const feedback = await prisma.reportFeedback.upsert({
@@ -29,20 +41,20 @@ router.post('/feedback', async (req: Request, res: Response) => {
       create: {
         reportId,
         userId,
-        overallAccuracy,
-        hireOutcome,
-        performanceNote,
+        overallAccuracy: accuracy,
+        hireOutcome: hireOutcome || undefined,
+        performanceNote: performanceNote || undefined,
         dimensionFeedback: dimensionFeedback || undefined,
         gateFeedback: gateFeedback || undefined,
-        comments,
+        comments: comments || undefined,
       },
       update: {
-        overallAccuracy,
-        hireOutcome,
-        performanceNote,
+        overallAccuracy: accuracy,
+        hireOutcome: hireOutcome || undefined,
+        performanceNote: performanceNote || undefined,
         dimensionFeedback: dimensionFeedback || undefined,
         gateFeedback: gateFeedback || undefined,
-        comments,
+        comments: comments || undefined,
       },
     });
 
@@ -54,26 +66,9 @@ router.post('/feedback', async (req: Request, res: Response) => {
 });
 
 /**
- * GET /feedback/:reportId
- * Get feedback for a specific report.
- */
-router.get('/feedback/:reportId', async (req: Request, res: Response) => {
-  try {
-    const feedback = await prisma.reportFeedback.findMany({
-      where: { reportId: req.params.reportId },
-      orderBy: { createdAt: 'desc' },
-    });
-    return res.json(feedback);
-  } catch (error) {
-    console.error('Feedback fetch error:', error);
-    return res.status(500).json({ error: 'Failed to fetch feedback' });
-  }
-});
-
-/**
  * GET /feedback/analytics/accuracy
  * Get aggregate accuracy metrics across all feedback (admin only).
- * This powers the self-learning dashboard.
+ * MUST be registered BEFORE /feedback/:reportId to avoid route shadowing.
  */
 router.get('/feedback/analytics/accuracy', async (req: Request, res: Response) => {
   try {
@@ -85,10 +80,9 @@ router.get('/feedback/analytics/accuracy', async (req: Request, res: Response) =
       select: {
         overallAccuracy: true,
         hireOutcome: true,
-        dimensionFeedback: true,
-        gateFeedback: true,
         createdAt: true,
       },
+      orderBy: { createdAt: 'desc' },
     });
 
     const totalFeedback = feedback.length;
@@ -115,6 +109,24 @@ router.get('/feedback/analytics/accuracy', async (req: Request, res: Response) =
   } catch (error) {
     console.error('Feedback analytics error:', error);
     return res.status(500).json({ error: 'Failed to fetch analytics' });
+  }
+});
+
+/**
+ * GET /feedback/:reportId
+ * Get feedback for a specific report.
+ * Registered AFTER analytics to prevent route shadowing.
+ */
+router.get('/feedback/:reportId', async (req: Request, res: Response) => {
+  try {
+    const feedback = await prisma.reportFeedback.findMany({
+      where: { reportId: req.params.reportId },
+      orderBy: { createdAt: 'desc' },
+    });
+    return res.json(feedback);
+  } catch (error) {
+    console.error('Feedback fetch error:', error);
+    return res.status(500).json({ error: 'Failed to fetch feedback' });
   }
 });
 

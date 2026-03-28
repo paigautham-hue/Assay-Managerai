@@ -348,6 +348,19 @@ export function InterviewPage() {
     return () => window.removeEventListener('resize', handler);
   }, []);
 
+  // Connect video stream to preview element after it mounts
+  useEffect(() => {
+    if (hasVideo && videoPreviewRef.current && voiceEngineRef.current?.getVideoStream()) {
+      videoPreviewRef.current.srcObject = voiceEngineRef.current.getVideoStream();
+      videoPreviewRef.current.play().catch(() => {});
+    }
+    return () => {
+      if (videoPreviewRef.current) {
+        videoPreviewRef.current.srcObject = null;
+      }
+    };
+  }, [hasVideo]);
+
   // Auto-scroll transcript to bottom when new messages arrive
   useEffect(() => {
     if (phase !== 'interview') return;
@@ -393,14 +406,10 @@ export function InterviewPage() {
               console.warn('[InterviewPage] Failed to start audio recording:', e);
             }
 
-            // Set up video preview if video is active
+            // Set up video preview if video is active (actual stream connection
+            // happens in the useEffect that watches hasVideo, after the <video> mounts)
             if (voiceEngineRef.current?.isVideoActive()) {
               setHasVideo(true);
-              const vs = voiceEngineRef.current.getVideoStream();
-              if (vs && videoPreviewRef.current) {
-                videoPreviewRef.current.srcObject = vs;
-                videoPreviewRef.current.play().catch(() => {});
-              }
             }
           }
           else if (veStatus === 'speaking') setStatus('ai_speaking');
@@ -721,7 +730,11 @@ export function InterviewPage() {
       <h2 className="heading-sm" style={{ color: 'var(--color-text-primary)' }}>
         Observations{session?.observations.length ? ` (${session.observations.length})` : ''}
       </h2>
-      <button onClick={() => setShowFlagsPanel(false)} style={{ color: 'var(--color-text-secondary)' }}>
+      <button
+        onClick={() => setShowFlagsPanel(false)}
+        className="w-11 h-11 flex items-center justify-center rounded-lg active:bg-white/5"
+        style={{ color: 'var(--color-text-secondary)' }}
+      >
         ✕
       </button>
     </div>

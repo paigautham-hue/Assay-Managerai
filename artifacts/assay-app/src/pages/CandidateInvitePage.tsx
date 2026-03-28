@@ -96,7 +96,7 @@ export function CandidateInvitePage() {
           status: 'preparing',
           transcript: [],
           observations: [],
-          voiceProvider: 'openai',
+          voiceProvider: 'gemini',
         };
 
         // Hydrate the Zustand store so InterviewPage finds the session.

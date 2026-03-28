@@ -229,7 +229,7 @@ ${gateInstructions}
       }
 
       // 4. Setup audio processing
-      this.setupAudioInput();
+      await this.setupAudioInput();
       this.setupAudioOutput();
 
       // 5. Connect WebSocket to Gemini Live API
@@ -251,6 +251,7 @@ ${gateInstructions}
   }
 
   private onWsOpen() {
+    if (!this.ws || this.ws.readyState !== WebSocket.OPEN) return;
     console.log('[GeminiLive] WebSocket connected, sending setup');
 
     // Send session config
@@ -283,7 +284,7 @@ ${gateInstructions}
       },
     };
 
-    this.ws!.send(JSON.stringify(setupMessage));
+    this.ws.send(JSON.stringify(setupMessage));
   }
 
   private onWsMessage(event: MessageEvent) {
@@ -298,7 +299,8 @@ ${gateInstructions}
         if (this.videoEnabled) this.startVideoStreaming();
 
         // Send initial greeting prompt
-        this.ws!.send(JSON.stringify({
+        if (!this.ws || this.ws.readyState !== WebSocket.OPEN) return;
+        this.ws.send(JSON.stringify({
           clientContent: {
             turns: [{
               role: 'user',
@@ -394,10 +396,14 @@ ${gateInstructions}
 
   // ─── Audio Input (Mic → PCM16 → WebSocket) ─────────────────────────────────
 
-  private setupAudioInput() {
+  private async setupAudioInput() {
     if (!this.micStream) return;
 
     this.audioContext = new AudioContext({ sampleRate: INPUT_SAMPLE_RATE });
+    // iOS Safari requires explicit resume — AudioContext may start suspended
+    if (this.audioContext.state === 'suspended') {
+      await this.audioContext.resume();
+    }
     const source = this.audioContext.createMediaStreamSource(this.micStream);
 
     // Gain node for echo prevention
@@ -412,10 +418,16 @@ ${gateInstructions}
     // (AudioWorklet would be better but ScriptProcessor works everywhere)
     this.scriptProcessor = this.audioContext.createScriptProcessor(4096, 1, 1);
 
+    // Silent output node — ScriptProcessor requires connection to destination to fire
+    // onaudioprocess, but we must NOT play mic audio through speakers (feedback loop).
+    const silentOutput = this.audioContext.createGain();
+    silentOutput.gain.value = 0;
+
     source.connect(this.micGainNode);
     this.micGainNode.connect(this.analyserNode);
     this.micGainNode.connect(this.scriptProcessor);
-    this.scriptProcessor.connect(this.audioContext.destination); // Required for processing
+    this.scriptProcessor.connect(silentOutput);
+    silentOutput.connect(this.audioContext.destination); // Required for processing, but silent
 
     // Audio level monitoring
     const dataArray = new Uint8Array(this.analyserNode.frequencyBinCount);
@@ -446,13 +458,13 @@ ${gateInstructions}
       // Convert to base64
       const base64 = this.arrayBufferToBase64(pcm16.buffer);
 
-      // Send to Gemini
+      // Send to Gemini using mediaChunks array format
       this.ws.send(JSON.stringify({
         realtimeInput: {
-          audio: {
+          mediaChunks: [{
             data: base64,
             mimeType: 'audio/pcm;rate=16000',
-          },
+          }],
         },
       }));
     };
@@ -462,6 +474,10 @@ ${gateInstructions}
 
   private setupAudioOutput() {
     this.playbackContext = new AudioContext({ sampleRate: OUTPUT_SAMPLE_RATE });
+    // Resume for iOS Safari
+    if (this.playbackContext.state === 'suspended') {
+      this.playbackContext.resume().catch(() => {});
+    }
   }
 
   private enqueueAudio(base64Data: string) {
@@ -511,6 +527,14 @@ ${gateInstructions}
   private clearPlaybackQueue() {
     this.playbackQueue = [];
     this.nextPlayTime = 0;
+    // Close and recreate playback context to stop all in-flight audio
+    if (this.playbackContext) {
+      this.playbackContext.close().catch(() => {});
+      this.playbackContext = new AudioContext({ sampleRate: OUTPUT_SAMPLE_RATE });
+      if (this.playbackContext.state === 'suspended') {
+        this.playbackContext.resume().catch(() => {});
+      }
+    }
   }
 
   // ─── Video Capture (Camera → JPEG → WebSocket @ 1fps) ──────────────────────
@@ -544,15 +568,17 @@ ${gateInstructions}
       const dataUrl = this.videoCanvas.toDataURL('image/jpeg', 0.7);
       const base64 = dataUrl.split(',')[1];
 
-      // Send to Gemini
-      this.ws!.send(JSON.stringify({
-        realtimeInput: {
-          video: {
-            data: base64,
-            mimeType: 'image/jpeg',
+      // Send to Gemini using mediaChunks array format
+      if (this.ws?.readyState === WebSocket.OPEN) {
+        this.ws.send(JSON.stringify({
+          realtimeInput: {
+            mediaChunks: [{
+              data: base64,
+              mimeType: 'image/jpeg',
+            }],
           },
-        },
-      }));
+        }));
+      }
     }, 1000 / VIDEO_FPS);
   }
 
@@ -633,6 +659,9 @@ ${gateInstructions}
     }
     this.videoStream?.getTracks().forEach(t => t.stop());
     this.videoStream = null;
+    if (this.videoElement) {
+      this.videoElement.srcObject = null;
+    }
     this.videoElement = null;
     this.videoCanvas = null;
     this.videoCtx = null;
