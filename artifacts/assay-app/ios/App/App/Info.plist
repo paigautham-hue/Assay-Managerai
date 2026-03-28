@@ -49,6 +49,8 @@
 	<true/>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>ASSAY needs microphone access to conduct voice interviews with candidates.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>ASSAY uses the camera for video interviews to enable body language and visual assessment.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>audio</string>
