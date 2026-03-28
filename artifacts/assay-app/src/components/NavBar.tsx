@@ -39,7 +39,7 @@ export function NavBar({ animate = true }: NavBarProps) {
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
         <button
           onClick={() => navigate('/')}
-          className="flex items-center gap-3 hover:opacity-80 transition-opacity"
+          className="flex items-center gap-3 hover:opacity-80 active:opacity-60 transition-opacity"
         >
           <div className="w-11 h-11 rounded-lg bg-gradient-gold flex items-center justify-center">
             <span className="text-[#0D0D1A] font-bold text-lg">A</span>
@@ -52,7 +52,7 @@ export function NavBar({ animate = true }: NavBarProps) {
         <div className="relative" ref={menuRef}>
           <button
             onClick={() => setOpen(o => !o)}
-            className="flex items-center gap-2.5 hover:opacity-80 transition-opacity"
+            className="flex items-center gap-2.5 hover:opacity-80 active:opacity-60 transition-opacity p-1 rounded-lg"
           >
             <div className="text-right hidden sm:block">
               <p className="text-xs font-medium text-white leading-none">{user?.name || 'User'}</p>
@@ -85,14 +85,16 @@ export function NavBar({ animate = true }: NavBarProps) {
                 <div className="py-1">
                   <button
                     onClick={() => { setOpen(false); navigate('/'); }}
-                    className="w-full text-left px-4 py-3 text-sm transition-colors min-h-[44px]" style={{ color: 'var(--color-text-secondary)' }}
+                    className="w-full text-left px-4 py-3 text-sm transition-colors min-h-[44px] active:bg-white/5 hover:bg-white/5 rounded-none"
+                    style={{ color: 'var(--color-text-secondary)' }}
                   >
                     Dashboard
                   </button>
 
                   <button
                     onClick={() => { setOpen(false); navigate('/analytics'); }}
-                    className="w-full text-left px-4 py-3 text-sm transition-colors min-h-[44px]" style={{ color: 'var(--color-text-secondary)' }}
+                    className="w-full text-left px-4 py-3 text-sm transition-colors min-h-[44px] active:bg-white/5 hover:bg-white/5 rounded-none"
+                    style={{ color: 'var(--color-text-secondary)' }}
                   >
                     Analytics
                   </button>
@@ -100,7 +102,8 @@ export function NavBar({ animate = true }: NavBarProps) {
                   {hasRole('owner', 'admin') && (
                     <button
                       onClick={() => { setOpen(false); navigate('/admin'); }}
-                      className="w-full text-left px-4 py-3 text-sm transition-colors min-h-[44px]" style={{ color: 'var(--color-text-secondary)' }}
+                      className="w-full text-left px-4 py-3 text-sm transition-colors min-h-[44px] active:bg-white/5 hover:bg-white/5 rounded-none"
+                      style={{ color: 'var(--color-text-secondary)' }}
                     >
                       Admin Panel
                     </button>
@@ -110,7 +113,7 @@ export function NavBar({ animate = true }: NavBarProps) {
                 <div className="border-t border-[var(--color-border-subtle)] py-1">
                   <button
                     onClick={handleLogout}
-                    className="w-full text-left px-4 py-3 text-sm text-red-400 hover:text-red-300 hover:bg-red-500/5 transition-colors min-h-[44px]"
+                    className="w-full text-left px-4 py-3 text-sm text-red-400 hover:text-red-300 active:bg-red-500/10 hover:bg-red-500/5 transition-colors min-h-[44px] rounded-none"
                   >
                     Sign Out
                   </button>

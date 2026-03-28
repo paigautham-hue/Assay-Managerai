@@ -52,8 +52,9 @@ function SummaryCard({ label, value, icon, onEdit }: { label: string; value: str
       <motion.button
         type="button"
         onClick={onEdit}
-        className="text-gold text-sm font-semibold hover:opacity-80 transition-opacity"
-        whileHover={{ scale: 1.1 }}
+        className="text-gold text-sm font-semibold hover:opacity-80 active:opacity-60 transition-opacity px-3 py-2 min-h-[44px] min-w-[44px] flex items-center justify-center"
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
       >
         Edit
       </motion.button>
@@ -173,13 +174,15 @@ export function SetupPage() {
     fontSize: '1rem',
     width: '100%',
     outline: 'none',
+    minHeight: 44,
+    WebkitAppearance: 'none',
   };
 
   const headingStyle: React.CSSProperties = { color: 'var(--color-text-primary)' };
   const subStyle: React.CSSProperties = { color: 'var(--color-text-secondary)', fontSize: '0.875rem' };
 
   return (
-    <div className="bg-gradient-dark min-h-screen pt-8 pb-20 overflow-x-hidden">
+    <div className="bg-gradient-dark min-h-screen pt-8 pb-safe overflow-x-hidden safe-top" style={{ paddingBottom: 'max(env(safe-area-inset-bottom, 0px), 5rem)' }}>
       <div className="max-w-2xl mx-auto px-4 sm:px-6">
         <motion.div className="mb-8" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
           <div className="flex items-center justify-between mb-4">
@@ -301,7 +304,7 @@ export function SetupPage() {
                         key={role}
                         type="button"
                         onClick={() => selectRole(role)}
-                        className="block w-full text-left px-4 py-3 text-sm transition-colors hover:opacity-80"
+                        className="block w-full text-left px-4 py-3 text-sm transition-colors hover:bg-white/5 active:bg-white/8 min-h-[44px]"
                         style={{ color: 'var(--color-text-primary)' }}
                       >
                         {role}

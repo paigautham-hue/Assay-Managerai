@@ -114,7 +114,13 @@ router.post('/auth/login', async (req: Request, res: Response) => {
 // ── Logout ────────────────────────────────────────────────────────────────────
 
 router.post('/auth/logout', (_req: Request, res: Response) => {
-  res.clearCookie('assay_token', { path: '/' });
+  // clearCookie must include the same sameSite/secure attributes used when setting
+  // the cookie, otherwise the browser (especially iOS WKWebView) won't clear it.
+  res.clearCookie('assay_token', {
+    path: '/',
+    sameSite: IS_PROD ? 'none' : 'lax',
+    secure: IS_PROD,
+  } as any);
   return res.json({ success: true });
 });
 

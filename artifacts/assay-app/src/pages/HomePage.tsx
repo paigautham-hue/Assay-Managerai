@@ -131,7 +131,7 @@ export function HomePage() {
           >
             <button
               onClick={() => navigate('/setup')}
-              className="group relative inline-flex items-center gap-3 font-bold text-[#0D0D1A] px-8 py-4 rounded-2xl overflow-hidden"
+              className="group relative inline-flex items-center gap-3 font-bold text-[#0D0D1A] px-8 py-4 rounded-2xl overflow-hidden active:scale-[0.97] transition-transform min-h-[44px]"
               style={{
                 background: 'linear-gradient(135deg, #D4B85A 0%, #C9A84C 50%, #B8943D 100%)',
                 boxShadow: '0 4px 20px rgba(201,168,76,0.35), 0 1px 3px rgba(0,0,0,0.2)',
@@ -147,7 +147,7 @@ export function HomePage() {
             </button>
             <button
               onClick={() => setShowInviteModal(true)}
-              className="group inline-flex items-center gap-2.5 font-semibold px-6 py-4 rounded-2xl transition-all"
+              className="group inline-flex items-center gap-2.5 font-semibold px-6 py-4 rounded-2xl transition-all active:scale-[0.97] min-h-[44px]"
               style={{
                 background: 'rgba(255,255,255,0.04)',
                 border: '1px solid rgba(201,168,76,0.2)',
@@ -208,7 +208,7 @@ export function HomePage() {
                   <motion.div
                     key={report.id}
                     variants={itemVariants}
-                    className="relative rounded-xl p-5 sm:p-6 card-hover cursor-pointer overflow-hidden"
+                    className="relative rounded-xl p-5 sm:p-6 card-hover cursor-pointer overflow-hidden min-h-[44px]"
                     style={{
                       background: 'var(--color-surface)',
                       border: '1px solid rgba(255,255,255,0.06)',

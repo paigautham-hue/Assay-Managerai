@@ -92,10 +92,8 @@ function ExpandableSection({ title, children, isExpandable = false, defaultOpen 
 
   return (
     <motion.div style={{ ...sectionBase, overflow: 'hidden' }} className="mb-6" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} viewport={{ once: true }}>
-      <button onClick={() => setIsOpen(!isOpen)} className="w-full px-8 py-6 flex items-center justify-between transition-colors duration-200" style={{ background: 'transparent' }}
-        onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.03)')}
-        onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
-      >
+      <button onClick={() => setIsOpen(!isOpen)} className="w-full px-8 py-6 flex items-center justify-between transition-colors duration-200 hover:bg-white/[0.03] active:bg-white/[0.06] min-h-[44px]">
+
         <h2 className="heading-md text-gold flex items-center gap-3">{icon} {title}</h2>
         <motion.span animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.3 }} className="text-2xl" style={{ color: 'var(--color-text-tertiary)' }}>▼</motion.span>
       </button>
@@ -677,7 +675,7 @@ export function ReportPage() {
 
   if (!report) {
     return (
-      <div className="bg-gradient-dark min-h-screen flex items-center justify-center px-4">
+      <div className="bg-gradient-dark min-h-screen flex items-center justify-center px-4 safe-top pb-safe">
         <motion.div className="text-center max-w-md" initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
           <h1 className="heading-lg mb-4" style={{ color: 'var(--color-text-primary)' }}>Report Not Found</h1>
           <p className="body-md mb-8">The assessment report you're looking for doesn't exist or has been removed.</p>
@@ -694,7 +692,7 @@ export function ReportPage() {
   const gateBg = report.gateBanner.status === 'passed' ? 'rgba(52,211,153,0.1)' : report.gateBanner.status === 'flagged' ? 'rgba(251,191,36,0.1)' : 'rgba(248,113,113,0.1)';
 
   return (
-    <div className="bg-gradient-dark min-h-screen pb-20" style={{ paddingTop: 'calc(3rem + env(safe-area-inset-top, 0px))' }}>
+    <div className="bg-gradient-dark min-h-screen" style={{ paddingTop: 'calc(3rem + env(safe-area-inset-top, 0px))', paddingBottom: 'max(env(safe-area-inset-bottom, 0px), 5rem)' }}>
       <div className="max-w-5xl mx-auto px-4 sm:px-6">
         <motion.div className="mb-12" initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
           <div className="flex items-start justify-between mb-6 flex-wrap gap-4">
@@ -777,14 +775,12 @@ export function ReportPage() {
             {!showReplay ? (
               <button
                 onClick={handleShowReplay}
-                className="w-full rounded-xl p-5 flex items-center justify-center gap-3 transition-colors"
+                className="w-full rounded-xl p-5 flex items-center justify-center gap-3 transition-colors hover:bg-[rgba(212,175,55,0.15)] active:bg-[rgba(212,175,55,0.2)] min-h-[44px]"
                 style={{
                   background: 'rgba(212, 175, 55, 0.08)',
                   border: '1px solid rgba(212, 175, 55, 0.25)',
                   color: 'var(--color-gold)',
                 }}
-                onMouseEnter={e => (e.currentTarget.style.background = 'rgba(212, 175, 55, 0.15)')}
-                onMouseLeave={e => (e.currentTarget.style.background = 'rgba(212, 175, 55, 0.08)')}
               >
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
                   <path d="M6 4.5v11l9-5.5z" />

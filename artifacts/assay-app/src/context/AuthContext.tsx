@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState, useCallback, type ReactNode } from 'react';
 import type { AdminUser, UserRole } from '@/types/admin';
+import { useAssayStore } from '@/store/useAssayStore';
 
 const BASE_URL = import.meta.env.BASE_URL || '/';
 const apiUrl = (path: string) => `${BASE_URL}api/${path}`;
@@ -19,6 +20,7 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AdminUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const resetStore = useAssayStore(s => s.reset);
 
   const refresh = useCallback(async () => {
     try {
@@ -54,9 +56,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const logout = useCallback(async () => {
-    await fetch(apiUrl('auth/logout'), { method: 'POST', credentials: 'include' });
+    try {
+      await fetch(apiUrl('auth/logout'), { method: 'POST', credentials: 'include' });
+    } catch (err) {
+      console.warn('[auth] logout request failed:', err);
+    }
+    // Always clear client state even if the server request fails.
+    // The cookie will expire naturally; keeping the user logged-in on
+    // the client after they tapped "Sign Out" is worse UX.
     setUser(null);
-  }, []);
+    resetStore();
+  }, [resetStore]);
 
   const hasRole = useCallback((...roles: UserRole[]) => {
     if (!user) return false;

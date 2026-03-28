@@ -84,8 +84,8 @@ function MicCheckScreen({ onConfirm, onSkip }: { onConfirm: () => void; onSkip: 
 
   return (
     <div
-      className="min-h-screen flex flex-col items-center justify-center px-6 py-12"
-      style={{ background: '#0D0D1A' }}
+      className="min-h-screen flex flex-col items-center justify-center px-6 safe-top pb-safe"
+      style={{ background: '#0D0D1A', paddingTop: 'max(env(safe-area-inset-top, 0px), 3rem)' }}
     >
       <motion.div
         className="w-full max-w-md text-center"
@@ -194,7 +194,7 @@ function MicCheckScreen({ onConfirm, onSkip }: { onConfirm: () => void; onSkip: 
 
           <button
             onClick={handleSkip}
-            className="text-sm w-full py-2"
+            className="text-sm w-full py-3 min-h-[44px] active:opacity-60 transition-opacity"
             style={{ color: 'var(--color-text-tertiary)' }}
           >
             Skip mic check and continue anyway →
@@ -724,10 +724,15 @@ export function InterviewPage() {
   // ── Interview UI ───────────────────────────────────────────────────────────
   return (
     <div className="min-h-screen overflow-hidden" style={{ background: '#0D0D1A', touchAction: 'manipulation' }}>
-      {/* Header */}
+      {/* Header — handles its own safe-area-inset-top (no NavBar on this page) */}
       <motion.div
-        className="border-b px-4 sm:px-6 py-4 flex items-center justify-between"
-        style={{ borderColor: 'rgba(255,255,255,0.06)', background: 'rgba(13,13,26,0.95)' }}
+        className="border-b px-4 sm:px-6 flex items-center justify-between"
+        style={{
+          borderColor: 'rgba(255,255,255,0.06)',
+          background: 'rgba(13,13,26,0.95)',
+          paddingTop: 'calc(env(safe-area-inset-top, 0px) + 1rem)',
+          paddingBottom: '1rem',
+        }}
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
       >
@@ -750,10 +755,10 @@ export function InterviewPage() {
         </div>
       </motion.div>
 
-      {/* Body */}
+      {/* Body — subtract header height (72px base + safe-area-inset-top) */}
       <div
         className="flex relative"
-        style={{ height: 'calc(100dvh - 72px)' }}
+        style={{ height: 'calc(100dvh - 72px - env(safe-area-inset-top, 0px))' }}
       >
         {/* Main area */}
         <motion.div
@@ -842,7 +847,7 @@ export function InterviewPage() {
                   }
                 }}
                 className="ml-auto flex-shrink-0 text-xs font-semibold px-3 py-1 rounded-lg"
-                style={{ background: 'rgba(239,68,68,0.2)', color: '#EF4444', border: '1px solid rgba(239,68,68,0.3)' }}
+                style={{ background: 'rgba(239,68,68,0.2)', color: '#EF4444', border: '1px solid rgba(239,68,68,0.3)', minHeight: 44, minWidth: 44 }}
               >
                 Retry
               </button>
@@ -911,7 +916,7 @@ export function InterviewPage() {
           <motion.button
             onClick={() => setShowEndModal(true)}
             disabled={isEndingInterview}
-            className="btn btn-danger px-8 py-3 disabled:opacity-50"
+            className="btn btn-danger px-8 py-4 disabled:opacity-50 disabled:cursor-not-allowed"
             style={{ marginBottom: 'env(safe-area-inset-bottom, 0px)' }}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -930,7 +935,7 @@ export function InterviewPage() {
           {isMobile && !isTablet && !showFlagsPanel && (
             <motion.button
               onClick={() => setShowFlagsPanel(true)}
-              className="mt-4 rounded-full px-5 py-2 text-sm font-semibold"
+              className="mt-4 rounded-full px-5 py-3 text-sm font-semibold min-h-[44px]"
               style={{ background: 'rgba(255,255,255,0.06)', color: 'var(--color-text-secondary)' }}
               whileHover={{ scale: 1.05 }}
             >

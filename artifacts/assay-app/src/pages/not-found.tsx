@@ -4,7 +4,7 @@ export default function NotFound() {
   const [, navigate] = useLocation();
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-gradient-dark">
+    <div className="min-h-screen w-full flex items-center justify-center bg-gradient-dark safe-top pb-safe">
       <div className="text-center px-6">
         <h1
           className="text-8xl font-extrabold mb-4"
@@ -24,11 +24,7 @@ export default function NotFound() {
         </p>
         <button
           onClick={() => navigate('/')}
-          className="px-6 py-3 rounded-lg font-semibold text-sm transition-all duration-200 hover:scale-105"
-          style={{
-            background: 'linear-gradient(135deg, #C9A84C, #E8D48B)',
-            color: '#0D0D1A',
-          }}
+          className="btn btn-primary btn-lg"
         >
           Return to Dashboard
         </button>
