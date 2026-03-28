@@ -4,6 +4,15 @@
  * Replaces OpenAI Realtime WebRTC with Google Gemini Live API over WebSocket.
  * Supports real-time bidirectional audio AND optional video input.
  *
+ * Security:
+ *   API key NEVER leaves the server. The backend mints single-use ephemeral
+ *   tokens (POST /api/gemini-token) that expire in 2 minutes.
+ *
+ * Session Resumption:
+ *   Gemini drops WebSocket connections every ~10 minutes. For 30-60 min
+ *   interviews, we request a session handle on setup, then auto-reconnect
+ *   with that handle when the connection drops. Context is preserved.
+ *
  * Architecture:
  *   Mic → AudioContext → PCM16 @ 16kHz → Base64 → WebSocket → Gemini
  *   Gemini → WebSocket → Base64 PCM16 @ 24kHz → AudioContext → Speakers
@@ -25,7 +34,7 @@ export interface AIPersonality {
 export interface GeminiLiveCallbacks {
   onTranscript: (entry: Omit<TranscriptEntry, 'id'>) => void;
   onObservation: (obs: Omit<Observation, 'id'>) => void;
-  onStatusChange: (status: 'connecting' | 'connected' | 'speaking' | 'listening' | 'processing' | 'disconnected' | 'error') => void;
+  onStatusChange: (status: 'connecting' | 'connected' | 'speaking' | 'listening' | 'processing' | 'disconnected' | 'error' | 'reconnecting') => void;
   onError: (error: string) => void;
   onAudioLevel: (level: number) => void;
 }
@@ -33,9 +42,14 @@ export interface GeminiLiveCallbacks {
 // PCM audio constants
 const INPUT_SAMPLE_RATE = 16000;   // Gemini expects 16kHz input
 const OUTPUT_SAMPLE_RATE = 24000;  // Gemini outputs 24kHz
-const CHUNK_DURATION_MS = 100;     // Send audio every 100ms
-const CHUNK_SIZE = (INPUT_SAMPLE_RATE * CHUNK_DURATION_MS) / 1000; // 1600 samples per chunk
 const VIDEO_FPS = 1;               // Gemini accepts max 1fps for images
+
+const GEMINI_MODEL = 'gemini-2.5-flash-preview-native-audio-dialog';
+const WS_BASE = 'wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1beta.GenerativeService.BidiGenerateContent';
+
+// Reconnection constants
+const MAX_RECONNECT_ATTEMPTS = 5;
+const RECONNECT_BASE_DELAY_MS = 1000; // Exponential backoff: 1s, 2s, 4s, 8s, 16s
 
 export class GeminiLiveEngine {
   private ws: WebSocket | null = null;
@@ -45,6 +59,7 @@ export class GeminiLiveEngine {
   private setup: InterviewSetup;
   private isConnected = false;
   private isSpeaking = false;
+  private intentionalDisconnect = false;
 
   // Audio input processing
   private audioContext: AudioContext | null = null;
@@ -71,8 +86,16 @@ export class GeminiLiveEngine {
   private unmuteMicTimeout: ReturnType<typeof setTimeout> | null = null;
   private readonly MIC_UNMUTE_DELAY_MS = 600;
 
+  // Session resumption (handles 10-min connection limit)
+  private sessionHandle: string | null = null;
+  private reconnectAttempts = 0;
+  private reconnectTimer: ReturnType<typeof setTimeout> | null = null;
+  private hasGreeted = false;
+
+  // Ephemeral token
+  private ephemeralToken: string | null = null;
+
   private personality?: AIPersonality;
-  private apiKey: string | null = null;
 
   constructor(
     setup: InterviewSetup,
@@ -195,15 +218,18 @@ ${gateInstructions}
   async connect(options?: { enableVideo?: boolean }): Promise<void> {
     this.callbacks.onStatusChange('connecting');
     this.videoEnabled = options?.enableVideo ?? false;
+    this.intentionalDisconnect = false;
+    this.reconnectAttempts = 0;
 
     try {
-      // 1. Get API key from backend (keeps key server-side)
-      const keyRes = await fetch(`${import.meta.env.BASE_URL}api/gemini-key`, {
+      // 1. Mint ephemeral token from backend (API key stays server-side)
+      const tokenRes = await fetch(`${import.meta.env.BASE_URL}api/gemini-token`, {
+        method: 'POST',
         credentials: 'include',
       });
-      if (!keyRes.ok) throw new Error('Failed to get Gemini API key');
-      const { apiKey } = await keyRes.json();
-      this.apiKey = apiKey;
+      if (!tokenRes.ok) throw new Error('Failed to get Gemini session token');
+      const { token } = await tokenRes.json();
+      this.ephemeralToken = token;
 
       // 2. Get microphone
       this.micStream = await navigator.mediaDevices.getUserMedia({
@@ -232,15 +258,8 @@ ${gateInstructions}
       await this.setupAudioInput();
       this.setupAudioOutput();
 
-      // 5. Connect WebSocket to Gemini Live API
-      const model = 'gemini-2.5-flash-preview-native-audio-dialog';
-      const wsUrl = `wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1beta.GenerativeService.BidiGenerateContent?key=${apiKey}`;
-
-      this.ws = new WebSocket(wsUrl);
-      this.ws.onopen = () => this.onWsOpen();
-      this.ws.onmessage = (e) => this.onWsMessage(e);
-      this.ws.onerror = (e) => this.onWsError(e);
-      this.ws.onclose = (e) => this.onWsClose(e);
+      // 5. Connect WebSocket
+      this.connectWebSocket();
 
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : 'Connection failed';
@@ -250,14 +269,32 @@ ${gateInstructions}
     }
   }
 
+  /**
+   * Connect (or reconnect) the WebSocket to Gemini Live.
+   * On first connect, sends full setup with system prompt.
+   * On reconnect, sends setup with sessionResumption.sessionHandle to restore context.
+   */
+  private connectWebSocket() {
+    if (!this.ephemeralToken) return;
+
+    // Use ephemeral token instead of raw API key
+    const wsUrl = `${WS_BASE}?key=${this.ephemeralToken}`;
+
+    this.ws = new WebSocket(wsUrl);
+    this.ws.onopen = () => this.onWsOpen();
+    this.ws.onmessage = (e) => this.onWsMessage(e);
+    this.ws.onerror = (e) => this.onWsError(e);
+    this.ws.onclose = (e) => this.onWsClose(e);
+  }
+
   private onWsOpen() {
     if (!this.ws || this.ws.readyState !== WebSocket.OPEN) return;
     console.log('[GeminiLive] WebSocket connected, sending setup');
 
-    // Send session config
-    const setupMessage = {
+    // Build setup message
+    const setupMessage: Record<string, any> = {
       setup: {
-        model: 'models/gemini-2.5-flash-preview-native-audio-dialog',
+        model: `models/${GEMINI_MODEL}`,
         generationConfig: {
           responseModalities: ['AUDIO'],
           speechConfig: {
@@ -281,6 +318,11 @@ ${gateInstructions}
         },
         inputAudioTranscription: {},
         outputAudioTranscription: {},
+        // Enable session resumption so we survive the ~10 min connection limit.
+        // Gemini will return a sessionHandle in setupComplete that we use to reconnect.
+        sessionResumption: this.sessionHandle
+          ? { handle: this.sessionHandle }
+          : { transparent: true },
       },
     };
 
@@ -291,25 +333,47 @@ ${gateInstructions}
     try {
       const msg = JSON.parse(event.data);
 
-      // Setup complete
+      // Setup complete — extract session handle for reconnection
       if (msg.setupComplete) {
         this.isConnected = true;
+        this.reconnectAttempts = 0; // Reset on successful connect
         this.callbacks.onStatusChange('connected');
         this.startAudioStreaming();
         if (this.videoEnabled) this.startVideoStreaming();
 
-        // Send initial greeting prompt
-        if (!this.ws || this.ws.readyState !== WebSocket.OPEN) return;
-        this.ws.send(JSON.stringify({
-          clientContent: {
-            turns: [{
-              role: 'user',
-              parts: [{ text: `[System: The interview is starting now. Greet ${this.setup.candidateName} warmly and begin.]` }],
-            }],
-            turnComplete: true,
-          },
-        }));
+        // Store session handle for reconnection
+        if (msg.setupComplete.sessionResumption?.handle) {
+          this.sessionHandle = msg.setupComplete.sessionResumption.handle;
+          console.log('[GeminiLive] Session handle received for resumption');
+        }
+
+        // Only send greeting on first connect, not on reconnects
+        if (!this.hasGreeted) {
+          this.hasGreeted = true;
+          if (!this.ws || this.ws.readyState !== WebSocket.OPEN) return;
+          this.ws.send(JSON.stringify({
+            clientContent: {
+              turns: [{
+                role: 'user',
+                parts: [{ text: `[System: The interview is starting now. Greet ${this.setup.candidateName} warmly and begin.]` }],
+              }],
+              turnComplete: true,
+            },
+          }));
+        }
         return;
+      }
+
+      // goAway — Gemini is about to drop the connection (~60s warning)
+      if (msg.goAway) {
+        console.log('[GeminiLive] Received goAway — connection will close soon, will auto-reconnect');
+        // Don't do anything yet — wait for the actual close event to trigger reconnection
+        return;
+      }
+
+      // Session resumption update (new handle during active session)
+      if (msg.sessionResumptionUpdate?.handle) {
+        this.sessionHandle = msg.sessionResumptionUpdate.handle;
       }
 
       // Server content (audio, transcription, interruption)
@@ -381,17 +445,68 @@ ${gateInstructions}
   }
 
   private onWsError(_event: Event) {
-    this.callbacks.onError('WebSocket connection error');
-    this.callbacks.onStatusChange('error');
+    console.error('[GeminiLive] WebSocket error');
+    // Don't immediately report error — let onWsClose handle reconnection
   }
 
   private onWsClose(event: CloseEvent) {
     console.log('[GeminiLive] WebSocket closed:', event.code, event.reason);
     this.isConnected = false;
+
+    // If we intentionally disconnected (interview ended), don't reconnect
+    if (this.intentionalDisconnect) {
+      this.callbacks.onStatusChange('disconnected');
+      return;
+    }
+
+    // If we have a session handle, attempt reconnection (expected ~10 min drops)
+    if (this.sessionHandle && this.reconnectAttempts < MAX_RECONNECT_ATTEMPTS) {
+      this.attemptReconnect();
+      return;
+    }
+
+    // No session handle or max retries exceeded — report error
     if (event.code !== 1000) {
       this.callbacks.onError(`Connection closed: ${event.reason || 'Unknown error'}`);
     }
     this.callbacks.onStatusChange('disconnected');
+  }
+
+  // ─── Reconnection with Session Resumption ──────────────────────────────────
+
+  private async attemptReconnect() {
+    this.reconnectAttempts++;
+    const delay = RECONNECT_BASE_DELAY_MS * Math.pow(2, this.reconnectAttempts - 1);
+    console.log(`[GeminiLive] Reconnecting in ${delay}ms (attempt ${this.reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS})`);
+    this.callbacks.onStatusChange('reconnecting');
+
+    // Stop audio streaming during reconnect (mic/video streams stay alive)
+    this.stopAudioStreaming();
+    this.stopVideoStreaming();
+
+    this.reconnectTimer = setTimeout(async () => {
+      try {
+        // Mint a fresh ephemeral token for the reconnection
+        const tokenRes = await fetch(`${import.meta.env.BASE_URL}api/gemini-token`, {
+          method: 'POST',
+          credentials: 'include',
+        });
+        if (!tokenRes.ok) throw new Error('Failed to refresh token');
+        const { token } = await tokenRes.json();
+        this.ephemeralToken = token;
+
+        // Reconnect — onWsOpen will send setup with sessionHandle
+        this.connectWebSocket();
+      } catch (error) {
+        console.error('[GeminiLive] Reconnect failed:', error);
+        if (this.reconnectAttempts < MAX_RECONNECT_ATTEMPTS) {
+          this.attemptReconnect();
+        } else {
+          this.callbacks.onError('Connection lost after multiple retries. Please refresh the page.');
+          this.callbacks.onStatusChange('error');
+        }
+      }
+    }, delay);
   }
 
   // ─── Audio Input (Mic → PCM16 → WebSocket) ─────────────────────────────────
@@ -468,6 +583,12 @@ ${gateInstructions}
         },
       }));
     };
+  }
+
+  private stopAudioStreaming() {
+    if (this.scriptProcessor) {
+      this.scriptProcessor.onaudioprocess = null;
+    }
   }
 
   // ─── Audio Output (WebSocket → PCM24 → Speakers) ───────────────────────────
@@ -582,6 +703,13 @@ ${gateInstructions}
     }, 1000 / VIDEO_FPS);
   }
 
+  private stopVideoStreaming() {
+    if (this.videoInterval) {
+      clearInterval(this.videoInterval);
+      this.videoInterval = null;
+    }
+  }
+
   // ─── Echo Prevention ────────────────────────────────────────────────────────
 
   private muteMic() {
@@ -650,13 +778,17 @@ ${gateInstructions}
   }
 
   async disconnect(): Promise<void> {
+    this.intentionalDisconnect = true;
     this.isConnected = false;
 
-    // Stop video
-    if (this.videoInterval) {
-      clearInterval(this.videoInterval);
-      this.videoInterval = null;
+    // Cancel any pending reconnect
+    if (this.reconnectTimer) {
+      clearTimeout(this.reconnectTimer);
+      this.reconnectTimer = null;
     }
+
+    // Stop video
+    this.stopVideoStreaming();
     this.videoStream?.getTracks().forEach(t => t.stop());
     this.videoStream = null;
     if (this.videoElement) {
@@ -676,6 +808,7 @@ ${gateInstructions}
       this.unmuteMicTimeout = null;
     }
 
+    this.stopAudioStreaming();
     this.scriptProcessor?.disconnect();
     this.scriptProcessor = null;
     this.analyserNode?.disconnect();
@@ -687,7 +820,8 @@ ${gateInstructions}
 
     this.playbackContext?.close().catch(() => {});
     this.playbackContext = null;
-    this.clearPlaybackQueue();
+    this.playbackQueue = [];
+    this.nextPlayTime = 0;
 
     this.micStream?.getTracks().forEach(t => t.stop());
     this.micStream = null;
@@ -699,6 +833,11 @@ ${gateInstructions}
       }
       this.ws = null;
     }
+
+    // Clear session state
+    this.sessionHandle = null;
+    this.ephemeralToken = null;
+    this.hasGreeted = false;
   }
 
   // ─── Utilities ──────────────────────────────────────────────────────────────

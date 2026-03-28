@@ -4,16 +4,51 @@ import type { Request, Response } from 'express';
 const router = Router();
 
 /**
- * GET /gemini-key
- * Returns the Gemini API key for the frontend Gemini Live engine.
- * The key is kept server-side so it never appears in client bundles.
+ * POST /gemini-token
+ * Mints a short-lived ephemeral token for the Gemini Live API.
+ * The permanent GOOGLE_API_KEY never leaves the server.
+ *
+ * The browser uses this token in the WebSocket URL instead of the raw API key.
+ * Tokens are single-use (can only start one session) and expire in 2 minutes.
+ * Session resumption reuses the same token, so reconnects work even after expiry.
+ *
+ * @see https://ai.google.dev/gemini-api/docs/live-api/ephemeral-tokens
  */
-router.get('/gemini-key', (_req: Request, res: Response) => {
+router.post('/gemini-token', async (_req: Request, res: Response) => {
   const apiKey = process.env.GOOGLE_API_KEY;
   if (!apiKey) {
     return res.status(500).json({ error: 'GOOGLE_API_KEY is not configured' });
   }
-  return res.json({ apiKey });
+
+  try {
+    const response = await fetch(
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-native-audio-dialog:generateEphemeralToken',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-goog-api-key': apiKey,
+        },
+        body: JSON.stringify({
+          ephemeralToken: {
+            expireTime: new Date(Date.now() + 2 * 60 * 1000).toISOString(), // 2 min
+          },
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('[gemini-token] Token mint failed:', response.status, errorText);
+      return res.status(502).json({ error: 'Failed to mint Gemini token' });
+    }
+
+    const data = await response.json() as Record<string, any>;
+    return res.json({ token: data.ephemeralToken?.token || data.token });
+  } catch (error) {
+    console.error('[gemini-token] Error:', error);
+    return res.status(500).json({ error: 'Internal error minting token' });
+  }
 });
 
 /**

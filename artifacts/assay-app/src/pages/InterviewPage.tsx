@@ -11,7 +11,7 @@ import type { Observation } from '../types';
 import { GATE_DEFINITIONS } from '../lib/gates';
 import { AudioRecorder } from '../lib/audioRecorder';
 
-type InterviewStatus = 'connecting' | 'idle' | 'ai_speaking' | 'listening' | 'processing';
+type InterviewStatus = 'connecting' | 'idle' | 'ai_speaking' | 'listening' | 'processing' | 'reconnecting';
 type Phase = 'mic_check' | 'interview';
 type MicPermission = 'idle' | 'requesting' | 'granted' | 'denied';
 
@@ -386,6 +386,7 @@ export function InterviewPage() {
         onObservation: addObservation,
         onStatusChange: veStatus => {
           if (veStatus === 'connecting') setStatus('connecting');
+          else if (veStatus === 'reconnecting') setStatus('reconnecting');
           else if (veStatus === 'connected') {
             setStatus('idle');
             // Start recording mic audio
@@ -480,6 +481,7 @@ export function InterviewPage() {
       const interval = setInterval(() => setAudioLevel(Math.random() * 0.8 + 0.1), 100);
       return () => clearInterval(interval);
     }
+    return undefined;
   }, [status, phase]);
 
   const addAIMessage = useCallback(
@@ -625,6 +627,7 @@ export function InterviewPage() {
     processing: 'var(--color-text-tertiary)',
     idle: 'var(--color-green)',
     connecting: 'var(--color-text-tertiary)',
+    reconnecting: '#f59e0b',
   }[status];
 
   const statusLabel = {
@@ -633,6 +636,7 @@ export function InterviewPage() {
     processing: 'Processing Response',
     connecting: 'Connecting...',
     idle: 'Idle',
+    reconnecting: 'Reconnecting...',
   }[status];
 
   // ── Mic check phase ────────────────────────────────────────────────────────
@@ -880,6 +884,7 @@ export function InterviewPage() {
                         onObservation: addObservation,
                         onStatusChange: veStatus => {
                           if (veStatus === 'connecting') setStatus('connecting');
+                          else if (veStatus === 'reconnecting') setStatus('reconnecting');
                           else if (veStatus === 'connected') setStatus('idle');
                           else if (veStatus === 'speaking') setStatus('ai_speaking');
                           else if (veStatus === 'listening') setStatus('listening');
