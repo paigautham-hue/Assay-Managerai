@@ -4,10 +4,6 @@ const config: CapacitorConfig = {
   appId: 'com.assayai.app',
   appName: 'ASSAY',
   webDir: 'dist/public',
-  server: {
-    url: 'https://assay-manager.replit.app',
-    cleartext: false,
-  },
   ios: {
     contentInset: 'automatic',
     preferredContentMode: 'mobile',

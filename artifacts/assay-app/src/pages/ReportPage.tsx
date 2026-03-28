@@ -8,6 +8,7 @@ import type { ProsodyData } from '../types';
 import { GATE_DEFINITIONS } from '../lib/gates';
 import { generateExecutivePDF } from '../lib/pdfExport';
 import { InterviewReplay } from '../components/InterviewReplay';
+import { ReportFeedback } from '../components/ReportFeedback';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell,
   ResponsiveContainer, PieChart, Pie, Legend,
@@ -1017,6 +1018,9 @@ export function ReportPage() {
             </ol>
           </ExpandableSection>
         )}
+
+        {/* Self-Learning Feedback */}
+        <ReportFeedback reportId={report.id} />
 
         {/* Footer */}
         <motion.div className="flex gap-4 justify-center pt-12 mt-12" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
