@@ -1,12 +1,8 @@
-# See https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
-
 # compiled output
 dist
 tmp
 out-tsc
 *.tsbuildinfo
-.expo
-.expo-shared
 
 # dependencies
 node_modules
@@ -41,9 +37,13 @@ testem.log
 .DS_Store
 Thumbs.db
 
-.cursor/rules/nx-rules.mdc
-.github/instructions/nx.instructions.md
+# Prisma generated
+artifacts/api-server/src/generated/
 
-# Replit
-.cache/
-.local/
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Claude Code
+.claude/
