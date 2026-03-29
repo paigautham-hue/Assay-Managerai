@@ -1,109 +1,107 @@
 #!/usr/bin/env node
 /**
  * Bootstrap entry point for production.
- * Sets PRISMA_QUERY_ENGINE_LIBRARY before importing the main server bundle.
- * This avoids ESM import hoisting which would load @prisma/client before the env var is set.
  *
- * Strategy: try each engine variant in order, verify it can actually be loaded,
- * then set the env var to the first working one.
+ * Strategy:
+ * 1. If LD_LIBRARY_PATH is already set with our lib dir, we've already re-exec'd — skip to step 3.
+ * 2. Otherwise, set LD_LIBRARY_PATH to include bundled libssl.so.3/libcrypto.so.3,
+ *    then re-exec this same script via spawnSync so the new process inherits the env var
+ *    BEFORE any native .so.node binaries are dlopen'd.
+ * 3. Set PRISMA_QUERY_ENGINE_LIBRARY to the debian-openssl-3.0.x engine (which needs libssl.so.3).
+ * 4. Dynamically import the main server bundle.
  */
 import path from 'path';
 import fs from 'fs';
-import { execSync } from 'child_process';
+import { spawnSync } from 'child_process';
 import { fileURLToPath } from 'url';
-import { createRequire } from 'module';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const require = createRequire(import.meta.url);
 
-// Engine variants to try in order of preference
-// musl is for Alpine Linux containers (no libssl needed, statically linked)
-// debian variants need libssl.so.1.1 or libssl.so.3 installed
+const REEXEC_MARKER = '_ASSAY_LDPATH_SET';
+
+// ── Step 1: Re-exec if LD_LIBRARY_PATH not yet configured ──────────────────
+if (!process.env[REEXEC_MARKER]) {
+  // Determine the directory containing bundled .so files
+  // In production: /usr/src/app/dist/  (same dir as this script)
+  const libDir = __dirname;
+
+  // Check if bundled libssl exists here
+  const bundledSsl = path.join(libDir, 'libssl.so.3');
+  const hasBundled = fs.existsSync(bundledSsl);
+
+  if (hasBundled) {
+    const currentLdPath = process.env.LD_LIBRARY_PATH || '';
+    const newLdPath = currentLdPath ? `${libDir}:${currentLdPath}` : libDir;
+
+    console.log(`[Prisma] Bundled libssl.so.3 found at ${bundledSsl}`);
+    console.log(`[Prisma] Re-executing with LD_LIBRARY_PATH=${newLdPath}`);
+
+    const result = spawnSync(process.execPath, [__filename], {
+      env: {
+        ...process.env,
+        LD_LIBRARY_PATH: newLdPath,
+        [REEXEC_MARKER]: '1',
+      },
+      stdio: 'inherit',
+    });
+
+    process.exit(result.status ?? 1);
+  } else {
+    console.log(`[Prisma] No bundled libssl.so.3 at ${bundledSsl}, proceeding without LD_LIBRARY_PATH override`);
+    // Fall through to engine selection below
+  }
+}
+
+// ── Step 2: Select the best Prisma engine binary ───────────────────────────
+// Now that LD_LIBRARY_PATH is set (if bundled libs exist), select the engine.
+// Prefer debian-openssl-3.0.x since we bundled libssl.so.3.
+
 const ENGINE_VARIANTS = [
+  'libquery_engine-debian-openssl-3.0.x.so.node',
   'libquery_engine-linux-musl-openssl-3.0.x.so.node',
   'libquery_engine-linux-musl.so.node',
-  'libquery_engine-debian-openssl-3.0.x.so.node',
   'libquery_engine-debian-openssl-1.1.x.so.node',
 ];
 
 const SEARCH_ROOTS = [
   '/usr/src/app/node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/.prisma/client',
   '/usr/src/app/node_modules/.prisma/client',
-  '/usr/src/app/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines',
-  '/usr/src/app/node_modules/.pnpm/prisma@5.22.0/node_modules/prisma',
   path.resolve(process.cwd(), 'node_modules', '.prisma', 'client'),
   path.resolve(process.cwd(), 'node_modules', '.pnpm', '@prisma+client@5.22.0_prisma@5.22.0', 'node_modules', '.prisma', 'client'),
   path.resolve(__dirname, '..', 'node_modules', '.prisma', 'client'),
 ];
 
-function findWorkingEngine() {
-  // First try known paths for each variant in preference order
-  for (const engineName of ENGINE_VARIANTS) {
-    for (const root of SEARCH_ROOTS) {
-      const candidate = path.join(root, engineName);
-      try {
-        if (fs.existsSync(candidate)) {
-          // Try to actually load it to verify it works
-          try {
-            require(candidate);
-            console.log(`[Prisma] Working engine found: ${candidate}`);
-            return candidate;
-          } catch (loadErr) {
-            console.log(`[Prisma] Engine exists but failed to load: ${candidate} - ${loadErr.message?.split('\n')[0]}`);
-            // Continue to next candidate
-          }
-        }
-      } catch { /* ignore */ }
+function findEngineByName(name) {
+  for (const root of SEARCH_ROOTS) {
+    const candidate = path.join(root, name);
+    if (fs.existsSync(candidate)) {
+      return candidate;
     }
   }
-
-  // Fallback: use find to search for any working engine
-  try {
-    const searchBase = fs.existsSync('/usr/src/app/node_modules') 
-      ? '/usr/src/app/node_modules' 
-      : path.resolve(process.cwd(), 'node_modules');
-    
-    for (const engineName of ENGINE_VARIANTS) {
-      const found = execSync(
-        `find ${searchBase} -name "${engineName}" 2>/dev/null | head -3`,
-        { encoding: 'utf8', timeout: 10000 }
-      ).trim().split('\n').filter(Boolean);
-      
-      for (const candidate of found) {
-        if (!fs.existsSync(candidate)) continue;
-        try {
-          require(candidate);
-          console.log(`[Prisma] Working engine found via find: ${candidate}`);
-          return candidate;
-        } catch (loadErr) {
-          console.log(`[Prisma] Engine found but failed: ${candidate} - ${loadErr.message?.split('\n')[0]}`);
-        }
-      }
-    }
-  } catch { /* ignore */ }
-
   return null;
 }
 
-// Set env var BEFORE any @prisma/client import
-const currentLib = process.env.PRISMA_QUERY_ENGINE_LIBRARY;
-const currentLibWorks = currentLib && (() => {
-  try { require(currentLib); return true; } catch { return false; }
-})();
-
-if (!currentLibWorks) {
-  const enginePath = findWorkingEngine();
-  if (enginePath) {
-    process.env.PRISMA_QUERY_ENGINE_LIBRARY = enginePath;
-    console.log(`[Prisma] PRISMA_QUERY_ENGINE_LIBRARY set to: ${enginePath}`);
-  } else {
-    delete process.env.PRISMA_QUERY_ENGINE_LIBRARY;
-    console.log('[Prisma] WARNING: No working engine found, using Prisma default detection');
+function findBestEngine() {
+  for (const variant of ENGINE_VARIANTS) {
+    const found = findEngineByName(variant);
+    if (found) {
+      console.log(`[Prisma] Selected engine: ${found}`);
+      return found;
+    }
   }
-} else {
-  console.log(`[Prisma] Using pre-set engine: ${currentLib}`);
+  return null;
 }
 
-// NOW dynamically import the main server - @prisma/client will see the env var
+// Override PRISMA_QUERY_ENGINE_LIBRARY unconditionally with the best available engine
+const enginePath = findBestEngine();
+if (enginePath) {
+  process.env.PRISMA_QUERY_ENGINE_LIBRARY = enginePath;
+  console.log(`[Prisma] PRISMA_QUERY_ENGINE_LIBRARY = ${enginePath}`);
+} else {
+  delete process.env.PRISMA_QUERY_ENGINE_LIBRARY;
+  console.log('[Prisma] WARNING: No engine binary found, using Prisma default detection');
+}
+
+// ── Step 3: Start the server ───────────────────────────────────────────────
 await import('./index.js');
