@@ -55,11 +55,11 @@ export function AcceptInvitePage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ email: invite.email, name: name.trim(), password, inviteToken: token }),
+        body: JSON.stringify({ email: invite.email.trim().toLowerCase(), name: name.trim(), password, inviteToken: token }),
       });
       const data = await res.json();
       if (!res.ok) { setSubmitError(data.error || 'Registration failed'); return; }
-      await login(invite.email, password);
+      await login(invite.email.trim().toLowerCase(), password);
       navigate('/');
     } catch { setSubmitError('Network error — please try again'); }
     finally { setIsSubmitting(false); }

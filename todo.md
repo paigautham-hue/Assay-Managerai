@@ -52,3 +52,8 @@
 - [x] Fix "Internal server error" on user registration in production (was already fixed in code, needed republish)
 - [x] Verify registration works end-to-end after fix
 - [ ] Save checkpoint and republish (pending)
+
+## Bug Fix: Email Validation Pattern
+
+- [x] Fix email validation - changed type=email to type=text+inputMode=email, normalize email to lowercase before submit
+- [ ] Save checkpoint and republish

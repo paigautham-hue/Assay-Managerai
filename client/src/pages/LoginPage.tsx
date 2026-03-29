@@ -43,21 +43,22 @@ export function LoginPage() {
     setError('');
     setIsSubmitting(true);
     try {
+      const normalizedEmail = email.trim().toLowerCase();
       if (mode === 'login') {
-        await login(email, password);
+        await login(normalizedEmail, password);
         navigate('/');
       } else {
         const res = await fetch(apiUrl('auth/register'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
-          body: JSON.stringify({ email, name, password }),
+          body: JSON.stringify({ email: normalizedEmail, name, password }),
         });
         if (!res.ok) {
           const data = await res.json();
           throw new Error(data.error || 'Registration failed');
         }
-        await login(email, password);
+        await login(normalizedEmail, password);
         navigate('/');
       }
     } catch (err) {
@@ -177,7 +178,7 @@ export function LoginPage() {
             <div>
               <label className="block text-xs font-medium mb-1.5" style={{ color: 'var(--color-text-tertiary)' }}>Email</label>
               <input
-                type="email"
+                type="text"
                 inputMode="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
