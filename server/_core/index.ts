@@ -1,5 +1,8 @@
 import "dotenv/config";
 
+// Prisma engine resolver - MUST be first import to set env var before @prisma/client loads
+import '../db/prisma-engine-resolve.js';
+
 // Map Manus env variable names to ASSAY expected names
 if (!process.env.GOOGLE_API_KEY && process.env.GEMINI_API_KEY) {
   process.env.GOOGLE_API_KEY = process.env.GEMINI_API_KEY;

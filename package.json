@@ -6,8 +6,8 @@
   "scripts": {
     "dev": "NODE_ENV=development tsx watch server/_core/index.ts",
     "postinstall": "PRISMA_QUERY_ENGINE_LIBRARY= prisma generate --schema=prisma/schema.prisma && node -e \"const fs=require('fs'),p=require('path'),{execSync:x}=require('child_process');const src=p.join('node_modules','.pnpm');const d=fs.readdirSync(src).find(f=>f.startsWith('@prisma+client'));if(d){const t=p.join(src,d,'node_modules','.prisma','client');fs.mkdirSync(p.join('node_modules','.prisma'),{recursive:true});try{fs.symlinkSync(t,p.join('node_modules','.prisma','client'))}catch(e){}}try{const r=x('find node_modules -name libquery_engine-debian-openssl-3.0.x.so.node 2>/dev/null',{encoding:'utf8'}).trim();console.log('OpenSSL 3.0.x engine:',r||'NOT FOUND')}catch(e){console.log('Engine search failed')}\"",
-    "build": "PRISMA_QUERY_ENGINE_LIBRARY= prisma generate --schema=prisma/schema.prisma && vite build && esbuild server/_core/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist",
-    "start": "NODE_ENV=production node dist/index.js",
+    "build": "PRISMA_QUERY_ENGINE_LIBRARY= prisma generate --schema=prisma/schema.prisma && vite build && esbuild server/_core/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist && cp server/start.mjs dist/start.mjs 2>/dev/null || true",
+    "start": "NODE_ENV=production node dist/start.mjs",
     "check": "tsc --noEmit",
     "format": "prettier --write .",
     "test": "vitest run",
