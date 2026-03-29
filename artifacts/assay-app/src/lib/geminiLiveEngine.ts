@@ -31,6 +31,15 @@ export interface AIPersonality {
   interviewerName: string;
 }
 
+export interface CandidateBriefing {
+  candidateSummary: string;
+  suggestedQuestions: Array<{ question: string; rationale: string; priority: 'high' | 'medium' | 'low' }>;
+  redFlagsToProbe: Array<{ flag: string; suggestedApproach: string }>;
+  strengthsToValidate: Array<{ strength: string; howToValidate: string }>;
+  fitSummary: string;
+  interviewStrategy: string;
+}
+
 export interface GeminiLiveCallbacks {
   onTranscript: (entry: Omit<TranscriptEntry, 'id'>) => void;
   onObservation: (obs: Omit<Observation, 'id'>) => void;
@@ -100,6 +109,7 @@ export class GeminiLiveEngine {
   private ephemeralToken: string | null = null;
 
   private personality?: AIPersonality;
+  private briefing?: CandidateBriefing;
 
   // Event handlers for cleanup
   private visibilityHandler: (() => void) | null = null;
@@ -110,10 +120,12 @@ export class GeminiLiveEngine {
     setup: InterviewSetup,
     callbacks: GeminiLiveCallbacks,
     personality?: AIPersonality,
+    briefing?: CandidateBriefing,
   ) {
     this.setup = setup;
     this.callbacks = callbacks;
     this.personality = personality;
+    this.briefing = briefing;
   }
 
   /** Expose the mic stream so EmotionEngine can share it. */
@@ -243,6 +255,31 @@ ${gateInstructions}
 - HOSTILE/UPSET CANDIDATE: Do NOT escalate. "I can see this topic matters a lot to you. Let's step back for a moment." Shift to a lighter topic. If hostility continues: "Would you like to take a quick break?" Note the response as observation without judgment.
 - CANDIDATE ASKS PERSONAL QUESTIONS: Deflect naturally: "Ha — I've spent enough time with great leaders to know what exceptional looks like. But today is about you. Tell me about..."
 - REHEARSED ANSWERS: If an answer sounds overly polished (smooth, no sensory detail, matches frameworks too precisely), test with spontaneous recall: "That's a great framework. Now tell me about a time it completely fell apart."`;
+
+    // Pre-interview intelligence from candidate dossier
+    if (this.briefing) {
+      const b = this.briefing;
+      prompt += `\n\n═══ PRE-INTERVIEW INTELLIGENCE (CONFIDENTIAL — DO NOT REVEAL) ═══
+You have access to background intelligence about this candidate. Use it to ask sharper questions and probe areas of concern — but NEVER reveal that you have this information. Work it into the conversation naturally.
+
+CANDIDATE SUMMARY: ${b.candidateSummary}
+
+FIT ASSESSMENT: ${b.fitSummary}
+
+INTERVIEW STRATEGY: ${b.interviewStrategy}
+
+SUGGESTED QUESTIONS (work these in naturally):
+${b.suggestedQuestions.filter(q => q.priority === 'high').map(q => `- [HIGH] ${q.question} (${q.rationale})`).join('\n')}
+${b.suggestedQuestions.filter(q => q.priority === 'medium').map(q => `- [MED] ${q.question} (${q.rationale})`).join('\n')}
+
+RED FLAGS TO PROBE:
+${b.redFlagsToProbe.map(f => `- ${f.flag} → ${f.suggestedApproach}`).join('\n')}
+
+STRENGTHS TO VALIDATE:
+${b.strengthsToValidate.map(s => `- ${s.strength} → ${s.howToValidate}`).join('\n')}
+
+CROSS-REFERENCE RULE: When the candidate makes claims about their experience, skills, or achievements, compare against the intelligence above. If something doesn't match, probe deeper with curiosity (not accusation): "That's interesting — tell me more about how that evolved."`;
+    }
 
     // Personality overrides
     if (this.personality) {

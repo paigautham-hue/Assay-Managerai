@@ -15,6 +15,11 @@ import invitesRouter from "./invites.js";
 import publicInviteRouter from "./publicInvite.js";
 import geminiRouter from "./gemini.js";
 import feedbackRouter from "./feedback.js";
+import candidatesRouter from "./candidates.js";
+import candidateDocumentsRouter from "./candidateDocuments.js";
+import candidateIntelligenceRouter from "./candidateIntelligence.js";
+import candidateNotesRouter from "./candidateNotes.js";
+import referencesRouter from "./references.js";
 import { authenticate } from "../middleware/auth.js";
 
 const router: IRouter = Router();
@@ -48,5 +53,10 @@ router.use(invitesRouter);
 router.use(publicInviteRouter);
 router.use(geminiRouter);
 router.use(feedbackRouter);
+router.use(candidatesRouter);
+router.use(candidateDocumentsRouter);
+router.use(candidateIntelligenceRouter);
+router.use(candidateNotesRouter);
+router.use(referencesRouter);
 
 export default router;

@@ -66,10 +66,19 @@ export interface BuildReportOptions {
   chairmanSynthesis: any;
   setup?: any;
   prosodyData?: any;
+  candidateIntelligence?: {
+    fitScore?: number;
+    resumeHighlights?: string[];
+    redFlags?: string[];
+    referencesSummary?: string;
+    crossReferenceFindings?: string[];
+    source?: string;
+    yearsExperience?: number;
+  };
 }
 
 export function buildReport(opts: BuildReportOptions) {
-  const { sessionId, candidateName, roleName, assessorVerdicts, chairmanSynthesis, setup, prosodyData } = opts;
+  const { sessionId, candidateName, roleName, assessorVerdicts, chairmanSynthesis, setup, prosodyData, candidateIntelligence } = opts;
 
   const { overallStatus: gateStatus, evaluations: gateEvaluations } = evaluateGates(assessorVerdicts);
 
