@@ -1,10 +1,20 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useLocation } from 'wouter';
 import { useAssayStore } from '../store/useAssayStore';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { GateName } from '../types';
 import { GATE_DEFINITIONS, ROLE_GATE_PRESETS } from '../lib/gates';
 import { ROLE_TEMPLATES, type RoleTemplate } from '../lib/roleTemplates';
+
+const BASE_URL = import.meta.env.BASE_URL || '/';
+const apiUrl = (path: string) => `${BASE_URL}api/${path}`;
+
+interface CandidateOption {
+  id: string;
+  name: string;
+  currentRole?: string;
+  currentCompany?: string;
+}
 
 const CORE_GATE_IDS: GateName[] = ['integrity', 'accountability', 'harm_pattern', 'context_misalignment'];
 const OPTIONAL_GATE_IDS: GateName[] = ['financial_fluency', 'customer_orientation', 'people_judgment', 'decision_velocity', 'technical_depth'];
@@ -64,13 +74,20 @@ function SummaryCard({ label, value, icon, onEdit }: { label: string; value: str
 
 export function SetupPage() {
   const [, navigate] = useLocation();
-  const { createSession } = useAssayStore();
+  const { createSession, setCandidate, setCandidateBriefing } = useAssayStore();
 
   const [currentStep, setCurrentStep] = useState(1);
   const [direction, setDirection] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
+
+  const [candidateSearch, setCandidateSearch] = useState('');
+  const [candidateResults, setCandidateResults] = useState<CandidateOption[]>([]);
+  const [selectedCandidateId, setSelectedCandidateId] = useState<string | null>(null);
+  const [showCandidateResults, setShowCandidateResults] = useState(false);
+  const [briefingLoading, setBriefingLoading] = useState(false);
+  const [briefingReady, setBriefingReady] = useState(false);
 
   const [formData, setFormData] = useState({
     candidateName: '',
@@ -83,6 +100,58 @@ export function SetupPage() {
 
   const [optionalGates, setOptionalGates] = useState<Set<GateName>>(() => getDefaultOptionalGates(''));
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
+
+  const searchCandidates = useCallback(async (query: string) => {
+    if (query.length < 2) { setCandidateResults([]); setShowCandidateResults(false); return; }
+    try {
+      const res = await fetch(apiUrl(`candidates?search=${encodeURIComponent(query)}`), { credentials: 'include' });
+      if (res.ok) {
+        const data = await res.json();
+        setCandidateResults(data.slice(0, 8));
+        setShowCandidateResults(data.length > 0);
+      }
+    } catch { /* ignore */ }
+  }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => searchCandidates(candidateSearch), 300);
+    return () => clearTimeout(timer);
+  }, [candidateSearch, searchCandidates]);
+
+  const selectCandidate = (c: CandidateOption) => {
+    setSelectedCandidateId(c.id);
+    setCandidate(c.id);
+    setFormData(p => ({ ...p, candidateName: c.name }));
+    setCandidateSearch(c.name);
+    setShowCandidateResults(false);
+  };
+
+  const clearCandidate = () => {
+    setSelectedCandidateId(null);
+    setCandidate(null);
+    setCandidateSearch('');
+    setBriefingReady(false);
+    setCandidateBriefing(null);
+  };
+
+  const generateBriefing = async () => {
+    if (!selectedCandidateId) return;
+    setBriefingLoading(true);
+    try {
+      const res = await fetch(apiUrl(`candidates/${selectedCandidateId}/generate-briefing`), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ roleName: formData.roleName, roleLevel: formData.roleLevel, jobDescription: formData.jobDescription }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setCandidateBriefing(data.briefing);
+        setBriefingReady(true);
+      }
+    } catch { /* ignore */ }
+    setBriefingLoading(false);
+  };
 
   const goNext = () => {
     if (currentStep === 1 && !selectedTemplate) {
@@ -269,6 +338,49 @@ export function SetupPage() {
               </div>
 
               <div className="border-t" style={{ borderColor: 'rgba(255,255,255,0.06)' }} />
+
+              {/* Candidate Selection */}
+              <div>
+                <label className="block text-sm font-semibold mb-2" style={headingStyle}>Link Existing Candidate (Optional)</label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder="Search candidates by name..."
+                    value={candidateSearch}
+                    onChange={e => { setCandidateSearch(e.target.value); if (selectedCandidateId) clearCandidate(); }}
+                    style={inputStyle}
+                  />
+                  {selectedCandidateId && (
+                    <div className="flex items-center gap-2 mt-2">
+                      <span className="text-xs px-2 py-1 rounded-full" style={{ background: 'rgba(52,211,153,0.1)', color: '#34D399' }}>
+                        Linked to candidate record
+                      </span>
+                      <button onClick={clearCandidate} className="text-xs" style={{ color: 'var(--color-text-secondary)' }}>Clear</button>
+                    </div>
+                  )}
+                  {showCandidateResults && (
+                    <motion.div
+                      className="absolute top-full left-0 right-0 mt-2 rounded-lg shadow-lg z-10 max-h-48 overflow-y-auto"
+                      style={{ background: 'var(--color-surface-raised)', border: '1px solid rgba(255,255,255,0.08)' }}
+                      initial={{ opacity: 0, y: -8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                    >
+                      {candidateResults.map(c => (
+                        <button
+                          key={c.id}
+                          type="button"
+                          onClick={() => selectCandidate(c)}
+                          className="block w-full text-left px-4 py-3 text-sm transition-colors hover:bg-white/5 active:bg-white/8 min-h-[44px]"
+                          style={{ color: 'var(--color-text-primary)' }}
+                        >
+                          <div>{c.name}</div>
+                          {c.currentRole && <div className="text-xs" style={{ color: 'var(--color-text-secondary)' }}>{c.currentRole}{c.currentCompany ? ` at ${c.currentCompany}` : ''}</div>}
+                        </button>
+                      ))}
+                    </motion.div>
+                  )}
+                </div>
+              </div>
 
               <div>
                 <label className="block text-sm font-semibold mb-2" style={headingStyle}>Candidate Name</label>
@@ -539,6 +651,27 @@ export function SetupPage() {
                 <SummaryCard label="Interview Mode" value={formData.interviewMode === 'active' ? 'AI Leads' : 'Observe Only'} icon={formData.interviewMode === 'active' ? '🎤' : '👁️'} onEdit={() => { setDirection(-1); setCurrentStep(5); }} />
                 <SummaryCard label="Gates" value={`${CORE_GATE_IDS.length + optionalGates.size} gates enabled`} icon="🔍" onEdit={() => { setDirection(-2); setCurrentStep(4); }} />
               </div>
+              {selectedCandidateId && !briefingReady && (
+                <motion.button
+                  type="button"
+                  onClick={generateBriefing}
+                  disabled={briefingLoading}
+                  className="w-full py-3 rounded-lg text-sm font-semibold transition-all disabled:opacity-50"
+                  style={{ background: 'rgba(167,139,250,0.1)', color: '#A78BFA', border: '1px solid rgba(167,139,250,0.2)' }}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  {briefingLoading ? 'Generating AI Briefing...' : 'Generate Pre-Interview AI Briefing'}
+                </motion.button>
+              )}
+              {briefingReady && (
+                <div className="glass rounded-lg p-4" style={{ border: '1px solid rgba(52,211,153,0.2)' }}>
+                  <div className="flex items-center gap-2 text-sm font-medium" style={{ color: '#34D399' }}>
+                    <span>&#10003;</span> AI Briefing Ready
+                  </div>
+                  <p className="text-xs mt-1" style={subStyle}>Intelligence will be injected into the AI interviewer and assessors.</p>
+                </div>
+              )}
               <p className="text-center text-sm" style={subStyle}>Estimated Duration: ~30-45 minutes</p>
               <motion.button
                 type="button"

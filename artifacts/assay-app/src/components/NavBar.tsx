@@ -92,6 +92,14 @@ export function NavBar({ animate = true }: NavBarProps) {
                   </button>
 
                   <button
+                    onClick={() => { setOpen(false); navigate('/candidates'); }}
+                    className="w-full text-left px-4 py-3 text-sm transition-colors min-h-[44px] active:bg-white/5 hover:bg-white/5 rounded-none"
+                    style={{ color: 'var(--color-text-secondary)' }}
+                  >
+                    Candidates
+                  </button>
+
+                  <button
                     onClick={() => { setOpen(false); navigate('/analytics'); }}
                     className="w-full text-left px-4 py-3 text-sm transition-colors min-h-[44px] active:bg-white/5 hover:bg-white/5 rounded-none"
                     style={{ color: 'var(--color-text-secondary)' }}

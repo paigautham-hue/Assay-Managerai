@@ -18,6 +18,10 @@ import { CoachingPage } from "@/pages/CoachingPage";
 import { CalibrationPage } from "@/pages/CalibrationPage";
 import { AcceptInvitePage } from "@/pages/AcceptInvitePage";
 import { CandidateInvitePage } from "@/pages/CandidateInvitePage";
+import { CandidatesPage } from "@/pages/CandidatesPage";
+import { CandidateProfilePage } from "@/pages/CandidateProfilePage";
+import { CandidateComparePage } from "@/pages/CandidateComparePage";
+import { ReferenceFormPage } from "@/pages/ReferenceFormPage";
 import NotFound from "@/pages/not-found";
 
 const queryClient = new QueryClient();
@@ -28,6 +32,7 @@ function Router() {
       <Route path="/login" component={LoginPage} />
       <Route path="/accept-invite" component={AcceptInvitePage} />
       <Route path="/invite/:token" component={CandidateInvitePage} />
+      <Route path="/reference/:token" component={ReferenceFormPage} />
 
       <Route path="/">
         <ProtectedRoute>
@@ -78,6 +83,24 @@ function Router() {
       <Route path="/analytics">
         <ProtectedRoute minimumRole="viewer">
           <AnalyticsPage />
+        </ProtectedRoute>
+      </Route>
+
+      <Route path="/candidates">
+        <ProtectedRoute minimumRole="interviewer">
+          <CandidatesPage />
+        </ProtectedRoute>
+      </Route>
+
+      <Route path="/candidates/compare">
+        <ProtectedRoute minimumRole="interviewer">
+          <CandidateComparePage />
+        </ProtectedRoute>
+      </Route>
+
+      <Route path="/candidates/:id">
+        <ProtectedRoute minimumRole="interviewer">
+          <CandidateProfilePage />
         </ProtectedRoute>
       </Route>
 
