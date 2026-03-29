@@ -1,3 +1,33 @@
+import path from 'path';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
+
+// Force Prisma to use the correct OpenSSL engine binary.
+// Production containers often have OpenSSL 3.x but Prisma detects 1.1.x.
+// Setting PRISMA_QUERY_ENGINE_LIBRARY forces the correct binary.
+if (!process.env.PRISMA_QUERY_ENGINE_LIBRARY) {
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
+  const candidates = [
+    // Production path (deployed app at /usr/src/app)
+    '/usr/src/app/node_modules/.prisma/client/libquery_engine-debian-openssl-3.0.x.so.node',
+    // Local dev path relative to this file
+    path.resolve(__dirname, '..', '..', 'node_modules', '.prisma', 'client', 'libquery_engine-debian-openssl-3.0.x.so.node'),
+    // CWD-based path
+    path.resolve(process.cwd(), 'node_modules', '.prisma', 'client', 'libquery_engine-debian-openssl-3.0.x.so.node'),
+  ];
+  for (const candidate of candidates) {
+    try {
+      if (fs.existsSync(candidate)) {
+        process.env.PRISMA_QUERY_ENGINE_LIBRARY = candidate;
+        break;
+      }
+    } catch {
+      // ignore
+    }
+  }
+}
+
 import { PrismaClient } from '@prisma/client';
 
 declare global {
