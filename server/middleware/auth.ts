@@ -104,7 +104,8 @@ export function requireRole(...roles: string[]) {
       res.status(401).json({ error: 'Invalid or expired token' });
       return;
     }
-    if (roles.length > 0 && !roles.includes(user.role)) {
+    // 'owner' is a superuser that passes all role checks
+    if (roles.length > 0 && user.role !== 'owner' && !roles.includes(user.role)) {
       res.status(403).json({ error: `Access denied. Required roles: ${roles.join(', ')}` });
       return;
     }

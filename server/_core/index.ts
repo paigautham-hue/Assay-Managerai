@@ -1,4 +1,13 @@
 import "dotenv/config";
+
+// Map Manus env variable names to ASSAY expected names
+if (!process.env.GOOGLE_API_KEY && process.env.GEMINI_API_KEY) {
+  process.env.GOOGLE_API_KEY = process.env.GEMINI_API_KEY;
+}
+if (!process.env.JWT_SECRET && process.env.ASSAY_JWT_SECRET) {
+  process.env.JWT_SECRET = process.env.ASSAY_JWT_SECRET;
+}
+
 import express from "express";
 import cookieParser from "cookie-parser";
 import { createServer } from "http";
