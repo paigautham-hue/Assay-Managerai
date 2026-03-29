@@ -515,7 +515,7 @@ router.post('/assess/stream', async (req: Request, res: Response) => {
               keyInsights: result.verdict.keyInsights,
               dissent: result.verdict.dissent ?? null,
             },
-          }).catch(err => console.warn('Failed to save verdict to DB:', err));
+          }).catch((err: any) => console.warn('Failed to save verdict to DB:', err));
         }
 
         sendEvent('assessor_complete', { role: config.role, displayName: config.displayName, index, duration });
@@ -564,7 +564,7 @@ router.post('/assess/stream', async (req: Request, res: Response) => {
         where: { id: report.id },
         create: { id: report.id, sessionId, candidateName: setup.candidateName, roleName: setup.roleName, reportData: report as any },
         update: { reportData: report as any },
-      }).catch(err => console.warn('Failed to save report to DB:', err));
+      }).catch((err: any) => console.warn('Failed to save report to DB:', err));
     }
 
     sendEvent('report_complete', { reportId: report.id, report });

@@ -198,7 +198,7 @@ router.get('/auth/users', authenticate, async (req: Request, res: Response) => {
     orderBy: { createdAt: 'asc' },
     select: { id: true, email: true, name: true, role: true, status: true, organizationId: true, createdAt: true, lastActiveAt: true, googleId: true, passwordHash: true },
   });
-  return res.json(users.map(u => ({ ...u, id: String(u.id), hasPassword: !!u.passwordHash, passwordHash: undefined })));
+  return res.json(users.map((u: any) => ({ ...u, id: String(u.id), hasPassword: !!u.passwordHash, passwordHash: undefined })));
 });
 
 // ── Update User (role, name, status) ─────────────────────────────────────────
@@ -259,7 +259,7 @@ router.get('/auth/invitations', authenticate, async (req: Request, res: Response
     orderBy: { createdAt: 'desc' },
     include: { invitedBy: { select: { id: true, name: true, email: true } } },
   });
-  return res.json(invitations.map(inv => ({
+  return res.json(invitations.map((inv: any) => ({
     ...inv,
     invitedBy: inv.invitedBy ? { ...inv.invitedBy, id: String(inv.invitedBy.id) } : null,
   })));
@@ -329,13 +329,13 @@ router.get('/auth/activity', authenticate, async (req: Request, res: Response) =
     include: { user: { select: { id: true, name: true, email: true } } },
   });
 
-  const actorIntIds = [...new Set(logs.map(l => l.actorId).filter((id): id is number => id !== null))];
+  const actorIntIds = [...new Set(logs.map((l: any) => l.actorId).filter((id: any): id is number => id !== null))];
   const actors = actorIntIds.length
     ? await prisma.user.findMany({ where: { id: { in: actorIntIds } }, select: { id: true, name: true, email: true } })
     : [];
-  const actorMap = Object.fromEntries(actors.map(a => [String(a.id), { ...a, id: String(a.id) }]));
+  const actorMap = Object.fromEntries(actors.map((a: any) => [String(a.id), { ...a, id: String(a.id) }]));
 
-  return res.json(logs.map(l => ({
+  return res.json(logs.map((l: any) => ({
     ...l,
     userId: l.userId !== null ? String(l.userId) : null,
     actorId: l.actorId !== null ? String(l.actorId) : null,

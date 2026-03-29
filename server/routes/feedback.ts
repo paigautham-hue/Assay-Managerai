@@ -88,7 +88,7 @@ router.get('/feedback/analytics/accuracy', async (req: Request, res: Response) =
 
     const totalFeedback = feedback.length;
     const avgAccuracy = totalFeedback > 0
-      ? feedback.reduce((sum, f) => sum + f.overallAccuracy, 0) / totalFeedback
+      ? feedback.reduce((sum: number, f: any) => sum + f.overallAccuracy, 0) / totalFeedback
       : 0;
 
     const outcomeDistribution: Record<string, number> = {};
@@ -102,7 +102,7 @@ router.get('/feedback/analytics/accuracy', async (req: Request, res: Response) =
       totalFeedback,
       avgAccuracy: Math.round(avgAccuracy * 100) / 100,
       outcomeDistribution,
-      recentTrend: feedback.slice(0, 20).map(f => ({
+      recentTrend: feedback.slice(0, 20).map((f: any) => ({
         accuracy: f.overallAccuracy,
         date: f.createdAt,
       })),

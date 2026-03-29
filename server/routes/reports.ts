@@ -13,7 +13,7 @@ router.get('/reports', async (_req: Request, res: Response) => {
       },
     });
 
-    const reports = dbReports.map(r => ({
+    const reports = dbReports.map((r: any) => ({
       ...(r.reportData as object),
       id: r.id,
       sessionId: r.sessionId,

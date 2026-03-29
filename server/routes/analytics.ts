@@ -43,7 +43,7 @@ router.get('/analytics/summary', async (_req: Request, res: Response) => {
       });
     }
 
-    const reports = dbReports.map(r => ({
+    const reports = dbReports.map((r: any) => ({
       data: r.reportData as ReportData,
       createdAt: r.createdAt,
       roleName: r.roleName,
@@ -53,17 +53,17 @@ router.get('/analytics/summary', async (_req: Request, res: Response) => {
 
     // Pass rate
     const passedCount = reports.filter(
-      r => r.data.gateBanner?.status === 'passed'
+      (r: any) => r.data.gateBanner?.status === 'passed'
     ).length;
     const passRate = Math.round((passedCount / totalAssessments) * 100);
 
     // Average overall score
     const validScores = reports
-      .map(r => r.data.pyramidScore?.overall)
-      .filter((s): s is number => typeof s === 'number');
+      .map((r: any) => r.data.pyramidScore?.overall)
+      .filter((s: any): s is number => typeof s === 'number');
     const avgOverallScore =
       validScores.length > 0
-        ? +(validScores.reduce((a, b) => a + b, 0) / validScores.length).toFixed(2)
+        ? +(validScores.reduce((a: number, b: number) => a + b, 0) / validScores.length).toFixed(2)
         : 0;
 
     // Scores by dimension
