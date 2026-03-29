@@ -2,29 +2,30 @@ import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
 
-// Force Prisma to use the correct OpenSSL engine binary.
-// Production containers often have OpenSSL 3.x but Prisma detects 1.1.x.
-// Setting PRISMA_QUERY_ENGINE_LIBRARY forces the correct binary.
-if (!process.env.PRISMA_QUERY_ENGINE_LIBRARY) {
+// Fix Prisma engine binary resolution.
+// Production containers have OpenSSL 3.x but Prisma auto-detects 1.1.x.
+// If PRISMA_QUERY_ENGINE_LIBRARY is set but the file doesn't exist at that path
+// (e.g., we're in dev, not production), find the correct local path instead.
+const currentLib = process.env.PRISMA_QUERY_ENGINE_LIBRARY;
+if (currentLib && !fs.existsSync(currentLib)) {
+  // We're in dev — find the local 3.0.x engine binary
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = path.dirname(__filename);
-  const candidates = [
-    // Production path (deployed app at /usr/src/app)
-    '/usr/src/app/node_modules/.prisma/client/libquery_engine-debian-openssl-3.0.x.so.node',
-    // Local dev path relative to this file
+  const localCandidates = [
     path.resolve(__dirname, '..', '..', 'node_modules', '.prisma', 'client', 'libquery_engine-debian-openssl-3.0.x.so.node'),
-    // CWD-based path
     path.resolve(process.cwd(), 'node_modules', '.prisma', 'client', 'libquery_engine-debian-openssl-3.0.x.so.node'),
   ];
-  for (const candidate of candidates) {
-    try {
-      if (fs.existsSync(candidate)) {
-        process.env.PRISMA_QUERY_ENGINE_LIBRARY = candidate;
-        break;
-      }
-    } catch {
-      // ignore
+  let found = false;
+  for (const candidate of localCandidates) {
+    if (fs.existsSync(candidate)) {
+      process.env.PRISMA_QUERY_ENGINE_LIBRARY = candidate;
+      found = true;
+      break;
     }
+  }
+  if (!found) {
+    // Fall back to native detection
+    delete process.env.PRISMA_QUERY_ENGINE_LIBRARY;
   }
 }
 

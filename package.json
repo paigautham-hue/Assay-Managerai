@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "NODE_ENV=development tsx watch server/_core/index.ts",
     "postinstall": "prisma generate --schema=prisma/schema.prisma && node -e \"const fs=require('fs'),p=require('path');const src=p.join('node_modules','.pnpm');const d=fs.readdirSync(src).find(f=>f.startsWith('@prisma+client'));if(d){const t=p.join(src,d,'node_modules','.prisma','client');fs.mkdirSync(p.join('node_modules','.prisma'),{recursive:true});try{fs.symlinkSync(t,p.join('node_modules','.prisma','client'))}catch(e){}}\"",
-    "build": "prisma generate --schema=prisma/schema.prisma && vite build && esbuild server/_core/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist",
+    "build": "PRISMA_QUERY_ENGINE_LIBRARY= prisma generate --schema=prisma/schema.prisma && vite build && esbuild server/_core/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist",
     "start": "NODE_ENV=production node dist/index.js",
     "check": "tsc --noEmit",
     "format": "prettier --write .",
