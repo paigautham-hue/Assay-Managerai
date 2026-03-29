@@ -57,3 +57,13 @@
 
 - [x] Fix email validation - changed type=email to type=text+inputMode=email, normalize email to lowercase before submit
 - [ ] Save checkpoint and republish
+
+## Critical Bug Fix: Registration "Unexpected end of JSON input"
+
+- [x] Pull latest code from GitHub master branch (master has 297 files changed - applied fixes directly instead)
+- [x] Bug 1: Fix LoginPage.tsx - add .catch(() => ({})) to res.json() for non-OK responses
+- [x] Bug 2: Fix Prisma engine override in server/db/prisma.ts - handles both set and unset PRISMA_QUERY_ENGINE_LIBRARY
+- [x] Verify prisma/schema.prisma has binaryTargets (native, debian-openssl-3.0.x, debian-openssl-1.1.x, linux-musl-openssl-3.0.x)
+- [x] Regenerate Prisma client with all engine binaries (6 .so.node files generated)
+- [x] Test registration and login end-to-end (both pass, 13 vitest tests pass)
+- [ ] Save checkpoint, deploy, and push to GitHub (pending)

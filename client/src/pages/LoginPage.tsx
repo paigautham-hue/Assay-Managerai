@@ -55,8 +55,8 @@ export function LoginPage() {
           body: JSON.stringify({ email: normalizedEmail, name, password }),
         });
         if (!res.ok) {
-          const data = await res.json();
-          throw new Error(data.error || 'Registration failed');
+          const data = await res.json().catch(() => ({}));
+          throw new Error(data.error || `Registration failed (${res.status})`);
         }
         await login(normalizedEmail, password);
         navigate('/');
