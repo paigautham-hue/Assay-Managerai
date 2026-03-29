@@ -71,4 +71,11 @@
 ## Critical Fix: Prisma pnpm-hoisted engine path
 
 - [x] Add pnpm-hoisted path + find fallback to server/db/prisma.ts
-- [ ] Build, save checkpoint, push to GitHub, and publish
+- [x] Build, save checkpoint, push to GitHub, and publish
+
+## Critical Fix: Prisma engine binary NOT included in deployment
+
+- [ ] Verify binaryTargets in prisma/schema.prisma
+- [ ] Regenerate Prisma client with all engine binaries
+- [ ] Ensure build/deployment includes the .so.node engine files
+- [ ] Save checkpoint, publish, and verify /api/debug-register returns ok
