@@ -66,4 +66,9 @@
 - [x] Verify prisma/schema.prisma has binaryTargets (native, debian-openssl-3.0.x, debian-openssl-1.1.x, linux-musl-openssl-3.0.x)
 - [x] Regenerate Prisma client with all engine binaries (6 .so.node files generated)
 - [x] Test registration and login end-to-end (both pass, 13 vitest tests pass)
-- [ ] Save checkpoint, deploy, and push to GitHub (pending)
+- [x] Save checkpoint, deploy, and push to GitHub
+
+## Critical Fix: Prisma pnpm-hoisted engine path
+
+- [x] Add pnpm-hoisted path + find fallback to server/db/prisma.ts
+- [ ] Build, save checkpoint, push to GitHub, and publish

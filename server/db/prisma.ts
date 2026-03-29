@@ -1,34 +1,63 @@
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
+import { execSync } from 'child_process';
 
 // Fix Prisma engine binary resolution for OpenSSL 3.x containers.
 // Production containers have OpenSSL 3.x but Prisma auto-detects 1.1.x.
 // This MUST run BEFORE PrismaClient is imported.
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __filename2 = fileURLToPath(import.meta.url);
+const __dirname2 = path.dirname(__filename2);
+
+const ENGINE_NAME = 'libquery_engine-debian-openssl-3.0.x.so.node';
+
+function findEngineLibrary(): string | null {
+  // 1. Check explicit candidates — including the pnpm-hoisted path
+  const candidates = [
+    // pnpm hoisted path (this is where it actually lives on the production server)
+    `/usr/src/app/node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/.prisma/client/${ENGINE_NAME}`,
+    // Standard flat paths
+    `/usr/src/app/node_modules/.prisma/client/${ENGINE_NAME}`,
+    // Local dev paths
+    path.resolve(__dirname2, '..', '..', 'node_modules', '.prisma', 'client', ENGINE_NAME),
+    path.resolve(process.cwd(), 'node_modules', '.prisma', 'client', ENGINE_NAME),
+    // pnpm local dev hoisted path
+    path.resolve(process.cwd(), 'node_modules', '.pnpm', '@prisma+client@5.22.0_prisma@5.22.0', 'node_modules', '.prisma', 'client', ENGINE_NAME),
+  ];
+
+  for (const candidate of candidates) {
+    if (fs.existsSync(candidate)) {
+      return candidate;
+    }
+  }
+
+  // 2. Fallback: use `find` to locate the binary wherever pnpm put it
+  try {
+    const searchRoot = fs.existsSync('/usr/src/app/node_modules')
+      ? '/usr/src/app/node_modules'
+      : path.resolve(process.cwd(), 'node_modules');
+    const found = execSync(
+      `find ${searchRoot} -name "${ENGINE_NAME}" 2>/dev/null`,
+      { encoding: 'utf8', timeout: 5000 }
+    ).trim().split('\n')[0];
+    if (found && fs.existsSync(found)) {
+      return found;
+    }
+  } catch {
+    // find command failed — ignore
+  }
+
+  return null;
+}
 
 const currentLib = process.env.PRISMA_QUERY_ENGINE_LIBRARY;
 
 if (!currentLib || !fs.existsSync(currentLib)) {
-  // Either not set at all, or set to a path that doesn't exist (e.g. prod path in dev)
-  const candidates = [
-    // Production container path
-    '/usr/src/app/node_modules/.prisma/client/libquery_engine-debian-openssl-3.0.x.so.node',
-    // Local dev paths
-    path.resolve(__dirname, '..', '..', 'node_modules', '.prisma', 'client', 'libquery_engine-debian-openssl-3.0.x.so.node'),
-    path.resolve(process.cwd(), 'node_modules', '.prisma', 'client', 'libquery_engine-debian-openssl-3.0.x.so.node'),
-  ];
-  let found = false;
-  for (const candidate of candidates) {
-    if (fs.existsSync(candidate)) {
-      process.env.PRISMA_QUERY_ENGINE_LIBRARY = candidate;
-      found = true;
-      break;
-    }
-  }
-  if (!found && currentLib) {
-    // Fall back to native detection if we had a bad path
+  const enginePath = findEngineLibrary();
+  if (enginePath) {
+    process.env.PRISMA_QUERY_ENGINE_LIBRARY = enginePath;
+  } else if (currentLib) {
+    // Bad path set, fall back to native detection
     delete process.env.PRISMA_QUERY_ENGINE_LIBRARY;
   }
 }
