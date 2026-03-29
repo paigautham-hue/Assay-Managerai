@@ -35,6 +35,14 @@ async function dbPatch(path: string, body: unknown): Promise<void> {
 
 const DEFAULT_CORE_GATES: GateName[] = ['integrity', 'accountability', 'harm_pattern', 'context_misalignment'];
 
+export interface CandidateBriefing {
+  suggestedQuestions: { question: string; rationale: string; priority: 'high' | 'medium' | 'low' }[];
+  redFlagsToProbe: { flag: string; suggestedApproach: string }[];
+  strengthsToValidate: { strength: string; validationMethod: string }[];
+  fitSummary: string;
+  interviewStrategy: string;
+}
+
 interface AssayStore {
   currentView: 'home' | 'setup' | 'interview' | 'processing' | 'report';
   session: InterviewSession | null;
@@ -44,6 +52,8 @@ interface AssayStore {
   error: string | null;
   reportsLoaded: boolean;
   emotionTimeline: EmotionDataPoint[];
+  currentCandidateId: string | null;
+  candidateBriefing: CandidateBriefing | null;
 
   setView: (view: AssayStore['currentView']) => void;
   createSession: (setup: InterviewSetup) => Promise<void>;
@@ -58,6 +68,8 @@ interface AssayStore {
   loadReportsFresh: () => Promise<void>;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
+  setCandidate: (candidateId: string | null) => void;
+  setCandidateBriefing: (briefing: CandidateBriefing | null) => void;
   reset: () => void;
 }
 
@@ -70,6 +82,8 @@ export const useAssayStore = create<AssayStore>()(persist((set, get) => ({
   error: null,
   reportsLoaded: false,
   emotionTimeline: [],
+  currentCandidateId: null,
+  candidateBriefing: null,
 
   setView: (view) => set({ currentView: view }),
 
@@ -196,7 +210,9 @@ export const useAssayStore = create<AssayStore>()(persist((set, get) => ({
 
   setLoading: (isLoading) => set({ isLoading }),
   setError: (error) => set({ error }),
-  reset: () => set({ currentView: 'home', session: null, report: null, reports: [], isLoading: false, error: null, emotionTimeline: [], reportsLoaded: false }),
+  setCandidate: (candidateId) => set({ currentCandidateId: candidateId }),
+  setCandidateBriefing: (briefing) => set({ candidateBriefing: briefing }),
+  reset: () => set({ currentView: 'home', session: null, report: null, reports: [], isLoading: false, error: null, emotionTimeline: [], reportsLoaded: false, currentCandidateId: null, candidateBriefing: null }),
 }), {
   name: 'assay-store',
   storage: {

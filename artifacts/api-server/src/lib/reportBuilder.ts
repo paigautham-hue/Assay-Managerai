@@ -214,5 +214,14 @@ export function buildReport(opts: BuildReportOptions) {
     comparison: undefined,
     psychologicalProfile: psychologicalProfile ?? undefined,
     prosodyData: prosodyData ?? undefined,
+    candidateIntelligence: candidateIntelligence ? {
+      fitScore: candidateIntelligence.fitScore,
+      resumeHighlights: candidateIntelligence.resumeHighlights || [],
+      redFlags: candidateIntelligence.redFlags || [],
+      referencesSummary: candidateIntelligence.referencesSummary,
+      crossReferenceFindings: candidateIntelligence.crossReferenceFindings || [],
+      source: candidateIntelligence.source,
+      yearsExperience: candidateIntelligence.yearsExperience,
+    } : undefined,
   };
 }
