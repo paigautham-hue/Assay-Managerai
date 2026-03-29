@@ -1,0 +1,27 @@
+{
+  "name": "ASSAY - AI Interview Intelligence",
+  "short_name": "ASSAY",
+  "description": "Enterprise AI-powered interview assessment platform with multi-dimensional candidate evaluation",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0D0D1A",
+  "theme_color": "#0D0D1A",
+  "categories": ["business", "productivity"],
+  "icons": [
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [],
+  "prefer_related_applications": false
+}

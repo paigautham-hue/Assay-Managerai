@@ -1,0 +1,8 @@
+{
+  "query": "\n-- Rename conflicting columns and add ASSAY columns to the existing users table\n-- First check what's there and add missing columns\n\nALTER TABLE `users`\n  MODIFY COLUMN `id` VARCHAR(191) NOT NULL,\n  MODIFY COLUMN `email` VARCHAR(320) NULL,\n  MODIFY COLUMN `name` TEXT NULL,\n  ADD COLUMN `status` VARCHAR(191) NOT NULL DEFAULT 'active',\n  ADD COLUMN `password_hash` TEXT NULL,\n  ADD COLUMN `google_id` VARCHAR(191) NULL,\n  ADD COLUMN `organization_id` VARCHAR(191) NULL,\n  ADD COLUMN `last_active_at` DATETIME(3) NULL;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4PQbAAV1fA3eoWB.a0d8e518ba41 --database MgQxaanSGfXUBb8hYhdAS9 --execute \n-- Rename conflicting columns and add ASSAY columns to the existing users table\n-- First check what's there and add missing columns\n\nALTER TABLE `users`\n  MODIFY COLUMN `id` VARCHAR(191) NOT NULL,\n  MODIFY COLUMN `email` VARCHAR(320) NULL,\n  MODIFY COLUMN `name` TEXT NULL,\n  ADD COLUMN `status` VARCHAR(191) NOT NULL DEFAULT 'active',\n  ADD COLUMN `password_hash` TEXT NULL,\n  ADD COLUMN `google_id` VARCHAR(191) NULL,\n  ADD COLUMN `organization_id` VARCHAR(191) NULL,\n  ADD COLUMN `last_active_at` DATETIME(3) NULL;\n",
+  "returncode": 1,
+  "logs": [
+    "ERROR 8200 (HY000) at line 5: Unsupported modify column: this column has primary key flag"
+  ]
+}

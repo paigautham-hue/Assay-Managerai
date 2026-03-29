@@ -1,41 +1,111 @@
-import { Toaster } from "@/components/ui/sonner";
+import { Switch, Route, Router as WouterRouter } from "wouter";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ThemeProvider } from "next-themes";
+import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import NotFound from "@/pages/NotFound";
-import { Route, Switch } from "wouter";
-import ErrorBoundary from "./components/ErrorBoundary";
-import { ThemeProvider } from "./contexts/ThemeContext";
-import Home from "./pages/Home";
+import { AuthProvider } from "@/context/AuthContext";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { HomePage } from "@/pages/HomePage";
+import { SetupPage } from "@/pages/SetupPage";
+import { InterviewPage } from "@/pages/InterviewPage";
+import { ProcessingPage } from "@/pages/ProcessingPage";
+import { ReportPage } from "@/pages/ReportPage";
+import { LoginPage } from "@/pages/LoginPage";
+import { AdminPage } from "@/pages/AdminPage";
+import { AnalyticsPage } from "@/pages/AnalyticsPage";
+import { CoachingPage } from "@/pages/CoachingPage";
+import { CalibrationPage } from "@/pages/CalibrationPage";
+import { AcceptInvitePage } from "@/pages/AcceptInvitePage";
+import { CandidateInvitePage } from "@/pages/CandidateInvitePage";
+import NotFound from "@/pages/not-found";
+
+const queryClient = new QueryClient();
 
 function Router() {
-  // make sure to consider if you need authentication for certain routes
   return (
     <Switch>
-      <Route path={"/"} component={Home} />
-      <Route path={"/404"} component={NotFound} />
-      {/* Final fallback route */}
+      <Route path="/login" component={LoginPage} />
+      <Route path="/accept-invite" component={AcceptInvitePage} />
+      <Route path="/invite/:token" component={CandidateInvitePage} />
+
+      <Route path="/">
+        <ProtectedRoute>
+          <HomePage />
+        </ProtectedRoute>
+      </Route>
+
+      <Route path="/setup">
+        <ProtectedRoute minimumRole="interviewer">
+          <SetupPage />
+        </ProtectedRoute>
+      </Route>
+
+      <Route path="/interview">
+        <ProtectedRoute minimumRole="interviewer">
+          <ErrorBoundary label="Interview">
+            <InterviewPage />
+          </ErrorBoundary>
+        </ProtectedRoute>
+      </Route>
+
+      <Route path="/processing">
+        <ProtectedRoute minimumRole="interviewer">
+          <ProcessingPage />
+        </ProtectedRoute>
+      </Route>
+
+      <Route path="/report/:id">
+        <ProtectedRoute>
+          <ErrorBoundary label="Report">
+            <ReportPage />
+          </ErrorBoundary>
+        </ProtectedRoute>
+      </Route>
+
+      <Route path="/coaching/:id">
+        <ProtectedRoute>
+          <CoachingPage />
+        </ProtectedRoute>
+      </Route>
+
+      <Route path="/calibration/:id">
+        <ProtectedRoute>
+          <CalibrationPage />
+        </ProtectedRoute>
+      </Route>
+
+      <Route path="/analytics">
+        <ProtectedRoute minimumRole="viewer">
+          <AnalyticsPage />
+        </ProtectedRoute>
+      </Route>
+
+      <Route path="/admin">
+        <ProtectedRoute requiredRoles={['owner', 'admin']}>
+          <AdminPage />
+        </ProtectedRoute>
+      </Route>
+
       <Route component={NotFound} />
     </Switch>
   );
 }
 
-// NOTE: About Theme
-// - First choose a default theme according to your design style (dark or light bg), than change color palette in index.css
-//   to keep consistent foreground/background color across components
-// - If you want to make theme switchable, pass `switchable` ThemeProvider and use `useTheme` hook
-
 function App() {
   return (
-    <ErrorBoundary>
-      <ThemeProvider
-        defaultTheme="light"
-        // switchable
-      >
+    <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
+      <QueryClientProvider client={queryClient}>
         <TooltipProvider>
+          <AuthProvider>
+            <WouterRouter base={(import.meta.env.BASE_URL || '/').replace(/\/$/, '') || ''}>
+              <Router />
+            </WouterRouter>
+          </AuthProvider>
           <Toaster />
-          <Router />
         </TooltipProvider>
-      </ThemeProvider>
-    </ErrorBoundary>
+      </QueryClientProvider>
+    </ThemeProvider>
   );
 }
 

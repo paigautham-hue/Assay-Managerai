@@ -1,6 +1,9 @@
 import "dotenv/config";
 import express from "express";
+import cookieParser from "cookie-parser";
 import { createServer } from "http";
+// ASSAY routes
+import assayRouter from "../routes/index";
 import net from "net";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { registerOAuthRoutes } from "./oauth";
@@ -33,7 +36,12 @@ async function startServer() {
   // Configure body parser with larger size limit for file uploads
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
-  // OAuth callback under /api/oauth/callback
+  app.use(cookieParser());
+
+  // ASSAY API routes (mounted at /api)
+  app.use("/api", assayRouter);
+
+  // Manus OAuth callback
   registerOAuthRoutes(app);
   // tRPC API
   app.use(
@@ -58,7 +66,7 @@ async function startServer() {
   }
 
   server.listen(port, () => {
-    console.log(`Server running on http://localhost:${port}/`);
+    console.log(`[ASSAY] Server running on http://localhost:${port}/`);
   });
 }
 
