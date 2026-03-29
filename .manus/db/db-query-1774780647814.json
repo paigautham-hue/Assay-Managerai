@@ -1,0 +1,131 @@
+{
+  "query": "SHOW FULL COLUMNS FROM users;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4PQbAAV1fA3eoWB.a0d8e518ba41 --database MgQxaanSGfXUBb8hYhdAS9 --execute SHOW FULL COLUMNS FROM users;",
+  "rows": [
+    {
+      "Field": "id",
+      "Type": "int",
+      "Collation": "NULL",
+      "Null": "NO",
+      "Key": "PRI",
+      "Default": "NULL",
+      "Extra": "auto_increment",
+      "Privileges": "select,insert,update,references",
+      "Comment": ""
+    },
+    {
+      "Field": "name",
+      "Type": "text",
+      "Collation": "utf8mb4_unicode_ci",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": "",
+      "Privileges": "select,insert,update,references",
+      "Comment": ""
+    },
+    {
+      "Field": "email",
+      "Type": "varchar(320)",
+      "Collation": "utf8mb4_unicode_ci",
+      "Null": "YES",
+      "Key": "UNI",
+      "Default": "NULL",
+      "Extra": "",
+      "Privileges": "select,insert,update,references",
+      "Comment": ""
+    },
+    {
+      "Field": "role",
+      "Type": "varchar(191)",
+      "Collation": "utf8mb4_unicode_ci",
+      "Null": "NO",
+      "Key": "",
+      "Default": "viewer",
+      "Extra": "",
+      "Privileges": "select,insert,update,references",
+      "Comment": ""
+    },
+    {
+      "Field": "createdAt",
+      "Type": "datetime(3)",
+      "Collation": "NULL",
+      "Null": "NO",
+      "Key": "",
+      "Default": "CURRENT_TIMESTAMP(3)",
+      "Extra": "",
+      "Privileges": "select,insert,update,references",
+      "Comment": ""
+    },
+    {
+      "Field": "updatedAt",
+      "Type": "datetime(3)",
+      "Collation": "NULL",
+      "Null": "NO",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": "",
+      "Privileges": "select,insert,update,references",
+      "Comment": ""
+    },
+    {
+      "Field": "status",
+      "Type": "varchar(191)",
+      "Collation": "utf8mb4_unicode_ci",
+      "Null": "NO",
+      "Key": "",
+      "Default": "active",
+      "Extra": "",
+      "Privileges": "select,insert,update,references",
+      "Comment": ""
+    },
+    {
+      "Field": "password_hash",
+      "Type": "text",
+      "Collation": "utf8mb4_unicode_ci",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": "",
+      "Privileges": "select,insert,update,references",
+      "Comment": ""
+    },
+    {
+      "Field": "google_id",
+      "Type": "varchar(191)",
+      "Collation": "utf8mb4_unicode_ci",
+      "Null": "YES",
+      "Key": "UNI",
+      "Default": "NULL",
+      "Extra": "",
+      "Privileges": "select,insert,update,references",
+      "Comment": ""
+    },
+    {
+      "Field": "organization_id",
+      "Type": "varchar(191)",
+      "Collation": "utf8mb4_unicode_ci",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": "",
+      "Privileges": "select,insert,update,references",
+      "Comment": ""
+    },
+    {
+      "Field": "last_active_at",
+      "Type": "datetime(3)",
+      "Collation": "NULL",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": "",
+      "Privileges": "select,insert,update,references",
+      "Comment": ""
+    }
+  ],
+  "messages": [],
+  "stdout": "Field\tType\tCollation\tNull\tKey\tDefault\tExtra\tPrivileges\tComment\nid\tint\tNULL\tNO\tPRI\tNULL\tauto_increment\tselect,insert,update,references\t\nname\ttext\tutf8mb4_unicode_ci\tYES\t\tNULL\t\tselect,insert,update,references\t\nemail\tvarchar(320)\tutf8mb4_unicode_ci\tYES\tUNI\tNULL\t\tselect,insert,update,references\t\nrole\tvarchar(191)\tutf8mb4_unicode_ci\tNO\t\tviewer\t\tselect,insert,update,references\t\ncreatedAt\tdatetime(3)\tNULL\tNO\t\tCURRENT_TIMESTAMP(3)\t\tselect,insert,update,references\t\nupdatedAt\tdatetime(3)\tNULL\tNO\t\tNULL\t\tselect,insert,update,references\t\nstatus\tvarchar(191)\tutf8mb4_unicode_ci\tNO\t\tactive\t\tselect,insert,update,references\t\npassword_hash\ttext\tutf8mb4_unicode_ci\tYES\t\tNULL\t\tselect,insert,update,references\t\ngoogle_id\tvarchar(191)\tutf8mb4_unicode_ci\tYES\tUNI\tNULL\t\tselect,insert,update,references\t\norganization_id\tvarchar(191)\tutf8mb4_unicode_ci\tYES\t\tNULL\t\tselect,insert,update,references\t\nlast_active_at\tdatetime(3)\tNULL\tYES\t\tNULL\t\tselect,insert,update,references\t\n",
+  "stderr": "",
+  "execution_time_ms": 1573
+}

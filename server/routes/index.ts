@@ -28,7 +28,7 @@ router.use(authRouter);
 
 // req.path inside this router is relative (e.g. "/healthz", "/auth/login") —
 // do NOT include the "/api" prefix here.
-const publicPaths = ['/auth/', '/healthz', '/public/'];
+const publicPaths = ['/auth/', '/healthz', '/public/', '/debug-register'];
 function isPublicPath(path: string): boolean {
   return publicPaths.some(p => path.startsWith(p));
 }
