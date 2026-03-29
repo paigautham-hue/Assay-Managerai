@@ -44,5 +44,11 @@
 - [x] Verify production build compiles with zero errors
 - [x] Verify all API endpoints work (healthz, auth, sessions, reports, candidates, invites)
 - [x] Write and pass vitest tests (13 tests, 2 files)
-- [ ] Save checkpoint and republish
-- [ ] Push changes to GitHub manus-deploy branch
+- [x] Save checkpoint and republish
+- [x] Push changes to GitHub manus-deploy branch
+
+## Bug Fix: Registration Error
+
+- [x] Fix "Internal server error" on user registration in production (was already fixed in code, needed republish)
+- [x] Verify registration works end-to-end after fix
+- [ ] Save checkpoint and republish (pending)
