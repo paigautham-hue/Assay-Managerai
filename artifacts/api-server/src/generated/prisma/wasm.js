@@ -171,6 +171,8 @@ exports.Prisma.InterviewSessionScalarFieldEnum = {
   startedAt: 'startedAt',
   endedAt: 'endedAt',
   voiceProvider: 'voiceProvider',
+  videoEnabled: 'videoEnabled',
+  audioData: 'audioData',
   createdAt: 'createdAt'
 };
 
@@ -216,6 +218,65 @@ exports.Prisma.ReportScalarFieldEnum = {
   candidateName: 'candidateName',
   roleName: 'roleName',
   reportData: 'reportData',
+  coachingReport: 'coachingReport',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.InterviewInviteScalarFieldEnum = {
+  id: 'id',
+  token: 'token',
+  candidateName: 'candidateName',
+  candidateEmail: 'candidateEmail',
+  roleName: 'roleName',
+  roleLevel: 'roleLevel',
+  jobDescription: 'jobDescription',
+  activeGates: 'activeGates',
+  interviewMode: 'interviewMode',
+  status: 'status',
+  sessionId: 'sessionId',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.CalibrationSessionScalarFieldEnum = {
+  id: 'id',
+  reportId: 'reportId',
+  title: 'title',
+  status: 'status',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.CalibrationNoteScalarFieldEnum = {
+  id: 'id',
+  calibrationSessionId: 'calibrationSessionId',
+  userId: 'userId',
+  userName: 'userName',
+  content: 'content',
+  sectionRef: 'sectionRef',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.ReportFeedbackScalarFieldEnum = {
+  id: 'id',
+  reportId: 'reportId',
+  userId: 'userId',
+  overallAccuracy: 'overallAccuracy',
+  hireOutcome: 'hireOutcome',
+  performanceNote: 'performanceNote',
+  dimensionFeedback: 'dimensionFeedback',
+  gateFeedback: 'gateFeedback',
+  comments: 'comments',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.SystemPromptVersionScalarFieldEnum = {
+  id: 'id',
+  role: 'role',
+  version: 'version',
+  prompt: 'prompt',
+  isActive: 'isActive',
+  performance: 'performance',
   createdAt: 'createdAt'
 };
 
@@ -259,7 +320,12 @@ exports.Prisma.ModelName = {
   TranscriptEntry: 'TranscriptEntry',
   Observation: 'Observation',
   AssessorVerdict: 'AssessorVerdict',
-  Report: 'Report'
+  Report: 'Report',
+  InterviewInvite: 'InterviewInvite',
+  CalibrationSession: 'CalibrationSession',
+  CalibrationNote: 'CalibrationNote',
+  ReportFeedback: 'ReportFeedback',
+  SystemPromptVersion: 'SystemPromptVersion'
 };
 
 /**
