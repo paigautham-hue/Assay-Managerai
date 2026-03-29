@@ -34,6 +34,31 @@ export type Invitation = $Result.DefaultSelection<Prisma.$InvitationPayload>
  */
 export type ActivityLog = $Result.DefaultSelection<Prisma.$ActivityLogPayload>
 /**
+ * Model Candidate
+ * 
+ */
+export type Candidate = $Result.DefaultSelection<Prisma.$CandidatePayload>
+/**
+ * Model CandidateDocument
+ * 
+ */
+export type CandidateDocument = $Result.DefaultSelection<Prisma.$CandidateDocumentPayload>
+/**
+ * Model CandidateIntelligence
+ * 
+ */
+export type CandidateIntelligence = $Result.DefaultSelection<Prisma.$CandidateIntelligencePayload>
+/**
+ * Model CandidateNote
+ * 
+ */
+export type CandidateNote = $Result.DefaultSelection<Prisma.$CandidateNotePayload>
+/**
+ * Model CandidateReference
+ * 
+ */
+export type CandidateReference = $Result.DefaultSelection<Prisma.$CandidateReferencePayload>
+/**
  * Model InterviewSession
  * 
  */
@@ -246,6 +271,56 @@ export class PrismaClient<
     * ```
     */
   get activityLog(): Prisma.ActivityLogDelegate<ExtArgs>;
+
+  /**
+   * `prisma.candidate`: Exposes CRUD operations for the **Candidate** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Candidates
+    * const candidates = await prisma.candidate.findMany()
+    * ```
+    */
+  get candidate(): Prisma.CandidateDelegate<ExtArgs>;
+
+  /**
+   * `prisma.candidateDocument`: Exposes CRUD operations for the **CandidateDocument** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more CandidateDocuments
+    * const candidateDocuments = await prisma.candidateDocument.findMany()
+    * ```
+    */
+  get candidateDocument(): Prisma.CandidateDocumentDelegate<ExtArgs>;
+
+  /**
+   * `prisma.candidateIntelligence`: Exposes CRUD operations for the **CandidateIntelligence** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more CandidateIntelligences
+    * const candidateIntelligences = await prisma.candidateIntelligence.findMany()
+    * ```
+    */
+  get candidateIntelligence(): Prisma.CandidateIntelligenceDelegate<ExtArgs>;
+
+  /**
+   * `prisma.candidateNote`: Exposes CRUD operations for the **CandidateNote** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more CandidateNotes
+    * const candidateNotes = await prisma.candidateNote.findMany()
+    * ```
+    */
+  get candidateNote(): Prisma.CandidateNoteDelegate<ExtArgs>;
+
+  /**
+   * `prisma.candidateReference`: Exposes CRUD operations for the **CandidateReference** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more CandidateReferences
+    * const candidateReferences = await prisma.candidateReference.findMany()
+    * ```
+    */
+  get candidateReference(): Prisma.CandidateReferenceDelegate<ExtArgs>;
 
   /**
    * `prisma.interviewSession`: Exposes CRUD operations for the **InterviewSession** model.
@@ -791,6 +866,11 @@ export namespace Prisma {
     User: 'User',
     Invitation: 'Invitation',
     ActivityLog: 'ActivityLog',
+    Candidate: 'Candidate',
+    CandidateDocument: 'CandidateDocument',
+    CandidateIntelligence: 'CandidateIntelligence',
+    CandidateNote: 'CandidateNote',
+    CandidateReference: 'CandidateReference',
     InterviewSession: 'InterviewSession',
     TranscriptEntry: 'TranscriptEntry',
     Observation: 'Observation',
@@ -816,7 +896,7 @@ export namespace Prisma {
 
   export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> = {
     meta: {
-      modelProps: "organization" | "user" | "invitation" | "activityLog" | "interviewSession" | "transcriptEntry" | "observation" | "assessorVerdict" | "report" | "interviewInvite" | "calibrationSession" | "calibrationNote" | "reportFeedback" | "systemPromptVersion"
+      modelProps: "organization" | "user" | "invitation" | "activityLog" | "candidate" | "candidateDocument" | "candidateIntelligence" | "candidateNote" | "candidateReference" | "interviewSession" | "transcriptEntry" | "observation" | "assessorVerdict" | "report" | "interviewInvite" | "calibrationSession" | "calibrationNote" | "reportFeedback" | "systemPromptVersion"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1097,6 +1177,356 @@ export namespace Prisma {
           count: {
             args: Prisma.ActivityLogCountArgs<ExtArgs>
             result: $Utils.Optional<ActivityLogCountAggregateOutputType> | number
+          }
+        }
+      }
+      Candidate: {
+        payload: Prisma.$CandidatePayload<ExtArgs>
+        fields: Prisma.CandidateFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.CandidateFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidatePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.CandidateFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidatePayload>
+          }
+          findFirst: {
+            args: Prisma.CandidateFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidatePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.CandidateFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidatePayload>
+          }
+          findMany: {
+            args: Prisma.CandidateFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidatePayload>[]
+          }
+          create: {
+            args: Prisma.CandidateCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidatePayload>
+          }
+          createMany: {
+            args: Prisma.CandidateCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.CandidateCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidatePayload>[]
+          }
+          delete: {
+            args: Prisma.CandidateDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidatePayload>
+          }
+          update: {
+            args: Prisma.CandidateUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidatePayload>
+          }
+          deleteMany: {
+            args: Prisma.CandidateDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.CandidateUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.CandidateUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidatePayload>
+          }
+          aggregate: {
+            args: Prisma.CandidateAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCandidate>
+          }
+          groupBy: {
+            args: Prisma.CandidateGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CandidateGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.CandidateCountArgs<ExtArgs>
+            result: $Utils.Optional<CandidateCountAggregateOutputType> | number
+          }
+        }
+      }
+      CandidateDocument: {
+        payload: Prisma.$CandidateDocumentPayload<ExtArgs>
+        fields: Prisma.CandidateDocumentFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.CandidateDocumentFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidateDocumentPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.CandidateDocumentFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidateDocumentPayload>
+          }
+          findFirst: {
+            args: Prisma.CandidateDocumentFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidateDocumentPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.CandidateDocumentFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidateDocumentPayload>
+          }
+          findMany: {
+            args: Prisma.CandidateDocumentFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidateDocumentPayload>[]
+          }
+          create: {
+            args: Prisma.CandidateDocumentCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidateDocumentPayload>
+          }
+          createMany: {
+            args: Prisma.CandidateDocumentCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.CandidateDocumentCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidateDocumentPayload>[]
+          }
+          delete: {
+            args: Prisma.CandidateDocumentDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidateDocumentPayload>
+          }
+          update: {
+            args: Prisma.CandidateDocumentUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidateDocumentPayload>
+          }
+          deleteMany: {
+            args: Prisma.CandidateDocumentDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.CandidateDocumentUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.CandidateDocumentUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidateDocumentPayload>
+          }
+          aggregate: {
+            args: Prisma.CandidateDocumentAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCandidateDocument>
+          }
+          groupBy: {
+            args: Prisma.CandidateDocumentGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CandidateDocumentGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.CandidateDocumentCountArgs<ExtArgs>
+            result: $Utils.Optional<CandidateDocumentCountAggregateOutputType> | number
+          }
+        }
+      }
+      CandidateIntelligence: {
+        payload: Prisma.$CandidateIntelligencePayload<ExtArgs>
+        fields: Prisma.CandidateIntelligenceFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.CandidateIntelligenceFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidateIntelligencePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.CandidateIntelligenceFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidateIntelligencePayload>
+          }
+          findFirst: {
+            args: Prisma.CandidateIntelligenceFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidateIntelligencePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.CandidateIntelligenceFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidateIntelligencePayload>
+          }
+          findMany: {
+            args: Prisma.CandidateIntelligenceFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidateIntelligencePayload>[]
+          }
+          create: {
+            args: Prisma.CandidateIntelligenceCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidateIntelligencePayload>
+          }
+          createMany: {
+            args: Prisma.CandidateIntelligenceCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.CandidateIntelligenceCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidateIntelligencePayload>[]
+          }
+          delete: {
+            args: Prisma.CandidateIntelligenceDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidateIntelligencePayload>
+          }
+          update: {
+            args: Prisma.CandidateIntelligenceUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidateIntelligencePayload>
+          }
+          deleteMany: {
+            args: Prisma.CandidateIntelligenceDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.CandidateIntelligenceUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.CandidateIntelligenceUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidateIntelligencePayload>
+          }
+          aggregate: {
+            args: Prisma.CandidateIntelligenceAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCandidateIntelligence>
+          }
+          groupBy: {
+            args: Prisma.CandidateIntelligenceGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CandidateIntelligenceGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.CandidateIntelligenceCountArgs<ExtArgs>
+            result: $Utils.Optional<CandidateIntelligenceCountAggregateOutputType> | number
+          }
+        }
+      }
+      CandidateNote: {
+        payload: Prisma.$CandidateNotePayload<ExtArgs>
+        fields: Prisma.CandidateNoteFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.CandidateNoteFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidateNotePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.CandidateNoteFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidateNotePayload>
+          }
+          findFirst: {
+            args: Prisma.CandidateNoteFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidateNotePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.CandidateNoteFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidateNotePayload>
+          }
+          findMany: {
+            args: Prisma.CandidateNoteFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidateNotePayload>[]
+          }
+          create: {
+            args: Prisma.CandidateNoteCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidateNotePayload>
+          }
+          createMany: {
+            args: Prisma.CandidateNoteCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.CandidateNoteCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidateNotePayload>[]
+          }
+          delete: {
+            args: Prisma.CandidateNoteDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidateNotePayload>
+          }
+          update: {
+            args: Prisma.CandidateNoteUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidateNotePayload>
+          }
+          deleteMany: {
+            args: Prisma.CandidateNoteDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.CandidateNoteUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.CandidateNoteUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidateNotePayload>
+          }
+          aggregate: {
+            args: Prisma.CandidateNoteAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCandidateNote>
+          }
+          groupBy: {
+            args: Prisma.CandidateNoteGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CandidateNoteGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.CandidateNoteCountArgs<ExtArgs>
+            result: $Utils.Optional<CandidateNoteCountAggregateOutputType> | number
+          }
+        }
+      }
+      CandidateReference: {
+        payload: Prisma.$CandidateReferencePayload<ExtArgs>
+        fields: Prisma.CandidateReferenceFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.CandidateReferenceFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidateReferencePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.CandidateReferenceFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidateReferencePayload>
+          }
+          findFirst: {
+            args: Prisma.CandidateReferenceFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidateReferencePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.CandidateReferenceFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidateReferencePayload>
+          }
+          findMany: {
+            args: Prisma.CandidateReferenceFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidateReferencePayload>[]
+          }
+          create: {
+            args: Prisma.CandidateReferenceCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidateReferencePayload>
+          }
+          createMany: {
+            args: Prisma.CandidateReferenceCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.CandidateReferenceCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidateReferencePayload>[]
+          }
+          delete: {
+            args: Prisma.CandidateReferenceDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidateReferencePayload>
+          }
+          update: {
+            args: Prisma.CandidateReferenceUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidateReferencePayload>
+          }
+          deleteMany: {
+            args: Prisma.CandidateReferenceDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.CandidateReferenceUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.CandidateReferenceUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidateReferencePayload>
+          }
+          aggregate: {
+            args: Prisma.CandidateReferenceAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCandidateReference>
+          }
+          groupBy: {
+            args: Prisma.CandidateReferenceGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CandidateReferenceGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.CandidateReferenceCountArgs<ExtArgs>
+            result: $Utils.Optional<CandidateReferenceCountAggregateOutputType> | number
           }
         }
       }
@@ -1963,11 +2393,13 @@ export namespace Prisma {
   export type OrganizationCountOutputType = {
     users: number
     sessions: number
+    candidates: number
   }
 
   export type OrganizationCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     users?: boolean | OrganizationCountOutputTypeCountUsersArgs
     sessions?: boolean | OrganizationCountOutputTypeCountSessionsArgs
+    candidates?: boolean | OrganizationCountOutputTypeCountCandidatesArgs
   }
 
   // Custom InputTypes
@@ -1993,6 +2425,13 @@ export namespace Prisma {
    */
   export type OrganizationCountOutputTypeCountSessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: InterviewSessionWhereInput
+  }
+
+  /**
+   * OrganizationCountOutputType without action
+   */
+  export type OrganizationCountOutputTypeCountCandidatesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CandidateWhereInput
   }
 
 
@@ -2033,6 +2472,73 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountActivityLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ActivityLogWhereInput
+  }
+
+
+  /**
+   * Count Type CandidateCountOutputType
+   */
+
+  export type CandidateCountOutputType = {
+    sessions: number
+    intelligence: number
+    notes: number
+    references: number
+    documents: number
+  }
+
+  export type CandidateCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    sessions?: boolean | CandidateCountOutputTypeCountSessionsArgs
+    intelligence?: boolean | CandidateCountOutputTypeCountIntelligenceArgs
+    notes?: boolean | CandidateCountOutputTypeCountNotesArgs
+    references?: boolean | CandidateCountOutputTypeCountReferencesArgs
+    documents?: boolean | CandidateCountOutputTypeCountDocumentsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * CandidateCountOutputType without action
+   */
+  export type CandidateCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateCountOutputType
+     */
+    select?: CandidateCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * CandidateCountOutputType without action
+   */
+  export type CandidateCountOutputTypeCountSessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: InterviewSessionWhereInput
+  }
+
+  /**
+   * CandidateCountOutputType without action
+   */
+  export type CandidateCountOutputTypeCountIntelligenceArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CandidateIntelligenceWhereInput
+  }
+
+  /**
+   * CandidateCountOutputType without action
+   */
+  export type CandidateCountOutputTypeCountNotesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CandidateNoteWhereInput
+  }
+
+  /**
+   * CandidateCountOutputType without action
+   */
+  export type CandidateCountOutputTypeCountReferencesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CandidateReferenceWhereInput
+  }
+
+  /**
+   * CandidateCountOutputType without action
+   */
+  export type CandidateCountOutputTypeCountDocumentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CandidateDocumentWhereInput
   }
 
 
@@ -2091,6 +2597,37 @@ export namespace Prisma {
    */
   export type InterviewSessionCountOutputTypeCountReportsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ReportWhereInput
+  }
+
+
+  /**
+   * Count Type ReportCountOutputType
+   */
+
+  export type ReportCountOutputType = {
+    feedback: number
+  }
+
+  export type ReportCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    feedback?: boolean | ReportCountOutputTypeCountFeedbackArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * ReportCountOutputType without action
+   */
+  export type ReportCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportCountOutputType
+     */
+    select?: ReportCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * ReportCountOutputType without action
+   */
+  export type ReportCountOutputTypeCountFeedbackArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ReportFeedbackWhereInput
   }
 
 
@@ -2283,6 +2820,7 @@ export namespace Prisma {
     createdAt?: boolean
     users?: boolean | Organization$usersArgs<ExtArgs>
     sessions?: boolean | Organization$sessionsArgs<ExtArgs>
+    candidates?: boolean | Organization$candidatesArgs<ExtArgs>
     _count?: boolean | OrganizationCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["organization"]>
 
@@ -2303,6 +2841,7 @@ export namespace Prisma {
   export type OrganizationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     users?: boolean | Organization$usersArgs<ExtArgs>
     sessions?: boolean | Organization$sessionsArgs<ExtArgs>
+    candidates?: boolean | Organization$candidatesArgs<ExtArgs>
     _count?: boolean | OrganizationCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type OrganizationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -2312,6 +2851,7 @@ export namespace Prisma {
     objects: {
       users: Prisma.$UserPayload<ExtArgs>[]
       sessions: Prisma.$InterviewSessionPayload<ExtArgs>[]
+      candidates: Prisma.$CandidatePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -2684,6 +3224,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     users<T extends Organization$usersArgs<ExtArgs> = {}>(args?: Subset<T, Organization$usersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany"> | Null>
     sessions<T extends Organization$sessionsArgs<ExtArgs> = {}>(args?: Subset<T, Organization$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InterviewSessionPayload<ExtArgs>, T, "findMany"> | Null>
+    candidates<T extends Organization$candidatesArgs<ExtArgs> = {}>(args?: Subset<T, Organization$candidatesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CandidatePayload<ExtArgs>, T, "findMany"> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3068,6 +3609,26 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: InterviewSessionScalarFieldEnum | InterviewSessionScalarFieldEnum[]
+  }
+
+  /**
+   * Organization.candidates
+   */
+  export type Organization$candidatesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Candidate
+     */
+    select?: CandidateSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateInclude<ExtArgs> | null
+    where?: CandidateWhereInput
+    orderBy?: CandidateOrderByWithRelationInput | CandidateOrderByWithRelationInput[]
+    cursor?: CandidateWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CandidateScalarFieldEnum | CandidateScalarFieldEnum[]
   }
 
   /**
@@ -4171,6 +4732,7 @@ export namespace Prisma {
     role: string | null
     token: string | null
     invitedById: string | null
+    organizationId: string | null
     expiresAt: Date | null
     acceptedAt: Date | null
     createdAt: Date | null
@@ -4182,6 +4744,7 @@ export namespace Prisma {
     role: string | null
     token: string | null
     invitedById: string | null
+    organizationId: string | null
     expiresAt: Date | null
     acceptedAt: Date | null
     createdAt: Date | null
@@ -4193,6 +4756,7 @@ export namespace Prisma {
     role: number
     token: number
     invitedById: number
+    organizationId: number
     expiresAt: number
     acceptedAt: number
     createdAt: number
@@ -4206,6 +4770,7 @@ export namespace Prisma {
     role?: true
     token?: true
     invitedById?: true
+    organizationId?: true
     expiresAt?: true
     acceptedAt?: true
     createdAt?: true
@@ -4217,6 +4782,7 @@ export namespace Prisma {
     role?: true
     token?: true
     invitedById?: true
+    organizationId?: true
     expiresAt?: true
     acceptedAt?: true
     createdAt?: true
@@ -4228,6 +4794,7 @@ export namespace Prisma {
     role?: true
     token?: true
     invitedById?: true
+    organizationId?: true
     expiresAt?: true
     acceptedAt?: true
     createdAt?: true
@@ -4312,6 +4879,7 @@ export namespace Prisma {
     role: string
     token: string
     invitedById: string
+    organizationId: string | null
     expiresAt: Date
     acceptedAt: Date | null
     createdAt: Date
@@ -4340,6 +4908,7 @@ export namespace Prisma {
     role?: boolean
     token?: boolean
     invitedById?: boolean
+    organizationId?: boolean
     expiresAt?: boolean
     acceptedAt?: boolean
     createdAt?: boolean
@@ -4352,6 +4921,7 @@ export namespace Prisma {
     role?: boolean
     token?: boolean
     invitedById?: boolean
+    organizationId?: boolean
     expiresAt?: boolean
     acceptedAt?: boolean
     createdAt?: boolean
@@ -4364,6 +4934,7 @@ export namespace Prisma {
     role?: boolean
     token?: boolean
     invitedById?: boolean
+    organizationId?: boolean
     expiresAt?: boolean
     acceptedAt?: boolean
     createdAt?: boolean
@@ -4387,6 +4958,7 @@ export namespace Prisma {
       role: string
       token: string
       invitedById: string
+      organizationId: string | null
       expiresAt: Date
       acceptedAt: Date | null
       createdAt: Date
@@ -4789,6 +5361,7 @@ export namespace Prisma {
     readonly role: FieldRef<"Invitation", 'String'>
     readonly token: FieldRef<"Invitation", 'String'>
     readonly invitedById: FieldRef<"Invitation", 'String'>
+    readonly organizationId: FieldRef<"Invitation", 'String'>
     readonly expiresAt: FieldRef<"Invitation", 'DateTime'>
     readonly acceptedAt: FieldRef<"Invitation", 'DateTime'>
     readonly createdAt: FieldRef<"Invitation", 'DateTime'>
@@ -6081,6 +6654,5174 @@ export namespace Prisma {
 
 
   /**
+   * Model Candidate
+   */
+
+  export type AggregateCandidate = {
+    _count: CandidateCountAggregateOutputType | null
+    _avg: CandidateAvgAggregateOutputType | null
+    _sum: CandidateSumAggregateOutputType | null
+    _min: CandidateMinAggregateOutputType | null
+    _max: CandidateMaxAggregateOutputType | null
+  }
+
+  export type CandidateAvgAggregateOutputType = {
+    yearsExperience: number | null
+  }
+
+  export type CandidateSumAggregateOutputType = {
+    yearsExperience: number | null
+  }
+
+  export type CandidateMinAggregateOutputType = {
+    id: string | null
+    organizationId: string | null
+    name: string | null
+    email: string | null
+    phone: string | null
+    linkedinUrl: string | null
+    githubUrl: string | null
+    portfolioUrl: string | null
+    source: string | null
+    sourceDetail: string | null
+    currentRole: string | null
+    currentCompany: string | null
+    yearsExperience: number | null
+    salaryExpectation: string | null
+    noticePeriod: string | null
+    pipelineStage: string | null
+    rejectionReason: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type CandidateMaxAggregateOutputType = {
+    id: string | null
+    organizationId: string | null
+    name: string | null
+    email: string | null
+    phone: string | null
+    linkedinUrl: string | null
+    githubUrl: string | null
+    portfolioUrl: string | null
+    source: string | null
+    sourceDetail: string | null
+    currentRole: string | null
+    currentCompany: string | null
+    yearsExperience: number | null
+    salaryExpectation: string | null
+    noticePeriod: string | null
+    pipelineStage: string | null
+    rejectionReason: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type CandidateCountAggregateOutputType = {
+    id: number
+    organizationId: number
+    name: number
+    email: number
+    phone: number
+    linkedinUrl: number
+    githubUrl: number
+    portfolioUrl: number
+    source: number
+    sourceDetail: number
+    currentRole: number
+    currentCompany: number
+    yearsExperience: number
+    salaryExpectation: number
+    noticePeriod: number
+    pipelineStage: number
+    rejectionReason: number
+    tags: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type CandidateAvgAggregateInputType = {
+    yearsExperience?: true
+  }
+
+  export type CandidateSumAggregateInputType = {
+    yearsExperience?: true
+  }
+
+  export type CandidateMinAggregateInputType = {
+    id?: true
+    organizationId?: true
+    name?: true
+    email?: true
+    phone?: true
+    linkedinUrl?: true
+    githubUrl?: true
+    portfolioUrl?: true
+    source?: true
+    sourceDetail?: true
+    currentRole?: true
+    currentCompany?: true
+    yearsExperience?: true
+    salaryExpectation?: true
+    noticePeriod?: true
+    pipelineStage?: true
+    rejectionReason?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type CandidateMaxAggregateInputType = {
+    id?: true
+    organizationId?: true
+    name?: true
+    email?: true
+    phone?: true
+    linkedinUrl?: true
+    githubUrl?: true
+    portfolioUrl?: true
+    source?: true
+    sourceDetail?: true
+    currentRole?: true
+    currentCompany?: true
+    yearsExperience?: true
+    salaryExpectation?: true
+    noticePeriod?: true
+    pipelineStage?: true
+    rejectionReason?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type CandidateCountAggregateInputType = {
+    id?: true
+    organizationId?: true
+    name?: true
+    email?: true
+    phone?: true
+    linkedinUrl?: true
+    githubUrl?: true
+    portfolioUrl?: true
+    source?: true
+    sourceDetail?: true
+    currentRole?: true
+    currentCompany?: true
+    yearsExperience?: true
+    salaryExpectation?: true
+    noticePeriod?: true
+    pipelineStage?: true
+    rejectionReason?: true
+    tags?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type CandidateAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Candidate to aggregate.
+     */
+    where?: CandidateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Candidates to fetch.
+     */
+    orderBy?: CandidateOrderByWithRelationInput | CandidateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: CandidateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Candidates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Candidates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Candidates
+    **/
+    _count?: true | CandidateCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: CandidateAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: CandidateSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: CandidateMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: CandidateMaxAggregateInputType
+  }
+
+  export type GetCandidateAggregateType<T extends CandidateAggregateArgs> = {
+        [P in keyof T & keyof AggregateCandidate]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCandidate[P]>
+      : GetScalarType<T[P], AggregateCandidate[P]>
+  }
+
+
+
+
+  export type CandidateGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CandidateWhereInput
+    orderBy?: CandidateOrderByWithAggregationInput | CandidateOrderByWithAggregationInput[]
+    by: CandidateScalarFieldEnum[] | CandidateScalarFieldEnum
+    having?: CandidateScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: CandidateCountAggregateInputType | true
+    _avg?: CandidateAvgAggregateInputType
+    _sum?: CandidateSumAggregateInputType
+    _min?: CandidateMinAggregateInputType
+    _max?: CandidateMaxAggregateInputType
+  }
+
+  export type CandidateGroupByOutputType = {
+    id: string
+    organizationId: string | null
+    name: string
+    email: string | null
+    phone: string | null
+    linkedinUrl: string | null
+    githubUrl: string | null
+    portfolioUrl: string | null
+    source: string | null
+    sourceDetail: string | null
+    currentRole: string | null
+    currentCompany: string | null
+    yearsExperience: number | null
+    salaryExpectation: string | null
+    noticePeriod: string | null
+    pipelineStage: string
+    rejectionReason: string | null
+    tags: JsonValue
+    createdAt: Date
+    updatedAt: Date
+    _count: CandidateCountAggregateOutputType | null
+    _avg: CandidateAvgAggregateOutputType | null
+    _sum: CandidateSumAggregateOutputType | null
+    _min: CandidateMinAggregateOutputType | null
+    _max: CandidateMaxAggregateOutputType | null
+  }
+
+  type GetCandidateGroupByPayload<T extends CandidateGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<CandidateGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof CandidateGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], CandidateGroupByOutputType[P]>
+            : GetScalarType<T[P], CandidateGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type CandidateSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    name?: boolean
+    email?: boolean
+    phone?: boolean
+    linkedinUrl?: boolean
+    githubUrl?: boolean
+    portfolioUrl?: boolean
+    source?: boolean
+    sourceDetail?: boolean
+    currentRole?: boolean
+    currentCompany?: boolean
+    yearsExperience?: boolean
+    salaryExpectation?: boolean
+    noticePeriod?: boolean
+    pipelineStage?: boolean
+    rejectionReason?: boolean
+    tags?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organization?: boolean | Candidate$organizationArgs<ExtArgs>
+    sessions?: boolean | Candidate$sessionsArgs<ExtArgs>
+    intelligence?: boolean | Candidate$intelligenceArgs<ExtArgs>
+    notes?: boolean | Candidate$notesArgs<ExtArgs>
+    references?: boolean | Candidate$referencesArgs<ExtArgs>
+    documents?: boolean | Candidate$documentsArgs<ExtArgs>
+    _count?: boolean | CandidateCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["candidate"]>
+
+  export type CandidateSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    name?: boolean
+    email?: boolean
+    phone?: boolean
+    linkedinUrl?: boolean
+    githubUrl?: boolean
+    portfolioUrl?: boolean
+    source?: boolean
+    sourceDetail?: boolean
+    currentRole?: boolean
+    currentCompany?: boolean
+    yearsExperience?: boolean
+    salaryExpectation?: boolean
+    noticePeriod?: boolean
+    pipelineStage?: boolean
+    rejectionReason?: boolean
+    tags?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organization?: boolean | Candidate$organizationArgs<ExtArgs>
+  }, ExtArgs["result"]["candidate"]>
+
+  export type CandidateSelectScalar = {
+    id?: boolean
+    organizationId?: boolean
+    name?: boolean
+    email?: boolean
+    phone?: boolean
+    linkedinUrl?: boolean
+    githubUrl?: boolean
+    portfolioUrl?: boolean
+    source?: boolean
+    sourceDetail?: boolean
+    currentRole?: boolean
+    currentCompany?: boolean
+    yearsExperience?: boolean
+    salaryExpectation?: boolean
+    noticePeriod?: boolean
+    pipelineStage?: boolean
+    rejectionReason?: boolean
+    tags?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type CandidateInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | Candidate$organizationArgs<ExtArgs>
+    sessions?: boolean | Candidate$sessionsArgs<ExtArgs>
+    intelligence?: boolean | Candidate$intelligenceArgs<ExtArgs>
+    notes?: boolean | Candidate$notesArgs<ExtArgs>
+    references?: boolean | Candidate$referencesArgs<ExtArgs>
+    documents?: boolean | Candidate$documentsArgs<ExtArgs>
+    _count?: boolean | CandidateCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type CandidateIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | Candidate$organizationArgs<ExtArgs>
+  }
+
+  export type $CandidatePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Candidate"
+    objects: {
+      organization: Prisma.$OrganizationPayload<ExtArgs> | null
+      sessions: Prisma.$InterviewSessionPayload<ExtArgs>[]
+      intelligence: Prisma.$CandidateIntelligencePayload<ExtArgs>[]
+      notes: Prisma.$CandidateNotePayload<ExtArgs>[]
+      references: Prisma.$CandidateReferencePayload<ExtArgs>[]
+      documents: Prisma.$CandidateDocumentPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      organizationId: string | null
+      name: string
+      email: string | null
+      phone: string | null
+      linkedinUrl: string | null
+      githubUrl: string | null
+      portfolioUrl: string | null
+      source: string | null
+      sourceDetail: string | null
+      currentRole: string | null
+      currentCompany: string | null
+      yearsExperience: number | null
+      salaryExpectation: string | null
+      noticePeriod: string | null
+      pipelineStage: string
+      rejectionReason: string | null
+      tags: Prisma.JsonValue
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["candidate"]>
+    composites: {}
+  }
+
+  type CandidateGetPayload<S extends boolean | null | undefined | CandidateDefaultArgs> = $Result.GetResult<Prisma.$CandidatePayload, S>
+
+  type CandidateCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<CandidateFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: CandidateCountAggregateInputType | true
+    }
+
+  export interface CandidateDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Candidate'], meta: { name: 'Candidate' } }
+    /**
+     * Find zero or one Candidate that matches the filter.
+     * @param {CandidateFindUniqueArgs} args - Arguments to find a Candidate
+     * @example
+     * // Get one Candidate
+     * const candidate = await prisma.candidate.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends CandidateFindUniqueArgs>(args: SelectSubset<T, CandidateFindUniqueArgs<ExtArgs>>): Prisma__CandidateClient<$Result.GetResult<Prisma.$CandidatePayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one Candidate that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {CandidateFindUniqueOrThrowArgs} args - Arguments to find a Candidate
+     * @example
+     * // Get one Candidate
+     * const candidate = await prisma.candidate.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends CandidateFindUniqueOrThrowArgs>(args: SelectSubset<T, CandidateFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CandidateClient<$Result.GetResult<Prisma.$CandidatePayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first Candidate that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CandidateFindFirstArgs} args - Arguments to find a Candidate
+     * @example
+     * // Get one Candidate
+     * const candidate = await prisma.candidate.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends CandidateFindFirstArgs>(args?: SelectSubset<T, CandidateFindFirstArgs<ExtArgs>>): Prisma__CandidateClient<$Result.GetResult<Prisma.$CandidatePayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first Candidate that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CandidateFindFirstOrThrowArgs} args - Arguments to find a Candidate
+     * @example
+     * // Get one Candidate
+     * const candidate = await prisma.candidate.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends CandidateFindFirstOrThrowArgs>(args?: SelectSubset<T, CandidateFindFirstOrThrowArgs<ExtArgs>>): Prisma__CandidateClient<$Result.GetResult<Prisma.$CandidatePayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more Candidates that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CandidateFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Candidates
+     * const candidates = await prisma.candidate.findMany()
+     * 
+     * // Get first 10 Candidates
+     * const candidates = await prisma.candidate.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const candidateWithIdOnly = await prisma.candidate.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends CandidateFindManyArgs>(args?: SelectSubset<T, CandidateFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CandidatePayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a Candidate.
+     * @param {CandidateCreateArgs} args - Arguments to create a Candidate.
+     * @example
+     * // Create one Candidate
+     * const Candidate = await prisma.candidate.create({
+     *   data: {
+     *     // ... data to create a Candidate
+     *   }
+     * })
+     * 
+     */
+    create<T extends CandidateCreateArgs>(args: SelectSubset<T, CandidateCreateArgs<ExtArgs>>): Prisma__CandidateClient<$Result.GetResult<Prisma.$CandidatePayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many Candidates.
+     * @param {CandidateCreateManyArgs} args - Arguments to create many Candidates.
+     * @example
+     * // Create many Candidates
+     * const candidate = await prisma.candidate.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends CandidateCreateManyArgs>(args?: SelectSubset<T, CandidateCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Candidates and returns the data saved in the database.
+     * @param {CandidateCreateManyAndReturnArgs} args - Arguments to create many Candidates.
+     * @example
+     * // Create many Candidates
+     * const candidate = await prisma.candidate.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Candidates and only return the `id`
+     * const candidateWithIdOnly = await prisma.candidate.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends CandidateCreateManyAndReturnArgs>(args?: SelectSubset<T, CandidateCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CandidatePayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a Candidate.
+     * @param {CandidateDeleteArgs} args - Arguments to delete one Candidate.
+     * @example
+     * // Delete one Candidate
+     * const Candidate = await prisma.candidate.delete({
+     *   where: {
+     *     // ... filter to delete one Candidate
+     *   }
+     * })
+     * 
+     */
+    delete<T extends CandidateDeleteArgs>(args: SelectSubset<T, CandidateDeleteArgs<ExtArgs>>): Prisma__CandidateClient<$Result.GetResult<Prisma.$CandidatePayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one Candidate.
+     * @param {CandidateUpdateArgs} args - Arguments to update one Candidate.
+     * @example
+     * // Update one Candidate
+     * const candidate = await prisma.candidate.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends CandidateUpdateArgs>(args: SelectSubset<T, CandidateUpdateArgs<ExtArgs>>): Prisma__CandidateClient<$Result.GetResult<Prisma.$CandidatePayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more Candidates.
+     * @param {CandidateDeleteManyArgs} args - Arguments to filter Candidates to delete.
+     * @example
+     * // Delete a few Candidates
+     * const { count } = await prisma.candidate.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends CandidateDeleteManyArgs>(args?: SelectSubset<T, CandidateDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Candidates.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CandidateUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Candidates
+     * const candidate = await prisma.candidate.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends CandidateUpdateManyArgs>(args: SelectSubset<T, CandidateUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Candidate.
+     * @param {CandidateUpsertArgs} args - Arguments to update or create a Candidate.
+     * @example
+     * // Update or create a Candidate
+     * const candidate = await prisma.candidate.upsert({
+     *   create: {
+     *     // ... data to create a Candidate
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Candidate we want to update
+     *   }
+     * })
+     */
+    upsert<T extends CandidateUpsertArgs>(args: SelectSubset<T, CandidateUpsertArgs<ExtArgs>>): Prisma__CandidateClient<$Result.GetResult<Prisma.$CandidatePayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of Candidates.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CandidateCountArgs} args - Arguments to filter Candidates to count.
+     * @example
+     * // Count the number of Candidates
+     * const count = await prisma.candidate.count({
+     *   where: {
+     *     // ... the filter for the Candidates we want to count
+     *   }
+     * })
+    **/
+    count<T extends CandidateCountArgs>(
+      args?: Subset<T, CandidateCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], CandidateCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Candidate.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CandidateAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends CandidateAggregateArgs>(args: Subset<T, CandidateAggregateArgs>): Prisma.PrismaPromise<GetCandidateAggregateType<T>>
+
+    /**
+     * Group by Candidate.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CandidateGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends CandidateGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: CandidateGroupByArgs['orderBy'] }
+        : { orderBy?: CandidateGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, CandidateGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCandidateGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Candidate model
+   */
+  readonly fields: CandidateFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Candidate.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__CandidateClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    organization<T extends Candidate$organizationArgs<ExtArgs> = {}>(args?: Subset<T, Candidate$organizationArgs<ExtArgs>>): Prisma__OrganizationClient<$Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    sessions<T extends Candidate$sessionsArgs<ExtArgs> = {}>(args?: Subset<T, Candidate$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InterviewSessionPayload<ExtArgs>, T, "findMany"> | Null>
+    intelligence<T extends Candidate$intelligenceArgs<ExtArgs> = {}>(args?: Subset<T, Candidate$intelligenceArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CandidateIntelligencePayload<ExtArgs>, T, "findMany"> | Null>
+    notes<T extends Candidate$notesArgs<ExtArgs> = {}>(args?: Subset<T, Candidate$notesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CandidateNotePayload<ExtArgs>, T, "findMany"> | Null>
+    references<T extends Candidate$referencesArgs<ExtArgs> = {}>(args?: Subset<T, Candidate$referencesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CandidateReferencePayload<ExtArgs>, T, "findMany"> | Null>
+    documents<T extends Candidate$documentsArgs<ExtArgs> = {}>(args?: Subset<T, Candidate$documentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CandidateDocumentPayload<ExtArgs>, T, "findMany"> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Candidate model
+   */ 
+  interface CandidateFieldRefs {
+    readonly id: FieldRef<"Candidate", 'String'>
+    readonly organizationId: FieldRef<"Candidate", 'String'>
+    readonly name: FieldRef<"Candidate", 'String'>
+    readonly email: FieldRef<"Candidate", 'String'>
+    readonly phone: FieldRef<"Candidate", 'String'>
+    readonly linkedinUrl: FieldRef<"Candidate", 'String'>
+    readonly githubUrl: FieldRef<"Candidate", 'String'>
+    readonly portfolioUrl: FieldRef<"Candidate", 'String'>
+    readonly source: FieldRef<"Candidate", 'String'>
+    readonly sourceDetail: FieldRef<"Candidate", 'String'>
+    readonly currentRole: FieldRef<"Candidate", 'String'>
+    readonly currentCompany: FieldRef<"Candidate", 'String'>
+    readonly yearsExperience: FieldRef<"Candidate", 'Int'>
+    readonly salaryExpectation: FieldRef<"Candidate", 'String'>
+    readonly noticePeriod: FieldRef<"Candidate", 'String'>
+    readonly pipelineStage: FieldRef<"Candidate", 'String'>
+    readonly rejectionReason: FieldRef<"Candidate", 'String'>
+    readonly tags: FieldRef<"Candidate", 'Json'>
+    readonly createdAt: FieldRef<"Candidate", 'DateTime'>
+    readonly updatedAt: FieldRef<"Candidate", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Candidate findUnique
+   */
+  export type CandidateFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Candidate
+     */
+    select?: CandidateSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateInclude<ExtArgs> | null
+    /**
+     * Filter, which Candidate to fetch.
+     */
+    where: CandidateWhereUniqueInput
+  }
+
+  /**
+   * Candidate findUniqueOrThrow
+   */
+  export type CandidateFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Candidate
+     */
+    select?: CandidateSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateInclude<ExtArgs> | null
+    /**
+     * Filter, which Candidate to fetch.
+     */
+    where: CandidateWhereUniqueInput
+  }
+
+  /**
+   * Candidate findFirst
+   */
+  export type CandidateFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Candidate
+     */
+    select?: CandidateSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateInclude<ExtArgs> | null
+    /**
+     * Filter, which Candidate to fetch.
+     */
+    where?: CandidateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Candidates to fetch.
+     */
+    orderBy?: CandidateOrderByWithRelationInput | CandidateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Candidates.
+     */
+    cursor?: CandidateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Candidates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Candidates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Candidates.
+     */
+    distinct?: CandidateScalarFieldEnum | CandidateScalarFieldEnum[]
+  }
+
+  /**
+   * Candidate findFirstOrThrow
+   */
+  export type CandidateFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Candidate
+     */
+    select?: CandidateSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateInclude<ExtArgs> | null
+    /**
+     * Filter, which Candidate to fetch.
+     */
+    where?: CandidateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Candidates to fetch.
+     */
+    orderBy?: CandidateOrderByWithRelationInput | CandidateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Candidates.
+     */
+    cursor?: CandidateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Candidates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Candidates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Candidates.
+     */
+    distinct?: CandidateScalarFieldEnum | CandidateScalarFieldEnum[]
+  }
+
+  /**
+   * Candidate findMany
+   */
+  export type CandidateFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Candidate
+     */
+    select?: CandidateSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateInclude<ExtArgs> | null
+    /**
+     * Filter, which Candidates to fetch.
+     */
+    where?: CandidateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Candidates to fetch.
+     */
+    orderBy?: CandidateOrderByWithRelationInput | CandidateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Candidates.
+     */
+    cursor?: CandidateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Candidates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Candidates.
+     */
+    skip?: number
+    distinct?: CandidateScalarFieldEnum | CandidateScalarFieldEnum[]
+  }
+
+  /**
+   * Candidate create
+   */
+  export type CandidateCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Candidate
+     */
+    select?: CandidateSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Candidate.
+     */
+    data: XOR<CandidateCreateInput, CandidateUncheckedCreateInput>
+  }
+
+  /**
+   * Candidate createMany
+   */
+  export type CandidateCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Candidates.
+     */
+    data: CandidateCreateManyInput | CandidateCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Candidate createManyAndReturn
+   */
+  export type CandidateCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Candidate
+     */
+    select?: CandidateSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many Candidates.
+     */
+    data: CandidateCreateManyInput | CandidateCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Candidate update
+   */
+  export type CandidateUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Candidate
+     */
+    select?: CandidateSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Candidate.
+     */
+    data: XOR<CandidateUpdateInput, CandidateUncheckedUpdateInput>
+    /**
+     * Choose, which Candidate to update.
+     */
+    where: CandidateWhereUniqueInput
+  }
+
+  /**
+   * Candidate updateMany
+   */
+  export type CandidateUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Candidates.
+     */
+    data: XOR<CandidateUpdateManyMutationInput, CandidateUncheckedUpdateManyInput>
+    /**
+     * Filter which Candidates to update
+     */
+    where?: CandidateWhereInput
+  }
+
+  /**
+   * Candidate upsert
+   */
+  export type CandidateUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Candidate
+     */
+    select?: CandidateSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Candidate to update in case it exists.
+     */
+    where: CandidateWhereUniqueInput
+    /**
+     * In case the Candidate found by the `where` argument doesn't exist, create a new Candidate with this data.
+     */
+    create: XOR<CandidateCreateInput, CandidateUncheckedCreateInput>
+    /**
+     * In case the Candidate was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<CandidateUpdateInput, CandidateUncheckedUpdateInput>
+  }
+
+  /**
+   * Candidate delete
+   */
+  export type CandidateDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Candidate
+     */
+    select?: CandidateSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateInclude<ExtArgs> | null
+    /**
+     * Filter which Candidate to delete.
+     */
+    where: CandidateWhereUniqueInput
+  }
+
+  /**
+   * Candidate deleteMany
+   */
+  export type CandidateDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Candidates to delete
+     */
+    where?: CandidateWhereInput
+  }
+
+  /**
+   * Candidate.organization
+   */
+  export type Candidate$organizationArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Organization
+     */
+    select?: OrganizationSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrganizationInclude<ExtArgs> | null
+    where?: OrganizationWhereInput
+  }
+
+  /**
+   * Candidate.sessions
+   */
+  export type Candidate$sessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewSession
+     */
+    select?: InterviewSessionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewSessionInclude<ExtArgs> | null
+    where?: InterviewSessionWhereInput
+    orderBy?: InterviewSessionOrderByWithRelationInput | InterviewSessionOrderByWithRelationInput[]
+    cursor?: InterviewSessionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: InterviewSessionScalarFieldEnum | InterviewSessionScalarFieldEnum[]
+  }
+
+  /**
+   * Candidate.intelligence
+   */
+  export type Candidate$intelligenceArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateIntelligence
+     */
+    select?: CandidateIntelligenceSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateIntelligenceInclude<ExtArgs> | null
+    where?: CandidateIntelligenceWhereInput
+    orderBy?: CandidateIntelligenceOrderByWithRelationInput | CandidateIntelligenceOrderByWithRelationInput[]
+    cursor?: CandidateIntelligenceWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CandidateIntelligenceScalarFieldEnum | CandidateIntelligenceScalarFieldEnum[]
+  }
+
+  /**
+   * Candidate.notes
+   */
+  export type Candidate$notesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateNote
+     */
+    select?: CandidateNoteSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateNoteInclude<ExtArgs> | null
+    where?: CandidateNoteWhereInput
+    orderBy?: CandidateNoteOrderByWithRelationInput | CandidateNoteOrderByWithRelationInput[]
+    cursor?: CandidateNoteWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CandidateNoteScalarFieldEnum | CandidateNoteScalarFieldEnum[]
+  }
+
+  /**
+   * Candidate.references
+   */
+  export type Candidate$referencesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateReference
+     */
+    select?: CandidateReferenceSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateReferenceInclude<ExtArgs> | null
+    where?: CandidateReferenceWhereInput
+    orderBy?: CandidateReferenceOrderByWithRelationInput | CandidateReferenceOrderByWithRelationInput[]
+    cursor?: CandidateReferenceWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CandidateReferenceScalarFieldEnum | CandidateReferenceScalarFieldEnum[]
+  }
+
+  /**
+   * Candidate.documents
+   */
+  export type Candidate$documentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateDocument
+     */
+    select?: CandidateDocumentSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateDocumentInclude<ExtArgs> | null
+    where?: CandidateDocumentWhereInput
+    orderBy?: CandidateDocumentOrderByWithRelationInput | CandidateDocumentOrderByWithRelationInput[]
+    cursor?: CandidateDocumentWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CandidateDocumentScalarFieldEnum | CandidateDocumentScalarFieldEnum[]
+  }
+
+  /**
+   * Candidate without action
+   */
+  export type CandidateDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Candidate
+     */
+    select?: CandidateSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model CandidateDocument
+   */
+
+  export type AggregateCandidateDocument = {
+    _count: CandidateDocumentCountAggregateOutputType | null
+    _min: CandidateDocumentMinAggregateOutputType | null
+    _max: CandidateDocumentMaxAggregateOutputType | null
+  }
+
+  export type CandidateDocumentMinAggregateOutputType = {
+    id: string | null
+    candidateId: string | null
+    type: string | null
+    filename: string | null
+    mimeType: string | null
+    content: string | null
+    rawData: Buffer | null
+    createdAt: Date | null
+  }
+
+  export type CandidateDocumentMaxAggregateOutputType = {
+    id: string | null
+    candidateId: string | null
+    type: string | null
+    filename: string | null
+    mimeType: string | null
+    content: string | null
+    rawData: Buffer | null
+    createdAt: Date | null
+  }
+
+  export type CandidateDocumentCountAggregateOutputType = {
+    id: number
+    candidateId: number
+    type: number
+    filename: number
+    mimeType: number
+    content: number
+    rawData: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type CandidateDocumentMinAggregateInputType = {
+    id?: true
+    candidateId?: true
+    type?: true
+    filename?: true
+    mimeType?: true
+    content?: true
+    rawData?: true
+    createdAt?: true
+  }
+
+  export type CandidateDocumentMaxAggregateInputType = {
+    id?: true
+    candidateId?: true
+    type?: true
+    filename?: true
+    mimeType?: true
+    content?: true
+    rawData?: true
+    createdAt?: true
+  }
+
+  export type CandidateDocumentCountAggregateInputType = {
+    id?: true
+    candidateId?: true
+    type?: true
+    filename?: true
+    mimeType?: true
+    content?: true
+    rawData?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type CandidateDocumentAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CandidateDocument to aggregate.
+     */
+    where?: CandidateDocumentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CandidateDocuments to fetch.
+     */
+    orderBy?: CandidateDocumentOrderByWithRelationInput | CandidateDocumentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: CandidateDocumentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CandidateDocuments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CandidateDocuments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned CandidateDocuments
+    **/
+    _count?: true | CandidateDocumentCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: CandidateDocumentMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: CandidateDocumentMaxAggregateInputType
+  }
+
+  export type GetCandidateDocumentAggregateType<T extends CandidateDocumentAggregateArgs> = {
+        [P in keyof T & keyof AggregateCandidateDocument]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCandidateDocument[P]>
+      : GetScalarType<T[P], AggregateCandidateDocument[P]>
+  }
+
+
+
+
+  export type CandidateDocumentGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CandidateDocumentWhereInput
+    orderBy?: CandidateDocumentOrderByWithAggregationInput | CandidateDocumentOrderByWithAggregationInput[]
+    by: CandidateDocumentScalarFieldEnum[] | CandidateDocumentScalarFieldEnum
+    having?: CandidateDocumentScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: CandidateDocumentCountAggregateInputType | true
+    _min?: CandidateDocumentMinAggregateInputType
+    _max?: CandidateDocumentMaxAggregateInputType
+  }
+
+  export type CandidateDocumentGroupByOutputType = {
+    id: string
+    candidateId: string
+    type: string
+    filename: string
+    mimeType: string
+    content: string
+    rawData: Buffer | null
+    createdAt: Date
+    _count: CandidateDocumentCountAggregateOutputType | null
+    _min: CandidateDocumentMinAggregateOutputType | null
+    _max: CandidateDocumentMaxAggregateOutputType | null
+  }
+
+  type GetCandidateDocumentGroupByPayload<T extends CandidateDocumentGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<CandidateDocumentGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof CandidateDocumentGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], CandidateDocumentGroupByOutputType[P]>
+            : GetScalarType<T[P], CandidateDocumentGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type CandidateDocumentSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    candidateId?: boolean
+    type?: boolean
+    filename?: boolean
+    mimeType?: boolean
+    content?: boolean
+    rawData?: boolean
+    createdAt?: boolean
+    candidate?: boolean | CandidateDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["candidateDocument"]>
+
+  export type CandidateDocumentSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    candidateId?: boolean
+    type?: boolean
+    filename?: boolean
+    mimeType?: boolean
+    content?: boolean
+    rawData?: boolean
+    createdAt?: boolean
+    candidate?: boolean | CandidateDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["candidateDocument"]>
+
+  export type CandidateDocumentSelectScalar = {
+    id?: boolean
+    candidateId?: boolean
+    type?: boolean
+    filename?: boolean
+    mimeType?: boolean
+    content?: boolean
+    rawData?: boolean
+    createdAt?: boolean
+  }
+
+  export type CandidateDocumentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    candidate?: boolean | CandidateDefaultArgs<ExtArgs>
+  }
+  export type CandidateDocumentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    candidate?: boolean | CandidateDefaultArgs<ExtArgs>
+  }
+
+  export type $CandidateDocumentPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "CandidateDocument"
+    objects: {
+      candidate: Prisma.$CandidatePayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      candidateId: string
+      type: string
+      filename: string
+      mimeType: string
+      content: string
+      rawData: Buffer | null
+      createdAt: Date
+    }, ExtArgs["result"]["candidateDocument"]>
+    composites: {}
+  }
+
+  type CandidateDocumentGetPayload<S extends boolean | null | undefined | CandidateDocumentDefaultArgs> = $Result.GetResult<Prisma.$CandidateDocumentPayload, S>
+
+  type CandidateDocumentCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<CandidateDocumentFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: CandidateDocumentCountAggregateInputType | true
+    }
+
+  export interface CandidateDocumentDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['CandidateDocument'], meta: { name: 'CandidateDocument' } }
+    /**
+     * Find zero or one CandidateDocument that matches the filter.
+     * @param {CandidateDocumentFindUniqueArgs} args - Arguments to find a CandidateDocument
+     * @example
+     * // Get one CandidateDocument
+     * const candidateDocument = await prisma.candidateDocument.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends CandidateDocumentFindUniqueArgs>(args: SelectSubset<T, CandidateDocumentFindUniqueArgs<ExtArgs>>): Prisma__CandidateDocumentClient<$Result.GetResult<Prisma.$CandidateDocumentPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one CandidateDocument that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {CandidateDocumentFindUniqueOrThrowArgs} args - Arguments to find a CandidateDocument
+     * @example
+     * // Get one CandidateDocument
+     * const candidateDocument = await prisma.candidateDocument.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends CandidateDocumentFindUniqueOrThrowArgs>(args: SelectSubset<T, CandidateDocumentFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CandidateDocumentClient<$Result.GetResult<Prisma.$CandidateDocumentPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first CandidateDocument that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CandidateDocumentFindFirstArgs} args - Arguments to find a CandidateDocument
+     * @example
+     * // Get one CandidateDocument
+     * const candidateDocument = await prisma.candidateDocument.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends CandidateDocumentFindFirstArgs>(args?: SelectSubset<T, CandidateDocumentFindFirstArgs<ExtArgs>>): Prisma__CandidateDocumentClient<$Result.GetResult<Prisma.$CandidateDocumentPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first CandidateDocument that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CandidateDocumentFindFirstOrThrowArgs} args - Arguments to find a CandidateDocument
+     * @example
+     * // Get one CandidateDocument
+     * const candidateDocument = await prisma.candidateDocument.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends CandidateDocumentFindFirstOrThrowArgs>(args?: SelectSubset<T, CandidateDocumentFindFirstOrThrowArgs<ExtArgs>>): Prisma__CandidateDocumentClient<$Result.GetResult<Prisma.$CandidateDocumentPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more CandidateDocuments that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CandidateDocumentFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all CandidateDocuments
+     * const candidateDocuments = await prisma.candidateDocument.findMany()
+     * 
+     * // Get first 10 CandidateDocuments
+     * const candidateDocuments = await prisma.candidateDocument.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const candidateDocumentWithIdOnly = await prisma.candidateDocument.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends CandidateDocumentFindManyArgs>(args?: SelectSubset<T, CandidateDocumentFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CandidateDocumentPayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a CandidateDocument.
+     * @param {CandidateDocumentCreateArgs} args - Arguments to create a CandidateDocument.
+     * @example
+     * // Create one CandidateDocument
+     * const CandidateDocument = await prisma.candidateDocument.create({
+     *   data: {
+     *     // ... data to create a CandidateDocument
+     *   }
+     * })
+     * 
+     */
+    create<T extends CandidateDocumentCreateArgs>(args: SelectSubset<T, CandidateDocumentCreateArgs<ExtArgs>>): Prisma__CandidateDocumentClient<$Result.GetResult<Prisma.$CandidateDocumentPayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many CandidateDocuments.
+     * @param {CandidateDocumentCreateManyArgs} args - Arguments to create many CandidateDocuments.
+     * @example
+     * // Create many CandidateDocuments
+     * const candidateDocument = await prisma.candidateDocument.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends CandidateDocumentCreateManyArgs>(args?: SelectSubset<T, CandidateDocumentCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many CandidateDocuments and returns the data saved in the database.
+     * @param {CandidateDocumentCreateManyAndReturnArgs} args - Arguments to create many CandidateDocuments.
+     * @example
+     * // Create many CandidateDocuments
+     * const candidateDocument = await prisma.candidateDocument.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many CandidateDocuments and only return the `id`
+     * const candidateDocumentWithIdOnly = await prisma.candidateDocument.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends CandidateDocumentCreateManyAndReturnArgs>(args?: SelectSubset<T, CandidateDocumentCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CandidateDocumentPayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a CandidateDocument.
+     * @param {CandidateDocumentDeleteArgs} args - Arguments to delete one CandidateDocument.
+     * @example
+     * // Delete one CandidateDocument
+     * const CandidateDocument = await prisma.candidateDocument.delete({
+     *   where: {
+     *     // ... filter to delete one CandidateDocument
+     *   }
+     * })
+     * 
+     */
+    delete<T extends CandidateDocumentDeleteArgs>(args: SelectSubset<T, CandidateDocumentDeleteArgs<ExtArgs>>): Prisma__CandidateDocumentClient<$Result.GetResult<Prisma.$CandidateDocumentPayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one CandidateDocument.
+     * @param {CandidateDocumentUpdateArgs} args - Arguments to update one CandidateDocument.
+     * @example
+     * // Update one CandidateDocument
+     * const candidateDocument = await prisma.candidateDocument.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends CandidateDocumentUpdateArgs>(args: SelectSubset<T, CandidateDocumentUpdateArgs<ExtArgs>>): Prisma__CandidateDocumentClient<$Result.GetResult<Prisma.$CandidateDocumentPayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more CandidateDocuments.
+     * @param {CandidateDocumentDeleteManyArgs} args - Arguments to filter CandidateDocuments to delete.
+     * @example
+     * // Delete a few CandidateDocuments
+     * const { count } = await prisma.candidateDocument.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends CandidateDocumentDeleteManyArgs>(args?: SelectSubset<T, CandidateDocumentDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CandidateDocuments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CandidateDocumentUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many CandidateDocuments
+     * const candidateDocument = await prisma.candidateDocument.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends CandidateDocumentUpdateManyArgs>(args: SelectSubset<T, CandidateDocumentUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one CandidateDocument.
+     * @param {CandidateDocumentUpsertArgs} args - Arguments to update or create a CandidateDocument.
+     * @example
+     * // Update or create a CandidateDocument
+     * const candidateDocument = await prisma.candidateDocument.upsert({
+     *   create: {
+     *     // ... data to create a CandidateDocument
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the CandidateDocument we want to update
+     *   }
+     * })
+     */
+    upsert<T extends CandidateDocumentUpsertArgs>(args: SelectSubset<T, CandidateDocumentUpsertArgs<ExtArgs>>): Prisma__CandidateDocumentClient<$Result.GetResult<Prisma.$CandidateDocumentPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of CandidateDocuments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CandidateDocumentCountArgs} args - Arguments to filter CandidateDocuments to count.
+     * @example
+     * // Count the number of CandidateDocuments
+     * const count = await prisma.candidateDocument.count({
+     *   where: {
+     *     // ... the filter for the CandidateDocuments we want to count
+     *   }
+     * })
+    **/
+    count<T extends CandidateDocumentCountArgs>(
+      args?: Subset<T, CandidateDocumentCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], CandidateDocumentCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a CandidateDocument.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CandidateDocumentAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends CandidateDocumentAggregateArgs>(args: Subset<T, CandidateDocumentAggregateArgs>): Prisma.PrismaPromise<GetCandidateDocumentAggregateType<T>>
+
+    /**
+     * Group by CandidateDocument.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CandidateDocumentGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends CandidateDocumentGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: CandidateDocumentGroupByArgs['orderBy'] }
+        : { orderBy?: CandidateDocumentGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, CandidateDocumentGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCandidateDocumentGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the CandidateDocument model
+   */
+  readonly fields: CandidateDocumentFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for CandidateDocument.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__CandidateDocumentClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    candidate<T extends CandidateDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CandidateDefaultArgs<ExtArgs>>): Prisma__CandidateClient<$Result.GetResult<Prisma.$CandidatePayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the CandidateDocument model
+   */ 
+  interface CandidateDocumentFieldRefs {
+    readonly id: FieldRef<"CandidateDocument", 'String'>
+    readonly candidateId: FieldRef<"CandidateDocument", 'String'>
+    readonly type: FieldRef<"CandidateDocument", 'String'>
+    readonly filename: FieldRef<"CandidateDocument", 'String'>
+    readonly mimeType: FieldRef<"CandidateDocument", 'String'>
+    readonly content: FieldRef<"CandidateDocument", 'String'>
+    readonly rawData: FieldRef<"CandidateDocument", 'Bytes'>
+    readonly createdAt: FieldRef<"CandidateDocument", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * CandidateDocument findUnique
+   */
+  export type CandidateDocumentFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateDocument
+     */
+    select?: CandidateDocumentSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateDocumentInclude<ExtArgs> | null
+    /**
+     * Filter, which CandidateDocument to fetch.
+     */
+    where: CandidateDocumentWhereUniqueInput
+  }
+
+  /**
+   * CandidateDocument findUniqueOrThrow
+   */
+  export type CandidateDocumentFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateDocument
+     */
+    select?: CandidateDocumentSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateDocumentInclude<ExtArgs> | null
+    /**
+     * Filter, which CandidateDocument to fetch.
+     */
+    where: CandidateDocumentWhereUniqueInput
+  }
+
+  /**
+   * CandidateDocument findFirst
+   */
+  export type CandidateDocumentFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateDocument
+     */
+    select?: CandidateDocumentSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateDocumentInclude<ExtArgs> | null
+    /**
+     * Filter, which CandidateDocument to fetch.
+     */
+    where?: CandidateDocumentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CandidateDocuments to fetch.
+     */
+    orderBy?: CandidateDocumentOrderByWithRelationInput | CandidateDocumentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CandidateDocuments.
+     */
+    cursor?: CandidateDocumentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CandidateDocuments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CandidateDocuments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CandidateDocuments.
+     */
+    distinct?: CandidateDocumentScalarFieldEnum | CandidateDocumentScalarFieldEnum[]
+  }
+
+  /**
+   * CandidateDocument findFirstOrThrow
+   */
+  export type CandidateDocumentFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateDocument
+     */
+    select?: CandidateDocumentSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateDocumentInclude<ExtArgs> | null
+    /**
+     * Filter, which CandidateDocument to fetch.
+     */
+    where?: CandidateDocumentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CandidateDocuments to fetch.
+     */
+    orderBy?: CandidateDocumentOrderByWithRelationInput | CandidateDocumentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CandidateDocuments.
+     */
+    cursor?: CandidateDocumentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CandidateDocuments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CandidateDocuments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CandidateDocuments.
+     */
+    distinct?: CandidateDocumentScalarFieldEnum | CandidateDocumentScalarFieldEnum[]
+  }
+
+  /**
+   * CandidateDocument findMany
+   */
+  export type CandidateDocumentFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateDocument
+     */
+    select?: CandidateDocumentSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateDocumentInclude<ExtArgs> | null
+    /**
+     * Filter, which CandidateDocuments to fetch.
+     */
+    where?: CandidateDocumentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CandidateDocuments to fetch.
+     */
+    orderBy?: CandidateDocumentOrderByWithRelationInput | CandidateDocumentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing CandidateDocuments.
+     */
+    cursor?: CandidateDocumentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CandidateDocuments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CandidateDocuments.
+     */
+    skip?: number
+    distinct?: CandidateDocumentScalarFieldEnum | CandidateDocumentScalarFieldEnum[]
+  }
+
+  /**
+   * CandidateDocument create
+   */
+  export type CandidateDocumentCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateDocument
+     */
+    select?: CandidateDocumentSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateDocumentInclude<ExtArgs> | null
+    /**
+     * The data needed to create a CandidateDocument.
+     */
+    data: XOR<CandidateDocumentCreateInput, CandidateDocumentUncheckedCreateInput>
+  }
+
+  /**
+   * CandidateDocument createMany
+   */
+  export type CandidateDocumentCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many CandidateDocuments.
+     */
+    data: CandidateDocumentCreateManyInput | CandidateDocumentCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * CandidateDocument createManyAndReturn
+   */
+  export type CandidateDocumentCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateDocument
+     */
+    select?: CandidateDocumentSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many CandidateDocuments.
+     */
+    data: CandidateDocumentCreateManyInput | CandidateDocumentCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateDocumentIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CandidateDocument update
+   */
+  export type CandidateDocumentUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateDocument
+     */
+    select?: CandidateDocumentSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateDocumentInclude<ExtArgs> | null
+    /**
+     * The data needed to update a CandidateDocument.
+     */
+    data: XOR<CandidateDocumentUpdateInput, CandidateDocumentUncheckedUpdateInput>
+    /**
+     * Choose, which CandidateDocument to update.
+     */
+    where: CandidateDocumentWhereUniqueInput
+  }
+
+  /**
+   * CandidateDocument updateMany
+   */
+  export type CandidateDocumentUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update CandidateDocuments.
+     */
+    data: XOR<CandidateDocumentUpdateManyMutationInput, CandidateDocumentUncheckedUpdateManyInput>
+    /**
+     * Filter which CandidateDocuments to update
+     */
+    where?: CandidateDocumentWhereInput
+  }
+
+  /**
+   * CandidateDocument upsert
+   */
+  export type CandidateDocumentUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateDocument
+     */
+    select?: CandidateDocumentSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateDocumentInclude<ExtArgs> | null
+    /**
+     * The filter to search for the CandidateDocument to update in case it exists.
+     */
+    where: CandidateDocumentWhereUniqueInput
+    /**
+     * In case the CandidateDocument found by the `where` argument doesn't exist, create a new CandidateDocument with this data.
+     */
+    create: XOR<CandidateDocumentCreateInput, CandidateDocumentUncheckedCreateInput>
+    /**
+     * In case the CandidateDocument was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<CandidateDocumentUpdateInput, CandidateDocumentUncheckedUpdateInput>
+  }
+
+  /**
+   * CandidateDocument delete
+   */
+  export type CandidateDocumentDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateDocument
+     */
+    select?: CandidateDocumentSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateDocumentInclude<ExtArgs> | null
+    /**
+     * Filter which CandidateDocument to delete.
+     */
+    where: CandidateDocumentWhereUniqueInput
+  }
+
+  /**
+   * CandidateDocument deleteMany
+   */
+  export type CandidateDocumentDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CandidateDocuments to delete
+     */
+    where?: CandidateDocumentWhereInput
+  }
+
+  /**
+   * CandidateDocument without action
+   */
+  export type CandidateDocumentDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateDocument
+     */
+    select?: CandidateDocumentSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateDocumentInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model CandidateIntelligence
+   */
+
+  export type AggregateCandidateIntelligence = {
+    _count: CandidateIntelligenceCountAggregateOutputType | null
+    _min: CandidateIntelligenceMinAggregateOutputType | null
+    _max: CandidateIntelligenceMaxAggregateOutputType | null
+  }
+
+  export type CandidateIntelligenceMinAggregateOutputType = {
+    id: string | null
+    candidateId: string | null
+    type: string | null
+    sourceText: string | null
+    createdAt: Date | null
+  }
+
+  export type CandidateIntelligenceMaxAggregateOutputType = {
+    id: string | null
+    candidateId: string | null
+    type: string | null
+    sourceText: string | null
+    createdAt: Date | null
+  }
+
+  export type CandidateIntelligenceCountAggregateOutputType = {
+    id: number
+    candidateId: number
+    type: number
+    data: number
+    sourceText: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type CandidateIntelligenceMinAggregateInputType = {
+    id?: true
+    candidateId?: true
+    type?: true
+    sourceText?: true
+    createdAt?: true
+  }
+
+  export type CandidateIntelligenceMaxAggregateInputType = {
+    id?: true
+    candidateId?: true
+    type?: true
+    sourceText?: true
+    createdAt?: true
+  }
+
+  export type CandidateIntelligenceCountAggregateInputType = {
+    id?: true
+    candidateId?: true
+    type?: true
+    data?: true
+    sourceText?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type CandidateIntelligenceAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CandidateIntelligence to aggregate.
+     */
+    where?: CandidateIntelligenceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CandidateIntelligences to fetch.
+     */
+    orderBy?: CandidateIntelligenceOrderByWithRelationInput | CandidateIntelligenceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: CandidateIntelligenceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CandidateIntelligences from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CandidateIntelligences.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned CandidateIntelligences
+    **/
+    _count?: true | CandidateIntelligenceCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: CandidateIntelligenceMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: CandidateIntelligenceMaxAggregateInputType
+  }
+
+  export type GetCandidateIntelligenceAggregateType<T extends CandidateIntelligenceAggregateArgs> = {
+        [P in keyof T & keyof AggregateCandidateIntelligence]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCandidateIntelligence[P]>
+      : GetScalarType<T[P], AggregateCandidateIntelligence[P]>
+  }
+
+
+
+
+  export type CandidateIntelligenceGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CandidateIntelligenceWhereInput
+    orderBy?: CandidateIntelligenceOrderByWithAggregationInput | CandidateIntelligenceOrderByWithAggregationInput[]
+    by: CandidateIntelligenceScalarFieldEnum[] | CandidateIntelligenceScalarFieldEnum
+    having?: CandidateIntelligenceScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: CandidateIntelligenceCountAggregateInputType | true
+    _min?: CandidateIntelligenceMinAggregateInputType
+    _max?: CandidateIntelligenceMaxAggregateInputType
+  }
+
+  export type CandidateIntelligenceGroupByOutputType = {
+    id: string
+    candidateId: string
+    type: string
+    data: JsonValue
+    sourceText: string | null
+    createdAt: Date
+    _count: CandidateIntelligenceCountAggregateOutputType | null
+    _min: CandidateIntelligenceMinAggregateOutputType | null
+    _max: CandidateIntelligenceMaxAggregateOutputType | null
+  }
+
+  type GetCandidateIntelligenceGroupByPayload<T extends CandidateIntelligenceGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<CandidateIntelligenceGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof CandidateIntelligenceGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], CandidateIntelligenceGroupByOutputType[P]>
+            : GetScalarType<T[P], CandidateIntelligenceGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type CandidateIntelligenceSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    candidateId?: boolean
+    type?: boolean
+    data?: boolean
+    sourceText?: boolean
+    createdAt?: boolean
+    candidate?: boolean | CandidateDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["candidateIntelligence"]>
+
+  export type CandidateIntelligenceSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    candidateId?: boolean
+    type?: boolean
+    data?: boolean
+    sourceText?: boolean
+    createdAt?: boolean
+    candidate?: boolean | CandidateDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["candidateIntelligence"]>
+
+  export type CandidateIntelligenceSelectScalar = {
+    id?: boolean
+    candidateId?: boolean
+    type?: boolean
+    data?: boolean
+    sourceText?: boolean
+    createdAt?: boolean
+  }
+
+  export type CandidateIntelligenceInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    candidate?: boolean | CandidateDefaultArgs<ExtArgs>
+  }
+  export type CandidateIntelligenceIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    candidate?: boolean | CandidateDefaultArgs<ExtArgs>
+  }
+
+  export type $CandidateIntelligencePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "CandidateIntelligence"
+    objects: {
+      candidate: Prisma.$CandidatePayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      candidateId: string
+      type: string
+      data: Prisma.JsonValue
+      sourceText: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["candidateIntelligence"]>
+    composites: {}
+  }
+
+  type CandidateIntelligenceGetPayload<S extends boolean | null | undefined | CandidateIntelligenceDefaultArgs> = $Result.GetResult<Prisma.$CandidateIntelligencePayload, S>
+
+  type CandidateIntelligenceCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<CandidateIntelligenceFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: CandidateIntelligenceCountAggregateInputType | true
+    }
+
+  export interface CandidateIntelligenceDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['CandidateIntelligence'], meta: { name: 'CandidateIntelligence' } }
+    /**
+     * Find zero or one CandidateIntelligence that matches the filter.
+     * @param {CandidateIntelligenceFindUniqueArgs} args - Arguments to find a CandidateIntelligence
+     * @example
+     * // Get one CandidateIntelligence
+     * const candidateIntelligence = await prisma.candidateIntelligence.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends CandidateIntelligenceFindUniqueArgs>(args: SelectSubset<T, CandidateIntelligenceFindUniqueArgs<ExtArgs>>): Prisma__CandidateIntelligenceClient<$Result.GetResult<Prisma.$CandidateIntelligencePayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one CandidateIntelligence that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {CandidateIntelligenceFindUniqueOrThrowArgs} args - Arguments to find a CandidateIntelligence
+     * @example
+     * // Get one CandidateIntelligence
+     * const candidateIntelligence = await prisma.candidateIntelligence.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends CandidateIntelligenceFindUniqueOrThrowArgs>(args: SelectSubset<T, CandidateIntelligenceFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CandidateIntelligenceClient<$Result.GetResult<Prisma.$CandidateIntelligencePayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first CandidateIntelligence that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CandidateIntelligenceFindFirstArgs} args - Arguments to find a CandidateIntelligence
+     * @example
+     * // Get one CandidateIntelligence
+     * const candidateIntelligence = await prisma.candidateIntelligence.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends CandidateIntelligenceFindFirstArgs>(args?: SelectSubset<T, CandidateIntelligenceFindFirstArgs<ExtArgs>>): Prisma__CandidateIntelligenceClient<$Result.GetResult<Prisma.$CandidateIntelligencePayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first CandidateIntelligence that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CandidateIntelligenceFindFirstOrThrowArgs} args - Arguments to find a CandidateIntelligence
+     * @example
+     * // Get one CandidateIntelligence
+     * const candidateIntelligence = await prisma.candidateIntelligence.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends CandidateIntelligenceFindFirstOrThrowArgs>(args?: SelectSubset<T, CandidateIntelligenceFindFirstOrThrowArgs<ExtArgs>>): Prisma__CandidateIntelligenceClient<$Result.GetResult<Prisma.$CandidateIntelligencePayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more CandidateIntelligences that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CandidateIntelligenceFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all CandidateIntelligences
+     * const candidateIntelligences = await prisma.candidateIntelligence.findMany()
+     * 
+     * // Get first 10 CandidateIntelligences
+     * const candidateIntelligences = await prisma.candidateIntelligence.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const candidateIntelligenceWithIdOnly = await prisma.candidateIntelligence.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends CandidateIntelligenceFindManyArgs>(args?: SelectSubset<T, CandidateIntelligenceFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CandidateIntelligencePayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a CandidateIntelligence.
+     * @param {CandidateIntelligenceCreateArgs} args - Arguments to create a CandidateIntelligence.
+     * @example
+     * // Create one CandidateIntelligence
+     * const CandidateIntelligence = await prisma.candidateIntelligence.create({
+     *   data: {
+     *     // ... data to create a CandidateIntelligence
+     *   }
+     * })
+     * 
+     */
+    create<T extends CandidateIntelligenceCreateArgs>(args: SelectSubset<T, CandidateIntelligenceCreateArgs<ExtArgs>>): Prisma__CandidateIntelligenceClient<$Result.GetResult<Prisma.$CandidateIntelligencePayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many CandidateIntelligences.
+     * @param {CandidateIntelligenceCreateManyArgs} args - Arguments to create many CandidateIntelligences.
+     * @example
+     * // Create many CandidateIntelligences
+     * const candidateIntelligence = await prisma.candidateIntelligence.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends CandidateIntelligenceCreateManyArgs>(args?: SelectSubset<T, CandidateIntelligenceCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many CandidateIntelligences and returns the data saved in the database.
+     * @param {CandidateIntelligenceCreateManyAndReturnArgs} args - Arguments to create many CandidateIntelligences.
+     * @example
+     * // Create many CandidateIntelligences
+     * const candidateIntelligence = await prisma.candidateIntelligence.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many CandidateIntelligences and only return the `id`
+     * const candidateIntelligenceWithIdOnly = await prisma.candidateIntelligence.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends CandidateIntelligenceCreateManyAndReturnArgs>(args?: SelectSubset<T, CandidateIntelligenceCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CandidateIntelligencePayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a CandidateIntelligence.
+     * @param {CandidateIntelligenceDeleteArgs} args - Arguments to delete one CandidateIntelligence.
+     * @example
+     * // Delete one CandidateIntelligence
+     * const CandidateIntelligence = await prisma.candidateIntelligence.delete({
+     *   where: {
+     *     // ... filter to delete one CandidateIntelligence
+     *   }
+     * })
+     * 
+     */
+    delete<T extends CandidateIntelligenceDeleteArgs>(args: SelectSubset<T, CandidateIntelligenceDeleteArgs<ExtArgs>>): Prisma__CandidateIntelligenceClient<$Result.GetResult<Prisma.$CandidateIntelligencePayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one CandidateIntelligence.
+     * @param {CandidateIntelligenceUpdateArgs} args - Arguments to update one CandidateIntelligence.
+     * @example
+     * // Update one CandidateIntelligence
+     * const candidateIntelligence = await prisma.candidateIntelligence.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends CandidateIntelligenceUpdateArgs>(args: SelectSubset<T, CandidateIntelligenceUpdateArgs<ExtArgs>>): Prisma__CandidateIntelligenceClient<$Result.GetResult<Prisma.$CandidateIntelligencePayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more CandidateIntelligences.
+     * @param {CandidateIntelligenceDeleteManyArgs} args - Arguments to filter CandidateIntelligences to delete.
+     * @example
+     * // Delete a few CandidateIntelligences
+     * const { count } = await prisma.candidateIntelligence.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends CandidateIntelligenceDeleteManyArgs>(args?: SelectSubset<T, CandidateIntelligenceDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CandidateIntelligences.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CandidateIntelligenceUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many CandidateIntelligences
+     * const candidateIntelligence = await prisma.candidateIntelligence.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends CandidateIntelligenceUpdateManyArgs>(args: SelectSubset<T, CandidateIntelligenceUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one CandidateIntelligence.
+     * @param {CandidateIntelligenceUpsertArgs} args - Arguments to update or create a CandidateIntelligence.
+     * @example
+     * // Update or create a CandidateIntelligence
+     * const candidateIntelligence = await prisma.candidateIntelligence.upsert({
+     *   create: {
+     *     // ... data to create a CandidateIntelligence
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the CandidateIntelligence we want to update
+     *   }
+     * })
+     */
+    upsert<T extends CandidateIntelligenceUpsertArgs>(args: SelectSubset<T, CandidateIntelligenceUpsertArgs<ExtArgs>>): Prisma__CandidateIntelligenceClient<$Result.GetResult<Prisma.$CandidateIntelligencePayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of CandidateIntelligences.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CandidateIntelligenceCountArgs} args - Arguments to filter CandidateIntelligences to count.
+     * @example
+     * // Count the number of CandidateIntelligences
+     * const count = await prisma.candidateIntelligence.count({
+     *   where: {
+     *     // ... the filter for the CandidateIntelligences we want to count
+     *   }
+     * })
+    **/
+    count<T extends CandidateIntelligenceCountArgs>(
+      args?: Subset<T, CandidateIntelligenceCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], CandidateIntelligenceCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a CandidateIntelligence.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CandidateIntelligenceAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends CandidateIntelligenceAggregateArgs>(args: Subset<T, CandidateIntelligenceAggregateArgs>): Prisma.PrismaPromise<GetCandidateIntelligenceAggregateType<T>>
+
+    /**
+     * Group by CandidateIntelligence.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CandidateIntelligenceGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends CandidateIntelligenceGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: CandidateIntelligenceGroupByArgs['orderBy'] }
+        : { orderBy?: CandidateIntelligenceGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, CandidateIntelligenceGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCandidateIntelligenceGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the CandidateIntelligence model
+   */
+  readonly fields: CandidateIntelligenceFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for CandidateIntelligence.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__CandidateIntelligenceClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    candidate<T extends CandidateDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CandidateDefaultArgs<ExtArgs>>): Prisma__CandidateClient<$Result.GetResult<Prisma.$CandidatePayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the CandidateIntelligence model
+   */ 
+  interface CandidateIntelligenceFieldRefs {
+    readonly id: FieldRef<"CandidateIntelligence", 'String'>
+    readonly candidateId: FieldRef<"CandidateIntelligence", 'String'>
+    readonly type: FieldRef<"CandidateIntelligence", 'String'>
+    readonly data: FieldRef<"CandidateIntelligence", 'Json'>
+    readonly sourceText: FieldRef<"CandidateIntelligence", 'String'>
+    readonly createdAt: FieldRef<"CandidateIntelligence", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * CandidateIntelligence findUnique
+   */
+  export type CandidateIntelligenceFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateIntelligence
+     */
+    select?: CandidateIntelligenceSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateIntelligenceInclude<ExtArgs> | null
+    /**
+     * Filter, which CandidateIntelligence to fetch.
+     */
+    where: CandidateIntelligenceWhereUniqueInput
+  }
+
+  /**
+   * CandidateIntelligence findUniqueOrThrow
+   */
+  export type CandidateIntelligenceFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateIntelligence
+     */
+    select?: CandidateIntelligenceSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateIntelligenceInclude<ExtArgs> | null
+    /**
+     * Filter, which CandidateIntelligence to fetch.
+     */
+    where: CandidateIntelligenceWhereUniqueInput
+  }
+
+  /**
+   * CandidateIntelligence findFirst
+   */
+  export type CandidateIntelligenceFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateIntelligence
+     */
+    select?: CandidateIntelligenceSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateIntelligenceInclude<ExtArgs> | null
+    /**
+     * Filter, which CandidateIntelligence to fetch.
+     */
+    where?: CandidateIntelligenceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CandidateIntelligences to fetch.
+     */
+    orderBy?: CandidateIntelligenceOrderByWithRelationInput | CandidateIntelligenceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CandidateIntelligences.
+     */
+    cursor?: CandidateIntelligenceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CandidateIntelligences from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CandidateIntelligences.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CandidateIntelligences.
+     */
+    distinct?: CandidateIntelligenceScalarFieldEnum | CandidateIntelligenceScalarFieldEnum[]
+  }
+
+  /**
+   * CandidateIntelligence findFirstOrThrow
+   */
+  export type CandidateIntelligenceFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateIntelligence
+     */
+    select?: CandidateIntelligenceSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateIntelligenceInclude<ExtArgs> | null
+    /**
+     * Filter, which CandidateIntelligence to fetch.
+     */
+    where?: CandidateIntelligenceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CandidateIntelligences to fetch.
+     */
+    orderBy?: CandidateIntelligenceOrderByWithRelationInput | CandidateIntelligenceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CandidateIntelligences.
+     */
+    cursor?: CandidateIntelligenceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CandidateIntelligences from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CandidateIntelligences.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CandidateIntelligences.
+     */
+    distinct?: CandidateIntelligenceScalarFieldEnum | CandidateIntelligenceScalarFieldEnum[]
+  }
+
+  /**
+   * CandidateIntelligence findMany
+   */
+  export type CandidateIntelligenceFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateIntelligence
+     */
+    select?: CandidateIntelligenceSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateIntelligenceInclude<ExtArgs> | null
+    /**
+     * Filter, which CandidateIntelligences to fetch.
+     */
+    where?: CandidateIntelligenceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CandidateIntelligences to fetch.
+     */
+    orderBy?: CandidateIntelligenceOrderByWithRelationInput | CandidateIntelligenceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing CandidateIntelligences.
+     */
+    cursor?: CandidateIntelligenceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CandidateIntelligences from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CandidateIntelligences.
+     */
+    skip?: number
+    distinct?: CandidateIntelligenceScalarFieldEnum | CandidateIntelligenceScalarFieldEnum[]
+  }
+
+  /**
+   * CandidateIntelligence create
+   */
+  export type CandidateIntelligenceCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateIntelligence
+     */
+    select?: CandidateIntelligenceSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateIntelligenceInclude<ExtArgs> | null
+    /**
+     * The data needed to create a CandidateIntelligence.
+     */
+    data: XOR<CandidateIntelligenceCreateInput, CandidateIntelligenceUncheckedCreateInput>
+  }
+
+  /**
+   * CandidateIntelligence createMany
+   */
+  export type CandidateIntelligenceCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many CandidateIntelligences.
+     */
+    data: CandidateIntelligenceCreateManyInput | CandidateIntelligenceCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * CandidateIntelligence createManyAndReturn
+   */
+  export type CandidateIntelligenceCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateIntelligence
+     */
+    select?: CandidateIntelligenceSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many CandidateIntelligences.
+     */
+    data: CandidateIntelligenceCreateManyInput | CandidateIntelligenceCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateIntelligenceIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CandidateIntelligence update
+   */
+  export type CandidateIntelligenceUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateIntelligence
+     */
+    select?: CandidateIntelligenceSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateIntelligenceInclude<ExtArgs> | null
+    /**
+     * The data needed to update a CandidateIntelligence.
+     */
+    data: XOR<CandidateIntelligenceUpdateInput, CandidateIntelligenceUncheckedUpdateInput>
+    /**
+     * Choose, which CandidateIntelligence to update.
+     */
+    where: CandidateIntelligenceWhereUniqueInput
+  }
+
+  /**
+   * CandidateIntelligence updateMany
+   */
+  export type CandidateIntelligenceUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update CandidateIntelligences.
+     */
+    data: XOR<CandidateIntelligenceUpdateManyMutationInput, CandidateIntelligenceUncheckedUpdateManyInput>
+    /**
+     * Filter which CandidateIntelligences to update
+     */
+    where?: CandidateIntelligenceWhereInput
+  }
+
+  /**
+   * CandidateIntelligence upsert
+   */
+  export type CandidateIntelligenceUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateIntelligence
+     */
+    select?: CandidateIntelligenceSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateIntelligenceInclude<ExtArgs> | null
+    /**
+     * The filter to search for the CandidateIntelligence to update in case it exists.
+     */
+    where: CandidateIntelligenceWhereUniqueInput
+    /**
+     * In case the CandidateIntelligence found by the `where` argument doesn't exist, create a new CandidateIntelligence with this data.
+     */
+    create: XOR<CandidateIntelligenceCreateInput, CandidateIntelligenceUncheckedCreateInput>
+    /**
+     * In case the CandidateIntelligence was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<CandidateIntelligenceUpdateInput, CandidateIntelligenceUncheckedUpdateInput>
+  }
+
+  /**
+   * CandidateIntelligence delete
+   */
+  export type CandidateIntelligenceDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateIntelligence
+     */
+    select?: CandidateIntelligenceSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateIntelligenceInclude<ExtArgs> | null
+    /**
+     * Filter which CandidateIntelligence to delete.
+     */
+    where: CandidateIntelligenceWhereUniqueInput
+  }
+
+  /**
+   * CandidateIntelligence deleteMany
+   */
+  export type CandidateIntelligenceDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CandidateIntelligences to delete
+     */
+    where?: CandidateIntelligenceWhereInput
+  }
+
+  /**
+   * CandidateIntelligence without action
+   */
+  export type CandidateIntelligenceDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateIntelligence
+     */
+    select?: CandidateIntelligenceSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateIntelligenceInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model CandidateNote
+   */
+
+  export type AggregateCandidateNote = {
+    _count: CandidateNoteCountAggregateOutputType | null
+    _min: CandidateNoteMinAggregateOutputType | null
+    _max: CandidateNoteMaxAggregateOutputType | null
+  }
+
+  export type CandidateNoteMinAggregateOutputType = {
+    id: string | null
+    candidateId: string | null
+    userId: string | null
+    userName: string | null
+    content: string | null
+    type: string | null
+    createdAt: Date | null
+  }
+
+  export type CandidateNoteMaxAggregateOutputType = {
+    id: string | null
+    candidateId: string | null
+    userId: string | null
+    userName: string | null
+    content: string | null
+    type: string | null
+    createdAt: Date | null
+  }
+
+  export type CandidateNoteCountAggregateOutputType = {
+    id: number
+    candidateId: number
+    userId: number
+    userName: number
+    content: number
+    type: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type CandidateNoteMinAggregateInputType = {
+    id?: true
+    candidateId?: true
+    userId?: true
+    userName?: true
+    content?: true
+    type?: true
+    createdAt?: true
+  }
+
+  export type CandidateNoteMaxAggregateInputType = {
+    id?: true
+    candidateId?: true
+    userId?: true
+    userName?: true
+    content?: true
+    type?: true
+    createdAt?: true
+  }
+
+  export type CandidateNoteCountAggregateInputType = {
+    id?: true
+    candidateId?: true
+    userId?: true
+    userName?: true
+    content?: true
+    type?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type CandidateNoteAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CandidateNote to aggregate.
+     */
+    where?: CandidateNoteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CandidateNotes to fetch.
+     */
+    orderBy?: CandidateNoteOrderByWithRelationInput | CandidateNoteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: CandidateNoteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CandidateNotes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CandidateNotes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned CandidateNotes
+    **/
+    _count?: true | CandidateNoteCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: CandidateNoteMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: CandidateNoteMaxAggregateInputType
+  }
+
+  export type GetCandidateNoteAggregateType<T extends CandidateNoteAggregateArgs> = {
+        [P in keyof T & keyof AggregateCandidateNote]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCandidateNote[P]>
+      : GetScalarType<T[P], AggregateCandidateNote[P]>
+  }
+
+
+
+
+  export type CandidateNoteGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CandidateNoteWhereInput
+    orderBy?: CandidateNoteOrderByWithAggregationInput | CandidateNoteOrderByWithAggregationInput[]
+    by: CandidateNoteScalarFieldEnum[] | CandidateNoteScalarFieldEnum
+    having?: CandidateNoteScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: CandidateNoteCountAggregateInputType | true
+    _min?: CandidateNoteMinAggregateInputType
+    _max?: CandidateNoteMaxAggregateInputType
+  }
+
+  export type CandidateNoteGroupByOutputType = {
+    id: string
+    candidateId: string
+    userId: string
+    userName: string
+    content: string
+    type: string
+    createdAt: Date
+    _count: CandidateNoteCountAggregateOutputType | null
+    _min: CandidateNoteMinAggregateOutputType | null
+    _max: CandidateNoteMaxAggregateOutputType | null
+  }
+
+  type GetCandidateNoteGroupByPayload<T extends CandidateNoteGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<CandidateNoteGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof CandidateNoteGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], CandidateNoteGroupByOutputType[P]>
+            : GetScalarType<T[P], CandidateNoteGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type CandidateNoteSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    candidateId?: boolean
+    userId?: boolean
+    userName?: boolean
+    content?: boolean
+    type?: boolean
+    createdAt?: boolean
+    candidate?: boolean | CandidateDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["candidateNote"]>
+
+  export type CandidateNoteSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    candidateId?: boolean
+    userId?: boolean
+    userName?: boolean
+    content?: boolean
+    type?: boolean
+    createdAt?: boolean
+    candidate?: boolean | CandidateDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["candidateNote"]>
+
+  export type CandidateNoteSelectScalar = {
+    id?: boolean
+    candidateId?: boolean
+    userId?: boolean
+    userName?: boolean
+    content?: boolean
+    type?: boolean
+    createdAt?: boolean
+  }
+
+  export type CandidateNoteInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    candidate?: boolean | CandidateDefaultArgs<ExtArgs>
+  }
+  export type CandidateNoteIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    candidate?: boolean | CandidateDefaultArgs<ExtArgs>
+  }
+
+  export type $CandidateNotePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "CandidateNote"
+    objects: {
+      candidate: Prisma.$CandidatePayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      candidateId: string
+      userId: string
+      userName: string
+      content: string
+      type: string
+      createdAt: Date
+    }, ExtArgs["result"]["candidateNote"]>
+    composites: {}
+  }
+
+  type CandidateNoteGetPayload<S extends boolean | null | undefined | CandidateNoteDefaultArgs> = $Result.GetResult<Prisma.$CandidateNotePayload, S>
+
+  type CandidateNoteCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<CandidateNoteFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: CandidateNoteCountAggregateInputType | true
+    }
+
+  export interface CandidateNoteDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['CandidateNote'], meta: { name: 'CandidateNote' } }
+    /**
+     * Find zero or one CandidateNote that matches the filter.
+     * @param {CandidateNoteFindUniqueArgs} args - Arguments to find a CandidateNote
+     * @example
+     * // Get one CandidateNote
+     * const candidateNote = await prisma.candidateNote.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends CandidateNoteFindUniqueArgs>(args: SelectSubset<T, CandidateNoteFindUniqueArgs<ExtArgs>>): Prisma__CandidateNoteClient<$Result.GetResult<Prisma.$CandidateNotePayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one CandidateNote that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {CandidateNoteFindUniqueOrThrowArgs} args - Arguments to find a CandidateNote
+     * @example
+     * // Get one CandidateNote
+     * const candidateNote = await prisma.candidateNote.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends CandidateNoteFindUniqueOrThrowArgs>(args: SelectSubset<T, CandidateNoteFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CandidateNoteClient<$Result.GetResult<Prisma.$CandidateNotePayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first CandidateNote that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CandidateNoteFindFirstArgs} args - Arguments to find a CandidateNote
+     * @example
+     * // Get one CandidateNote
+     * const candidateNote = await prisma.candidateNote.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends CandidateNoteFindFirstArgs>(args?: SelectSubset<T, CandidateNoteFindFirstArgs<ExtArgs>>): Prisma__CandidateNoteClient<$Result.GetResult<Prisma.$CandidateNotePayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first CandidateNote that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CandidateNoteFindFirstOrThrowArgs} args - Arguments to find a CandidateNote
+     * @example
+     * // Get one CandidateNote
+     * const candidateNote = await prisma.candidateNote.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends CandidateNoteFindFirstOrThrowArgs>(args?: SelectSubset<T, CandidateNoteFindFirstOrThrowArgs<ExtArgs>>): Prisma__CandidateNoteClient<$Result.GetResult<Prisma.$CandidateNotePayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more CandidateNotes that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CandidateNoteFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all CandidateNotes
+     * const candidateNotes = await prisma.candidateNote.findMany()
+     * 
+     * // Get first 10 CandidateNotes
+     * const candidateNotes = await prisma.candidateNote.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const candidateNoteWithIdOnly = await prisma.candidateNote.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends CandidateNoteFindManyArgs>(args?: SelectSubset<T, CandidateNoteFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CandidateNotePayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a CandidateNote.
+     * @param {CandidateNoteCreateArgs} args - Arguments to create a CandidateNote.
+     * @example
+     * // Create one CandidateNote
+     * const CandidateNote = await prisma.candidateNote.create({
+     *   data: {
+     *     // ... data to create a CandidateNote
+     *   }
+     * })
+     * 
+     */
+    create<T extends CandidateNoteCreateArgs>(args: SelectSubset<T, CandidateNoteCreateArgs<ExtArgs>>): Prisma__CandidateNoteClient<$Result.GetResult<Prisma.$CandidateNotePayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many CandidateNotes.
+     * @param {CandidateNoteCreateManyArgs} args - Arguments to create many CandidateNotes.
+     * @example
+     * // Create many CandidateNotes
+     * const candidateNote = await prisma.candidateNote.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends CandidateNoteCreateManyArgs>(args?: SelectSubset<T, CandidateNoteCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many CandidateNotes and returns the data saved in the database.
+     * @param {CandidateNoteCreateManyAndReturnArgs} args - Arguments to create many CandidateNotes.
+     * @example
+     * // Create many CandidateNotes
+     * const candidateNote = await prisma.candidateNote.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many CandidateNotes and only return the `id`
+     * const candidateNoteWithIdOnly = await prisma.candidateNote.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends CandidateNoteCreateManyAndReturnArgs>(args?: SelectSubset<T, CandidateNoteCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CandidateNotePayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a CandidateNote.
+     * @param {CandidateNoteDeleteArgs} args - Arguments to delete one CandidateNote.
+     * @example
+     * // Delete one CandidateNote
+     * const CandidateNote = await prisma.candidateNote.delete({
+     *   where: {
+     *     // ... filter to delete one CandidateNote
+     *   }
+     * })
+     * 
+     */
+    delete<T extends CandidateNoteDeleteArgs>(args: SelectSubset<T, CandidateNoteDeleteArgs<ExtArgs>>): Prisma__CandidateNoteClient<$Result.GetResult<Prisma.$CandidateNotePayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one CandidateNote.
+     * @param {CandidateNoteUpdateArgs} args - Arguments to update one CandidateNote.
+     * @example
+     * // Update one CandidateNote
+     * const candidateNote = await prisma.candidateNote.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends CandidateNoteUpdateArgs>(args: SelectSubset<T, CandidateNoteUpdateArgs<ExtArgs>>): Prisma__CandidateNoteClient<$Result.GetResult<Prisma.$CandidateNotePayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more CandidateNotes.
+     * @param {CandidateNoteDeleteManyArgs} args - Arguments to filter CandidateNotes to delete.
+     * @example
+     * // Delete a few CandidateNotes
+     * const { count } = await prisma.candidateNote.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends CandidateNoteDeleteManyArgs>(args?: SelectSubset<T, CandidateNoteDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CandidateNotes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CandidateNoteUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many CandidateNotes
+     * const candidateNote = await prisma.candidateNote.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends CandidateNoteUpdateManyArgs>(args: SelectSubset<T, CandidateNoteUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one CandidateNote.
+     * @param {CandidateNoteUpsertArgs} args - Arguments to update or create a CandidateNote.
+     * @example
+     * // Update or create a CandidateNote
+     * const candidateNote = await prisma.candidateNote.upsert({
+     *   create: {
+     *     // ... data to create a CandidateNote
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the CandidateNote we want to update
+     *   }
+     * })
+     */
+    upsert<T extends CandidateNoteUpsertArgs>(args: SelectSubset<T, CandidateNoteUpsertArgs<ExtArgs>>): Prisma__CandidateNoteClient<$Result.GetResult<Prisma.$CandidateNotePayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of CandidateNotes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CandidateNoteCountArgs} args - Arguments to filter CandidateNotes to count.
+     * @example
+     * // Count the number of CandidateNotes
+     * const count = await prisma.candidateNote.count({
+     *   where: {
+     *     // ... the filter for the CandidateNotes we want to count
+     *   }
+     * })
+    **/
+    count<T extends CandidateNoteCountArgs>(
+      args?: Subset<T, CandidateNoteCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], CandidateNoteCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a CandidateNote.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CandidateNoteAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends CandidateNoteAggregateArgs>(args: Subset<T, CandidateNoteAggregateArgs>): Prisma.PrismaPromise<GetCandidateNoteAggregateType<T>>
+
+    /**
+     * Group by CandidateNote.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CandidateNoteGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends CandidateNoteGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: CandidateNoteGroupByArgs['orderBy'] }
+        : { orderBy?: CandidateNoteGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, CandidateNoteGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCandidateNoteGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the CandidateNote model
+   */
+  readonly fields: CandidateNoteFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for CandidateNote.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__CandidateNoteClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    candidate<T extends CandidateDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CandidateDefaultArgs<ExtArgs>>): Prisma__CandidateClient<$Result.GetResult<Prisma.$CandidatePayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the CandidateNote model
+   */ 
+  interface CandidateNoteFieldRefs {
+    readonly id: FieldRef<"CandidateNote", 'String'>
+    readonly candidateId: FieldRef<"CandidateNote", 'String'>
+    readonly userId: FieldRef<"CandidateNote", 'String'>
+    readonly userName: FieldRef<"CandidateNote", 'String'>
+    readonly content: FieldRef<"CandidateNote", 'String'>
+    readonly type: FieldRef<"CandidateNote", 'String'>
+    readonly createdAt: FieldRef<"CandidateNote", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * CandidateNote findUnique
+   */
+  export type CandidateNoteFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateNote
+     */
+    select?: CandidateNoteSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateNoteInclude<ExtArgs> | null
+    /**
+     * Filter, which CandidateNote to fetch.
+     */
+    where: CandidateNoteWhereUniqueInput
+  }
+
+  /**
+   * CandidateNote findUniqueOrThrow
+   */
+  export type CandidateNoteFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateNote
+     */
+    select?: CandidateNoteSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateNoteInclude<ExtArgs> | null
+    /**
+     * Filter, which CandidateNote to fetch.
+     */
+    where: CandidateNoteWhereUniqueInput
+  }
+
+  /**
+   * CandidateNote findFirst
+   */
+  export type CandidateNoteFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateNote
+     */
+    select?: CandidateNoteSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateNoteInclude<ExtArgs> | null
+    /**
+     * Filter, which CandidateNote to fetch.
+     */
+    where?: CandidateNoteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CandidateNotes to fetch.
+     */
+    orderBy?: CandidateNoteOrderByWithRelationInput | CandidateNoteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CandidateNotes.
+     */
+    cursor?: CandidateNoteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CandidateNotes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CandidateNotes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CandidateNotes.
+     */
+    distinct?: CandidateNoteScalarFieldEnum | CandidateNoteScalarFieldEnum[]
+  }
+
+  /**
+   * CandidateNote findFirstOrThrow
+   */
+  export type CandidateNoteFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateNote
+     */
+    select?: CandidateNoteSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateNoteInclude<ExtArgs> | null
+    /**
+     * Filter, which CandidateNote to fetch.
+     */
+    where?: CandidateNoteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CandidateNotes to fetch.
+     */
+    orderBy?: CandidateNoteOrderByWithRelationInput | CandidateNoteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CandidateNotes.
+     */
+    cursor?: CandidateNoteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CandidateNotes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CandidateNotes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CandidateNotes.
+     */
+    distinct?: CandidateNoteScalarFieldEnum | CandidateNoteScalarFieldEnum[]
+  }
+
+  /**
+   * CandidateNote findMany
+   */
+  export type CandidateNoteFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateNote
+     */
+    select?: CandidateNoteSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateNoteInclude<ExtArgs> | null
+    /**
+     * Filter, which CandidateNotes to fetch.
+     */
+    where?: CandidateNoteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CandidateNotes to fetch.
+     */
+    orderBy?: CandidateNoteOrderByWithRelationInput | CandidateNoteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing CandidateNotes.
+     */
+    cursor?: CandidateNoteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CandidateNotes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CandidateNotes.
+     */
+    skip?: number
+    distinct?: CandidateNoteScalarFieldEnum | CandidateNoteScalarFieldEnum[]
+  }
+
+  /**
+   * CandidateNote create
+   */
+  export type CandidateNoteCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateNote
+     */
+    select?: CandidateNoteSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateNoteInclude<ExtArgs> | null
+    /**
+     * The data needed to create a CandidateNote.
+     */
+    data: XOR<CandidateNoteCreateInput, CandidateNoteUncheckedCreateInput>
+  }
+
+  /**
+   * CandidateNote createMany
+   */
+  export type CandidateNoteCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many CandidateNotes.
+     */
+    data: CandidateNoteCreateManyInput | CandidateNoteCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * CandidateNote createManyAndReturn
+   */
+  export type CandidateNoteCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateNote
+     */
+    select?: CandidateNoteSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many CandidateNotes.
+     */
+    data: CandidateNoteCreateManyInput | CandidateNoteCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateNoteIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CandidateNote update
+   */
+  export type CandidateNoteUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateNote
+     */
+    select?: CandidateNoteSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateNoteInclude<ExtArgs> | null
+    /**
+     * The data needed to update a CandidateNote.
+     */
+    data: XOR<CandidateNoteUpdateInput, CandidateNoteUncheckedUpdateInput>
+    /**
+     * Choose, which CandidateNote to update.
+     */
+    where: CandidateNoteWhereUniqueInput
+  }
+
+  /**
+   * CandidateNote updateMany
+   */
+  export type CandidateNoteUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update CandidateNotes.
+     */
+    data: XOR<CandidateNoteUpdateManyMutationInput, CandidateNoteUncheckedUpdateManyInput>
+    /**
+     * Filter which CandidateNotes to update
+     */
+    where?: CandidateNoteWhereInput
+  }
+
+  /**
+   * CandidateNote upsert
+   */
+  export type CandidateNoteUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateNote
+     */
+    select?: CandidateNoteSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateNoteInclude<ExtArgs> | null
+    /**
+     * The filter to search for the CandidateNote to update in case it exists.
+     */
+    where: CandidateNoteWhereUniqueInput
+    /**
+     * In case the CandidateNote found by the `where` argument doesn't exist, create a new CandidateNote with this data.
+     */
+    create: XOR<CandidateNoteCreateInput, CandidateNoteUncheckedCreateInput>
+    /**
+     * In case the CandidateNote was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<CandidateNoteUpdateInput, CandidateNoteUncheckedUpdateInput>
+  }
+
+  /**
+   * CandidateNote delete
+   */
+  export type CandidateNoteDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateNote
+     */
+    select?: CandidateNoteSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateNoteInclude<ExtArgs> | null
+    /**
+     * Filter which CandidateNote to delete.
+     */
+    where: CandidateNoteWhereUniqueInput
+  }
+
+  /**
+   * CandidateNote deleteMany
+   */
+  export type CandidateNoteDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CandidateNotes to delete
+     */
+    where?: CandidateNoteWhereInput
+  }
+
+  /**
+   * CandidateNote without action
+   */
+  export type CandidateNoteDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateNote
+     */
+    select?: CandidateNoteSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateNoteInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model CandidateReference
+   */
+
+  export type AggregateCandidateReference = {
+    _count: CandidateReferenceCountAggregateOutputType | null
+    _min: CandidateReferenceMinAggregateOutputType | null
+    _max: CandidateReferenceMaxAggregateOutputType | null
+  }
+
+  export type CandidateReferenceMinAggregateOutputType = {
+    id: string | null
+    candidateId: string | null
+    refereeName: string | null
+    refereeEmail: string | null
+    refereePhone: string | null
+    refereeRelation: string | null
+    refereeCompany: string | null
+    status: string | null
+    token: string | null
+    completedAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type CandidateReferenceMaxAggregateOutputType = {
+    id: string | null
+    candidateId: string | null
+    refereeName: string | null
+    refereeEmail: string | null
+    refereePhone: string | null
+    refereeRelation: string | null
+    refereeCompany: string | null
+    status: string | null
+    token: string | null
+    completedAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type CandidateReferenceCountAggregateOutputType = {
+    id: number
+    candidateId: number
+    refereeName: number
+    refereeEmail: number
+    refereePhone: number
+    refereeRelation: number
+    refereeCompany: number
+    status: number
+    token: number
+    responses: number
+    aiAnalysis: number
+    completedAt: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type CandidateReferenceMinAggregateInputType = {
+    id?: true
+    candidateId?: true
+    refereeName?: true
+    refereeEmail?: true
+    refereePhone?: true
+    refereeRelation?: true
+    refereeCompany?: true
+    status?: true
+    token?: true
+    completedAt?: true
+    createdAt?: true
+  }
+
+  export type CandidateReferenceMaxAggregateInputType = {
+    id?: true
+    candidateId?: true
+    refereeName?: true
+    refereeEmail?: true
+    refereePhone?: true
+    refereeRelation?: true
+    refereeCompany?: true
+    status?: true
+    token?: true
+    completedAt?: true
+    createdAt?: true
+  }
+
+  export type CandidateReferenceCountAggregateInputType = {
+    id?: true
+    candidateId?: true
+    refereeName?: true
+    refereeEmail?: true
+    refereePhone?: true
+    refereeRelation?: true
+    refereeCompany?: true
+    status?: true
+    token?: true
+    responses?: true
+    aiAnalysis?: true
+    completedAt?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type CandidateReferenceAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CandidateReference to aggregate.
+     */
+    where?: CandidateReferenceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CandidateReferences to fetch.
+     */
+    orderBy?: CandidateReferenceOrderByWithRelationInput | CandidateReferenceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: CandidateReferenceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CandidateReferences from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CandidateReferences.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned CandidateReferences
+    **/
+    _count?: true | CandidateReferenceCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: CandidateReferenceMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: CandidateReferenceMaxAggregateInputType
+  }
+
+  export type GetCandidateReferenceAggregateType<T extends CandidateReferenceAggregateArgs> = {
+        [P in keyof T & keyof AggregateCandidateReference]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCandidateReference[P]>
+      : GetScalarType<T[P], AggregateCandidateReference[P]>
+  }
+
+
+
+
+  export type CandidateReferenceGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CandidateReferenceWhereInput
+    orderBy?: CandidateReferenceOrderByWithAggregationInput | CandidateReferenceOrderByWithAggregationInput[]
+    by: CandidateReferenceScalarFieldEnum[] | CandidateReferenceScalarFieldEnum
+    having?: CandidateReferenceScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: CandidateReferenceCountAggregateInputType | true
+    _min?: CandidateReferenceMinAggregateInputType
+    _max?: CandidateReferenceMaxAggregateInputType
+  }
+
+  export type CandidateReferenceGroupByOutputType = {
+    id: string
+    candidateId: string
+    refereeName: string
+    refereeEmail: string | null
+    refereePhone: string | null
+    refereeRelation: string
+    refereeCompany: string | null
+    status: string
+    token: string | null
+    responses: JsonValue | null
+    aiAnalysis: JsonValue | null
+    completedAt: Date | null
+    createdAt: Date
+    _count: CandidateReferenceCountAggregateOutputType | null
+    _min: CandidateReferenceMinAggregateOutputType | null
+    _max: CandidateReferenceMaxAggregateOutputType | null
+  }
+
+  type GetCandidateReferenceGroupByPayload<T extends CandidateReferenceGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<CandidateReferenceGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof CandidateReferenceGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], CandidateReferenceGroupByOutputType[P]>
+            : GetScalarType<T[P], CandidateReferenceGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type CandidateReferenceSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    candidateId?: boolean
+    refereeName?: boolean
+    refereeEmail?: boolean
+    refereePhone?: boolean
+    refereeRelation?: boolean
+    refereeCompany?: boolean
+    status?: boolean
+    token?: boolean
+    responses?: boolean
+    aiAnalysis?: boolean
+    completedAt?: boolean
+    createdAt?: boolean
+    candidate?: boolean | CandidateDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["candidateReference"]>
+
+  export type CandidateReferenceSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    candidateId?: boolean
+    refereeName?: boolean
+    refereeEmail?: boolean
+    refereePhone?: boolean
+    refereeRelation?: boolean
+    refereeCompany?: boolean
+    status?: boolean
+    token?: boolean
+    responses?: boolean
+    aiAnalysis?: boolean
+    completedAt?: boolean
+    createdAt?: boolean
+    candidate?: boolean | CandidateDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["candidateReference"]>
+
+  export type CandidateReferenceSelectScalar = {
+    id?: boolean
+    candidateId?: boolean
+    refereeName?: boolean
+    refereeEmail?: boolean
+    refereePhone?: boolean
+    refereeRelation?: boolean
+    refereeCompany?: boolean
+    status?: boolean
+    token?: boolean
+    responses?: boolean
+    aiAnalysis?: boolean
+    completedAt?: boolean
+    createdAt?: boolean
+  }
+
+  export type CandidateReferenceInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    candidate?: boolean | CandidateDefaultArgs<ExtArgs>
+  }
+  export type CandidateReferenceIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    candidate?: boolean | CandidateDefaultArgs<ExtArgs>
+  }
+
+  export type $CandidateReferencePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "CandidateReference"
+    objects: {
+      candidate: Prisma.$CandidatePayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      candidateId: string
+      refereeName: string
+      refereeEmail: string | null
+      refereePhone: string | null
+      refereeRelation: string
+      refereeCompany: string | null
+      status: string
+      token: string | null
+      responses: Prisma.JsonValue | null
+      aiAnalysis: Prisma.JsonValue | null
+      completedAt: Date | null
+      createdAt: Date
+    }, ExtArgs["result"]["candidateReference"]>
+    composites: {}
+  }
+
+  type CandidateReferenceGetPayload<S extends boolean | null | undefined | CandidateReferenceDefaultArgs> = $Result.GetResult<Prisma.$CandidateReferencePayload, S>
+
+  type CandidateReferenceCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<CandidateReferenceFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: CandidateReferenceCountAggregateInputType | true
+    }
+
+  export interface CandidateReferenceDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['CandidateReference'], meta: { name: 'CandidateReference' } }
+    /**
+     * Find zero or one CandidateReference that matches the filter.
+     * @param {CandidateReferenceFindUniqueArgs} args - Arguments to find a CandidateReference
+     * @example
+     * // Get one CandidateReference
+     * const candidateReference = await prisma.candidateReference.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends CandidateReferenceFindUniqueArgs>(args: SelectSubset<T, CandidateReferenceFindUniqueArgs<ExtArgs>>): Prisma__CandidateReferenceClient<$Result.GetResult<Prisma.$CandidateReferencePayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one CandidateReference that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {CandidateReferenceFindUniqueOrThrowArgs} args - Arguments to find a CandidateReference
+     * @example
+     * // Get one CandidateReference
+     * const candidateReference = await prisma.candidateReference.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends CandidateReferenceFindUniqueOrThrowArgs>(args: SelectSubset<T, CandidateReferenceFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CandidateReferenceClient<$Result.GetResult<Prisma.$CandidateReferencePayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first CandidateReference that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CandidateReferenceFindFirstArgs} args - Arguments to find a CandidateReference
+     * @example
+     * // Get one CandidateReference
+     * const candidateReference = await prisma.candidateReference.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends CandidateReferenceFindFirstArgs>(args?: SelectSubset<T, CandidateReferenceFindFirstArgs<ExtArgs>>): Prisma__CandidateReferenceClient<$Result.GetResult<Prisma.$CandidateReferencePayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first CandidateReference that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CandidateReferenceFindFirstOrThrowArgs} args - Arguments to find a CandidateReference
+     * @example
+     * // Get one CandidateReference
+     * const candidateReference = await prisma.candidateReference.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends CandidateReferenceFindFirstOrThrowArgs>(args?: SelectSubset<T, CandidateReferenceFindFirstOrThrowArgs<ExtArgs>>): Prisma__CandidateReferenceClient<$Result.GetResult<Prisma.$CandidateReferencePayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more CandidateReferences that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CandidateReferenceFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all CandidateReferences
+     * const candidateReferences = await prisma.candidateReference.findMany()
+     * 
+     * // Get first 10 CandidateReferences
+     * const candidateReferences = await prisma.candidateReference.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const candidateReferenceWithIdOnly = await prisma.candidateReference.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends CandidateReferenceFindManyArgs>(args?: SelectSubset<T, CandidateReferenceFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CandidateReferencePayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a CandidateReference.
+     * @param {CandidateReferenceCreateArgs} args - Arguments to create a CandidateReference.
+     * @example
+     * // Create one CandidateReference
+     * const CandidateReference = await prisma.candidateReference.create({
+     *   data: {
+     *     // ... data to create a CandidateReference
+     *   }
+     * })
+     * 
+     */
+    create<T extends CandidateReferenceCreateArgs>(args: SelectSubset<T, CandidateReferenceCreateArgs<ExtArgs>>): Prisma__CandidateReferenceClient<$Result.GetResult<Prisma.$CandidateReferencePayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many CandidateReferences.
+     * @param {CandidateReferenceCreateManyArgs} args - Arguments to create many CandidateReferences.
+     * @example
+     * // Create many CandidateReferences
+     * const candidateReference = await prisma.candidateReference.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends CandidateReferenceCreateManyArgs>(args?: SelectSubset<T, CandidateReferenceCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many CandidateReferences and returns the data saved in the database.
+     * @param {CandidateReferenceCreateManyAndReturnArgs} args - Arguments to create many CandidateReferences.
+     * @example
+     * // Create many CandidateReferences
+     * const candidateReference = await prisma.candidateReference.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many CandidateReferences and only return the `id`
+     * const candidateReferenceWithIdOnly = await prisma.candidateReference.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends CandidateReferenceCreateManyAndReturnArgs>(args?: SelectSubset<T, CandidateReferenceCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CandidateReferencePayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a CandidateReference.
+     * @param {CandidateReferenceDeleteArgs} args - Arguments to delete one CandidateReference.
+     * @example
+     * // Delete one CandidateReference
+     * const CandidateReference = await prisma.candidateReference.delete({
+     *   where: {
+     *     // ... filter to delete one CandidateReference
+     *   }
+     * })
+     * 
+     */
+    delete<T extends CandidateReferenceDeleteArgs>(args: SelectSubset<T, CandidateReferenceDeleteArgs<ExtArgs>>): Prisma__CandidateReferenceClient<$Result.GetResult<Prisma.$CandidateReferencePayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one CandidateReference.
+     * @param {CandidateReferenceUpdateArgs} args - Arguments to update one CandidateReference.
+     * @example
+     * // Update one CandidateReference
+     * const candidateReference = await prisma.candidateReference.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends CandidateReferenceUpdateArgs>(args: SelectSubset<T, CandidateReferenceUpdateArgs<ExtArgs>>): Prisma__CandidateReferenceClient<$Result.GetResult<Prisma.$CandidateReferencePayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more CandidateReferences.
+     * @param {CandidateReferenceDeleteManyArgs} args - Arguments to filter CandidateReferences to delete.
+     * @example
+     * // Delete a few CandidateReferences
+     * const { count } = await prisma.candidateReference.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends CandidateReferenceDeleteManyArgs>(args?: SelectSubset<T, CandidateReferenceDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CandidateReferences.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CandidateReferenceUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many CandidateReferences
+     * const candidateReference = await prisma.candidateReference.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends CandidateReferenceUpdateManyArgs>(args: SelectSubset<T, CandidateReferenceUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one CandidateReference.
+     * @param {CandidateReferenceUpsertArgs} args - Arguments to update or create a CandidateReference.
+     * @example
+     * // Update or create a CandidateReference
+     * const candidateReference = await prisma.candidateReference.upsert({
+     *   create: {
+     *     // ... data to create a CandidateReference
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the CandidateReference we want to update
+     *   }
+     * })
+     */
+    upsert<T extends CandidateReferenceUpsertArgs>(args: SelectSubset<T, CandidateReferenceUpsertArgs<ExtArgs>>): Prisma__CandidateReferenceClient<$Result.GetResult<Prisma.$CandidateReferencePayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of CandidateReferences.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CandidateReferenceCountArgs} args - Arguments to filter CandidateReferences to count.
+     * @example
+     * // Count the number of CandidateReferences
+     * const count = await prisma.candidateReference.count({
+     *   where: {
+     *     // ... the filter for the CandidateReferences we want to count
+     *   }
+     * })
+    **/
+    count<T extends CandidateReferenceCountArgs>(
+      args?: Subset<T, CandidateReferenceCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], CandidateReferenceCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a CandidateReference.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CandidateReferenceAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends CandidateReferenceAggregateArgs>(args: Subset<T, CandidateReferenceAggregateArgs>): Prisma.PrismaPromise<GetCandidateReferenceAggregateType<T>>
+
+    /**
+     * Group by CandidateReference.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CandidateReferenceGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends CandidateReferenceGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: CandidateReferenceGroupByArgs['orderBy'] }
+        : { orderBy?: CandidateReferenceGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, CandidateReferenceGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCandidateReferenceGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the CandidateReference model
+   */
+  readonly fields: CandidateReferenceFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for CandidateReference.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__CandidateReferenceClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    candidate<T extends CandidateDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CandidateDefaultArgs<ExtArgs>>): Prisma__CandidateClient<$Result.GetResult<Prisma.$CandidatePayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the CandidateReference model
+   */ 
+  interface CandidateReferenceFieldRefs {
+    readonly id: FieldRef<"CandidateReference", 'String'>
+    readonly candidateId: FieldRef<"CandidateReference", 'String'>
+    readonly refereeName: FieldRef<"CandidateReference", 'String'>
+    readonly refereeEmail: FieldRef<"CandidateReference", 'String'>
+    readonly refereePhone: FieldRef<"CandidateReference", 'String'>
+    readonly refereeRelation: FieldRef<"CandidateReference", 'String'>
+    readonly refereeCompany: FieldRef<"CandidateReference", 'String'>
+    readonly status: FieldRef<"CandidateReference", 'String'>
+    readonly token: FieldRef<"CandidateReference", 'String'>
+    readonly responses: FieldRef<"CandidateReference", 'Json'>
+    readonly aiAnalysis: FieldRef<"CandidateReference", 'Json'>
+    readonly completedAt: FieldRef<"CandidateReference", 'DateTime'>
+    readonly createdAt: FieldRef<"CandidateReference", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * CandidateReference findUnique
+   */
+  export type CandidateReferenceFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateReference
+     */
+    select?: CandidateReferenceSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateReferenceInclude<ExtArgs> | null
+    /**
+     * Filter, which CandidateReference to fetch.
+     */
+    where: CandidateReferenceWhereUniqueInput
+  }
+
+  /**
+   * CandidateReference findUniqueOrThrow
+   */
+  export type CandidateReferenceFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateReference
+     */
+    select?: CandidateReferenceSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateReferenceInclude<ExtArgs> | null
+    /**
+     * Filter, which CandidateReference to fetch.
+     */
+    where: CandidateReferenceWhereUniqueInput
+  }
+
+  /**
+   * CandidateReference findFirst
+   */
+  export type CandidateReferenceFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateReference
+     */
+    select?: CandidateReferenceSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateReferenceInclude<ExtArgs> | null
+    /**
+     * Filter, which CandidateReference to fetch.
+     */
+    where?: CandidateReferenceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CandidateReferences to fetch.
+     */
+    orderBy?: CandidateReferenceOrderByWithRelationInput | CandidateReferenceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CandidateReferences.
+     */
+    cursor?: CandidateReferenceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CandidateReferences from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CandidateReferences.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CandidateReferences.
+     */
+    distinct?: CandidateReferenceScalarFieldEnum | CandidateReferenceScalarFieldEnum[]
+  }
+
+  /**
+   * CandidateReference findFirstOrThrow
+   */
+  export type CandidateReferenceFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateReference
+     */
+    select?: CandidateReferenceSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateReferenceInclude<ExtArgs> | null
+    /**
+     * Filter, which CandidateReference to fetch.
+     */
+    where?: CandidateReferenceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CandidateReferences to fetch.
+     */
+    orderBy?: CandidateReferenceOrderByWithRelationInput | CandidateReferenceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CandidateReferences.
+     */
+    cursor?: CandidateReferenceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CandidateReferences from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CandidateReferences.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CandidateReferences.
+     */
+    distinct?: CandidateReferenceScalarFieldEnum | CandidateReferenceScalarFieldEnum[]
+  }
+
+  /**
+   * CandidateReference findMany
+   */
+  export type CandidateReferenceFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateReference
+     */
+    select?: CandidateReferenceSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateReferenceInclude<ExtArgs> | null
+    /**
+     * Filter, which CandidateReferences to fetch.
+     */
+    where?: CandidateReferenceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CandidateReferences to fetch.
+     */
+    orderBy?: CandidateReferenceOrderByWithRelationInput | CandidateReferenceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing CandidateReferences.
+     */
+    cursor?: CandidateReferenceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CandidateReferences from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CandidateReferences.
+     */
+    skip?: number
+    distinct?: CandidateReferenceScalarFieldEnum | CandidateReferenceScalarFieldEnum[]
+  }
+
+  /**
+   * CandidateReference create
+   */
+  export type CandidateReferenceCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateReference
+     */
+    select?: CandidateReferenceSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateReferenceInclude<ExtArgs> | null
+    /**
+     * The data needed to create a CandidateReference.
+     */
+    data: XOR<CandidateReferenceCreateInput, CandidateReferenceUncheckedCreateInput>
+  }
+
+  /**
+   * CandidateReference createMany
+   */
+  export type CandidateReferenceCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many CandidateReferences.
+     */
+    data: CandidateReferenceCreateManyInput | CandidateReferenceCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * CandidateReference createManyAndReturn
+   */
+  export type CandidateReferenceCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateReference
+     */
+    select?: CandidateReferenceSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many CandidateReferences.
+     */
+    data: CandidateReferenceCreateManyInput | CandidateReferenceCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateReferenceIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CandidateReference update
+   */
+  export type CandidateReferenceUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateReference
+     */
+    select?: CandidateReferenceSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateReferenceInclude<ExtArgs> | null
+    /**
+     * The data needed to update a CandidateReference.
+     */
+    data: XOR<CandidateReferenceUpdateInput, CandidateReferenceUncheckedUpdateInput>
+    /**
+     * Choose, which CandidateReference to update.
+     */
+    where: CandidateReferenceWhereUniqueInput
+  }
+
+  /**
+   * CandidateReference updateMany
+   */
+  export type CandidateReferenceUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update CandidateReferences.
+     */
+    data: XOR<CandidateReferenceUpdateManyMutationInput, CandidateReferenceUncheckedUpdateManyInput>
+    /**
+     * Filter which CandidateReferences to update
+     */
+    where?: CandidateReferenceWhereInput
+  }
+
+  /**
+   * CandidateReference upsert
+   */
+  export type CandidateReferenceUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateReference
+     */
+    select?: CandidateReferenceSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateReferenceInclude<ExtArgs> | null
+    /**
+     * The filter to search for the CandidateReference to update in case it exists.
+     */
+    where: CandidateReferenceWhereUniqueInput
+    /**
+     * In case the CandidateReference found by the `where` argument doesn't exist, create a new CandidateReference with this data.
+     */
+    create: XOR<CandidateReferenceCreateInput, CandidateReferenceUncheckedCreateInput>
+    /**
+     * In case the CandidateReference was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<CandidateReferenceUpdateInput, CandidateReferenceUncheckedUpdateInput>
+  }
+
+  /**
+   * CandidateReference delete
+   */
+  export type CandidateReferenceDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateReference
+     */
+    select?: CandidateReferenceSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateReferenceInclude<ExtArgs> | null
+    /**
+     * Filter which CandidateReference to delete.
+     */
+    where: CandidateReferenceWhereUniqueInput
+  }
+
+  /**
+   * CandidateReference deleteMany
+   */
+  export type CandidateReferenceDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CandidateReferences to delete
+     */
+    where?: CandidateReferenceWhereInput
+  }
+
+  /**
+   * CandidateReference without action
+   */
+  export type CandidateReferenceDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidateReference
+     */
+    select?: CandidateReferenceSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateReferenceInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model InterviewSession
    */
 
@@ -6093,6 +11834,7 @@ export namespace Prisma {
   export type InterviewSessionMinAggregateOutputType = {
     id: string | null
     organizationId: string | null
+    candidateId: string | null
     status: string | null
     startedAt: Date | null
     endedAt: Date | null
@@ -6105,6 +11847,7 @@ export namespace Prisma {
   export type InterviewSessionMaxAggregateOutputType = {
     id: string | null
     organizationId: string | null
+    candidateId: string | null
     status: string | null
     startedAt: Date | null
     endedAt: Date | null
@@ -6117,6 +11860,7 @@ export namespace Prisma {
   export type InterviewSessionCountAggregateOutputType = {
     id: number
     organizationId: number
+    candidateId: number
     setup: number
     status: number
     startedAt: number
@@ -6132,6 +11876,7 @@ export namespace Prisma {
   export type InterviewSessionMinAggregateInputType = {
     id?: true
     organizationId?: true
+    candidateId?: true
     status?: true
     startedAt?: true
     endedAt?: true
@@ -6144,6 +11889,7 @@ export namespace Prisma {
   export type InterviewSessionMaxAggregateInputType = {
     id?: true
     organizationId?: true
+    candidateId?: true
     status?: true
     startedAt?: true
     endedAt?: true
@@ -6156,6 +11902,7 @@ export namespace Prisma {
   export type InterviewSessionCountAggregateInputType = {
     id?: true
     organizationId?: true
+    candidateId?: true
     setup?: true
     status?: true
     startedAt?: true
@@ -6242,6 +11989,7 @@ export namespace Prisma {
   export type InterviewSessionGroupByOutputType = {
     id: string
     organizationId: string | null
+    candidateId: string | null
     setup: JsonValue
     status: string
     startedAt: Date | null
@@ -6272,6 +12020,7 @@ export namespace Prisma {
   export type InterviewSessionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     organizationId?: boolean
+    candidateId?: boolean
     setup?: boolean
     status?: boolean
     startedAt?: boolean
@@ -6281,6 +12030,7 @@ export namespace Prisma {
     audioData?: boolean
     createdAt?: boolean
     organization?: boolean | InterviewSession$organizationArgs<ExtArgs>
+    candidate?: boolean | InterviewSession$candidateArgs<ExtArgs>
     transcripts?: boolean | InterviewSession$transcriptsArgs<ExtArgs>
     observations?: boolean | InterviewSession$observationsArgs<ExtArgs>
     verdicts?: boolean | InterviewSession$verdictsArgs<ExtArgs>
@@ -6291,6 +12041,7 @@ export namespace Prisma {
   export type InterviewSessionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     organizationId?: boolean
+    candidateId?: boolean
     setup?: boolean
     status?: boolean
     startedAt?: boolean
@@ -6300,11 +12051,13 @@ export namespace Prisma {
     audioData?: boolean
     createdAt?: boolean
     organization?: boolean | InterviewSession$organizationArgs<ExtArgs>
+    candidate?: boolean | InterviewSession$candidateArgs<ExtArgs>
   }, ExtArgs["result"]["interviewSession"]>
 
   export type InterviewSessionSelectScalar = {
     id?: boolean
     organizationId?: boolean
+    candidateId?: boolean
     setup?: boolean
     status?: boolean
     startedAt?: boolean
@@ -6317,6 +12070,7 @@ export namespace Prisma {
 
   export type InterviewSessionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     organization?: boolean | InterviewSession$organizationArgs<ExtArgs>
+    candidate?: boolean | InterviewSession$candidateArgs<ExtArgs>
     transcripts?: boolean | InterviewSession$transcriptsArgs<ExtArgs>
     observations?: boolean | InterviewSession$observationsArgs<ExtArgs>
     verdicts?: boolean | InterviewSession$verdictsArgs<ExtArgs>
@@ -6325,12 +12079,14 @@ export namespace Prisma {
   }
   export type InterviewSessionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     organization?: boolean | InterviewSession$organizationArgs<ExtArgs>
+    candidate?: boolean | InterviewSession$candidateArgs<ExtArgs>
   }
 
   export type $InterviewSessionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "InterviewSession"
     objects: {
       organization: Prisma.$OrganizationPayload<ExtArgs> | null
+      candidate: Prisma.$CandidatePayload<ExtArgs> | null
       transcripts: Prisma.$TranscriptEntryPayload<ExtArgs>[]
       observations: Prisma.$ObservationPayload<ExtArgs>[]
       verdicts: Prisma.$AssessorVerdictPayload<ExtArgs>[]
@@ -6339,6 +12095,7 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       organizationId: string | null
+      candidateId: string | null
       setup: Prisma.JsonValue
       status: string
       startedAt: Date | null
@@ -6712,6 +12469,7 @@ export namespace Prisma {
   export interface Prisma__InterviewSessionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     organization<T extends InterviewSession$organizationArgs<ExtArgs> = {}>(args?: Subset<T, InterviewSession$organizationArgs<ExtArgs>>): Prisma__OrganizationClient<$Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    candidate<T extends InterviewSession$candidateArgs<ExtArgs> = {}>(args?: Subset<T, InterviewSession$candidateArgs<ExtArgs>>): Prisma__CandidateClient<$Result.GetResult<Prisma.$CandidatePayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     transcripts<T extends InterviewSession$transcriptsArgs<ExtArgs> = {}>(args?: Subset<T, InterviewSession$transcriptsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TranscriptEntryPayload<ExtArgs>, T, "findMany"> | Null>
     observations<T extends InterviewSession$observationsArgs<ExtArgs> = {}>(args?: Subset<T, InterviewSession$observationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ObservationPayload<ExtArgs>, T, "findMany"> | Null>
     verdicts<T extends InterviewSession$verdictsArgs<ExtArgs> = {}>(args?: Subset<T, InterviewSession$verdictsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AssessorVerdictPayload<ExtArgs>, T, "findMany"> | Null>
@@ -6747,6 +12505,7 @@ export namespace Prisma {
   interface InterviewSessionFieldRefs {
     readonly id: FieldRef<"InterviewSession", 'String'>
     readonly organizationId: FieldRef<"InterviewSession", 'String'>
+    readonly candidateId: FieldRef<"InterviewSession", 'String'>
     readonly setup: FieldRef<"InterviewSession", 'Json'>
     readonly status: FieldRef<"InterviewSession", 'String'>
     readonly startedAt: FieldRef<"InterviewSession", 'DateTime'>
@@ -7085,6 +12844,21 @@ export namespace Prisma {
      */
     include?: OrganizationInclude<ExtArgs> | null
     where?: OrganizationWhereInput
+  }
+
+  /**
+   * InterviewSession.candidate
+   */
+  export type InterviewSession$candidateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Candidate
+     */
+    select?: CandidateSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateInclude<ExtArgs> | null
+    where?: CandidateWhereInput
   }
 
   /**
@@ -10380,6 +16154,8 @@ export namespace Prisma {
     coachingReport?: boolean
     createdAt?: boolean
     session?: boolean | InterviewSessionDefaultArgs<ExtArgs>
+    feedback?: boolean | Report$feedbackArgs<ExtArgs>
+    _count?: boolean | ReportCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["report"]>
 
   export type ReportSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -10405,6 +16181,8 @@ export namespace Prisma {
 
   export type ReportInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     session?: boolean | InterviewSessionDefaultArgs<ExtArgs>
+    feedback?: boolean | Report$feedbackArgs<ExtArgs>
+    _count?: boolean | ReportCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ReportIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     session?: boolean | InterviewSessionDefaultArgs<ExtArgs>
@@ -10414,6 +16192,7 @@ export namespace Prisma {
     name: "Report"
     objects: {
       session: Prisma.$InterviewSessionPayload<ExtArgs>
+      feedback: Prisma.$ReportFeedbackPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -10788,6 +16567,7 @@ export namespace Prisma {
   export interface Prisma__ReportClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     session<T extends InterviewSessionDefaultArgs<ExtArgs> = {}>(args?: Subset<T, InterviewSessionDefaultArgs<ExtArgs>>): Prisma__InterviewSessionClient<$Result.GetResult<Prisma.$InterviewSessionPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    feedback<T extends Report$feedbackArgs<ExtArgs> = {}>(args?: Subset<T, Report$feedbackArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReportFeedbackPayload<ExtArgs>, T, "findMany"> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -11142,6 +16922,26 @@ export namespace Prisma {
   }
 
   /**
+   * Report.feedback
+   */
+  export type Report$feedbackArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportFeedback
+     */
+    select?: ReportFeedbackSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportFeedbackInclude<ExtArgs> | null
+    where?: ReportFeedbackWhereInput
+    orderBy?: ReportFeedbackOrderByWithRelationInput | ReportFeedbackOrderByWithRelationInput[]
+    cursor?: ReportFeedbackWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ReportFeedbackScalarFieldEnum | ReportFeedbackScalarFieldEnum[]
+  }
+
+  /**
    * Report without action
    */
   export type ReportDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -11169,6 +16969,7 @@ export namespace Prisma {
   export type InterviewInviteMinAggregateOutputType = {
     id: string | null
     token: string | null
+    candidateId: string | null
     candidateName: string | null
     candidateEmail: string | null
     roleName: string | null
@@ -11177,6 +16978,7 @@ export namespace Prisma {
     interviewMode: string | null
     status: string | null
     sessionId: string | null
+    organizationId: string | null
     expiresAt: Date | null
     createdAt: Date | null
   }
@@ -11184,6 +16986,7 @@ export namespace Prisma {
   export type InterviewInviteMaxAggregateOutputType = {
     id: string | null
     token: string | null
+    candidateId: string | null
     candidateName: string | null
     candidateEmail: string | null
     roleName: string | null
@@ -11192,6 +16995,7 @@ export namespace Prisma {
     interviewMode: string | null
     status: string | null
     sessionId: string | null
+    organizationId: string | null
     expiresAt: Date | null
     createdAt: Date | null
   }
@@ -11199,6 +17003,7 @@ export namespace Prisma {
   export type InterviewInviteCountAggregateOutputType = {
     id: number
     token: number
+    candidateId: number
     candidateName: number
     candidateEmail: number
     roleName: number
@@ -11208,6 +17013,7 @@ export namespace Prisma {
     interviewMode: number
     status: number
     sessionId: number
+    organizationId: number
     expiresAt: number
     createdAt: number
     _all: number
@@ -11217,6 +17023,7 @@ export namespace Prisma {
   export type InterviewInviteMinAggregateInputType = {
     id?: true
     token?: true
+    candidateId?: true
     candidateName?: true
     candidateEmail?: true
     roleName?: true
@@ -11225,6 +17032,7 @@ export namespace Prisma {
     interviewMode?: true
     status?: true
     sessionId?: true
+    organizationId?: true
     expiresAt?: true
     createdAt?: true
   }
@@ -11232,6 +17040,7 @@ export namespace Prisma {
   export type InterviewInviteMaxAggregateInputType = {
     id?: true
     token?: true
+    candidateId?: true
     candidateName?: true
     candidateEmail?: true
     roleName?: true
@@ -11240,6 +17049,7 @@ export namespace Prisma {
     interviewMode?: true
     status?: true
     sessionId?: true
+    organizationId?: true
     expiresAt?: true
     createdAt?: true
   }
@@ -11247,6 +17057,7 @@ export namespace Prisma {
   export type InterviewInviteCountAggregateInputType = {
     id?: true
     token?: true
+    candidateId?: true
     candidateName?: true
     candidateEmail?: true
     roleName?: true
@@ -11256,6 +17067,7 @@ export namespace Prisma {
     interviewMode?: true
     status?: true
     sessionId?: true
+    organizationId?: true
     expiresAt?: true
     createdAt?: true
     _all?: true
@@ -11336,6 +17148,7 @@ export namespace Prisma {
   export type InterviewInviteGroupByOutputType = {
     id: string
     token: string
+    candidateId: string | null
     candidateName: string
     candidateEmail: string | null
     roleName: string
@@ -11345,6 +17158,7 @@ export namespace Prisma {
     interviewMode: string
     status: string
     sessionId: string | null
+    organizationId: string | null
     expiresAt: Date
     createdAt: Date
     _count: InterviewInviteCountAggregateOutputType | null
@@ -11369,6 +17183,7 @@ export namespace Prisma {
   export type InterviewInviteSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     token?: boolean
+    candidateId?: boolean
     candidateName?: boolean
     candidateEmail?: boolean
     roleName?: boolean
@@ -11378,6 +17193,7 @@ export namespace Prisma {
     interviewMode?: boolean
     status?: boolean
     sessionId?: boolean
+    organizationId?: boolean
     expiresAt?: boolean
     createdAt?: boolean
   }, ExtArgs["result"]["interviewInvite"]>
@@ -11385,6 +17201,7 @@ export namespace Prisma {
   export type InterviewInviteSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     token?: boolean
+    candidateId?: boolean
     candidateName?: boolean
     candidateEmail?: boolean
     roleName?: boolean
@@ -11394,6 +17211,7 @@ export namespace Prisma {
     interviewMode?: boolean
     status?: boolean
     sessionId?: boolean
+    organizationId?: boolean
     expiresAt?: boolean
     createdAt?: boolean
   }, ExtArgs["result"]["interviewInvite"]>
@@ -11401,6 +17219,7 @@ export namespace Prisma {
   export type InterviewInviteSelectScalar = {
     id?: boolean
     token?: boolean
+    candidateId?: boolean
     candidateName?: boolean
     candidateEmail?: boolean
     roleName?: boolean
@@ -11410,6 +17229,7 @@ export namespace Prisma {
     interviewMode?: boolean
     status?: boolean
     sessionId?: boolean
+    organizationId?: boolean
     expiresAt?: boolean
     createdAt?: boolean
   }
@@ -11421,6 +17241,7 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       token: string
+      candidateId: string | null
       candidateName: string
       candidateEmail: string | null
       roleName: string
@@ -11430,6 +17251,7 @@ export namespace Prisma {
       interviewMode: string
       status: string
       sessionId: string | null
+      organizationId: string | null
       expiresAt: Date
       createdAt: Date
     }, ExtArgs["result"]["interviewInvite"]>
@@ -11827,6 +17649,7 @@ export namespace Prisma {
   interface InterviewInviteFieldRefs {
     readonly id: FieldRef<"InterviewInvite", 'String'>
     readonly token: FieldRef<"InterviewInvite", 'String'>
+    readonly candidateId: FieldRef<"InterviewInvite", 'String'>
     readonly candidateName: FieldRef<"InterviewInvite", 'String'>
     readonly candidateEmail: FieldRef<"InterviewInvite", 'String'>
     readonly roleName: FieldRef<"InterviewInvite", 'String'>
@@ -11836,6 +17659,7 @@ export namespace Prisma {
     readonly interviewMode: FieldRef<"InterviewInvite", 'String'>
     readonly status: FieldRef<"InterviewInvite", 'String'>
     readonly sessionId: FieldRef<"InterviewInvite", 'String'>
+    readonly organizationId: FieldRef<"InterviewInvite", 'String'>
     readonly expiresAt: FieldRef<"InterviewInvite", 'DateTime'>
     readonly createdAt: FieldRef<"InterviewInvite", 'DateTime'>
   }
@@ -12141,6 +17965,7 @@ export namespace Prisma {
     reportId: string | null
     title: string | null
     status: string | null
+    organizationId: string | null
     createdAt: Date | null
   }
 
@@ -12149,6 +17974,7 @@ export namespace Prisma {
     reportId: string | null
     title: string | null
     status: string | null
+    organizationId: string | null
     createdAt: Date | null
   }
 
@@ -12157,6 +17983,7 @@ export namespace Prisma {
     reportId: number
     title: number
     status: number
+    organizationId: number
     createdAt: number
     _all: number
   }
@@ -12167,6 +17994,7 @@ export namespace Prisma {
     reportId?: true
     title?: true
     status?: true
+    organizationId?: true
     createdAt?: true
   }
 
@@ -12175,6 +18003,7 @@ export namespace Prisma {
     reportId?: true
     title?: true
     status?: true
+    organizationId?: true
     createdAt?: true
   }
 
@@ -12183,6 +18012,7 @@ export namespace Prisma {
     reportId?: true
     title?: true
     status?: true
+    organizationId?: true
     createdAt?: true
     _all?: true
   }
@@ -12264,6 +18094,7 @@ export namespace Prisma {
     reportId: string
     title: string
     status: string
+    organizationId: string | null
     createdAt: Date
     _count: CalibrationSessionCountAggregateOutputType | null
     _min: CalibrationSessionMinAggregateOutputType | null
@@ -12289,6 +18120,7 @@ export namespace Prisma {
     reportId?: boolean
     title?: boolean
     status?: boolean
+    organizationId?: boolean
     createdAt?: boolean
     notes?: boolean | CalibrationSession$notesArgs<ExtArgs>
     _count?: boolean | CalibrationSessionCountOutputTypeDefaultArgs<ExtArgs>
@@ -12299,6 +18131,7 @@ export namespace Prisma {
     reportId?: boolean
     title?: boolean
     status?: boolean
+    organizationId?: boolean
     createdAt?: boolean
   }, ExtArgs["result"]["calibrationSession"]>
 
@@ -12307,6 +18140,7 @@ export namespace Prisma {
     reportId?: boolean
     title?: boolean
     status?: boolean
+    organizationId?: boolean
     createdAt?: boolean
   }
 
@@ -12326,6 +18160,7 @@ export namespace Prisma {
       reportId: string
       title: string
       status: string
+      organizationId: string | null
       createdAt: Date
     }, ExtArgs["result"]["calibrationSession"]>
     composites: {}
@@ -12725,6 +18560,7 @@ export namespace Prisma {
     readonly reportId: FieldRef<"CalibrationSession", 'String'>
     readonly title: FieldRef<"CalibrationSession", 'String'>
     readonly status: FieldRef<"CalibrationSession", 'String'>
+    readonly organizationId: FieldRef<"CalibrationSession", 'String'>
     readonly createdAt: FieldRef<"CalibrationSession", 'DateTime'>
   }
     
@@ -14269,6 +20105,7 @@ export namespace Prisma {
     comments?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    report?: boolean | ReportDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["reportFeedback"]>
 
   export type ReportFeedbackSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -14283,6 +20120,7 @@ export namespace Prisma {
     comments?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    report?: boolean | ReportDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["reportFeedback"]>
 
   export type ReportFeedbackSelectScalar = {
@@ -14299,10 +20137,18 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
+  export type ReportFeedbackInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    report?: boolean | ReportDefaultArgs<ExtArgs>
+  }
+  export type ReportFeedbackIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    report?: boolean | ReportDefaultArgs<ExtArgs>
+  }
 
   export type $ReportFeedbackPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "ReportFeedback"
-    objects: {}
+    objects: {
+      report: Prisma.$ReportPayload<ExtArgs>
+    }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       reportId: string
@@ -14679,6 +20525,7 @@ export namespace Prisma {
    */
   export interface Prisma__ReportFeedbackClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    report<T extends ReportDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ReportDefaultArgs<ExtArgs>>): Prisma__ReportClient<$Result.GetResult<Prisma.$ReportPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -14732,6 +20579,10 @@ export namespace Prisma {
      */
     select?: ReportFeedbackSelect<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportFeedbackInclude<ExtArgs> | null
+    /**
      * Filter, which ReportFeedback to fetch.
      */
     where: ReportFeedbackWhereUniqueInput
@@ -14746,6 +20597,10 @@ export namespace Prisma {
      */
     select?: ReportFeedbackSelect<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportFeedbackInclude<ExtArgs> | null
+    /**
      * Filter, which ReportFeedback to fetch.
      */
     where: ReportFeedbackWhereUniqueInput
@@ -14759,6 +20614,10 @@ export namespace Prisma {
      * Select specific fields to fetch from the ReportFeedback
      */
     select?: ReportFeedbackSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportFeedbackInclude<ExtArgs> | null
     /**
      * Filter, which ReportFeedback to fetch.
      */
@@ -14804,6 +20663,10 @@ export namespace Prisma {
      */
     select?: ReportFeedbackSelect<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportFeedbackInclude<ExtArgs> | null
+    /**
      * Filter, which ReportFeedback to fetch.
      */
     where?: ReportFeedbackWhereInput
@@ -14848,6 +20711,10 @@ export namespace Prisma {
      */
     select?: ReportFeedbackSelect<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportFeedbackInclude<ExtArgs> | null
+    /**
      * Filter, which ReportFeedbacks to fetch.
      */
     where?: ReportFeedbackWhereInput
@@ -14887,6 +20754,10 @@ export namespace Prisma {
      */
     select?: ReportFeedbackSelect<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportFeedbackInclude<ExtArgs> | null
+    /**
      * The data needed to create a ReportFeedback.
      */
     data: XOR<ReportFeedbackCreateInput, ReportFeedbackUncheckedCreateInput>
@@ -14916,6 +20787,10 @@ export namespace Prisma {
      */
     data: ReportFeedbackCreateManyInput | ReportFeedbackCreateManyInput[]
     skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportFeedbackIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -14926,6 +20801,10 @@ export namespace Prisma {
      * Select specific fields to fetch from the ReportFeedback
      */
     select?: ReportFeedbackSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportFeedbackInclude<ExtArgs> | null
     /**
      * The data needed to update a ReportFeedback.
      */
@@ -14959,6 +20838,10 @@ export namespace Prisma {
      */
     select?: ReportFeedbackSelect<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportFeedbackInclude<ExtArgs> | null
+    /**
      * The filter to search for the ReportFeedback to update in case it exists.
      */
     where: ReportFeedbackWhereUniqueInput
@@ -14980,6 +20863,10 @@ export namespace Prisma {
      * Select specific fields to fetch from the ReportFeedback
      */
     select?: ReportFeedbackSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportFeedbackInclude<ExtArgs> | null
     /**
      * Filter which ReportFeedback to delete.
      */
@@ -15004,6 +20891,10 @@ export namespace Prisma {
      * Select specific fields to fetch from the ReportFeedback
      */
     select?: ReportFeedbackSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportFeedbackInclude<ExtArgs> | null
   }
 
 
@@ -15986,6 +21877,7 @@ export namespace Prisma {
     role: 'role',
     token: 'token',
     invitedById: 'invitedById',
+    organizationId: 'organizationId',
     expiresAt: 'expiresAt',
     acceptedAt: 'acceptedAt',
     createdAt: 'createdAt'
@@ -16006,9 +21898,94 @@ export namespace Prisma {
   export type ActivityLogScalarFieldEnum = (typeof ActivityLogScalarFieldEnum)[keyof typeof ActivityLogScalarFieldEnum]
 
 
+  export const CandidateScalarFieldEnum: {
+    id: 'id',
+    organizationId: 'organizationId',
+    name: 'name',
+    email: 'email',
+    phone: 'phone',
+    linkedinUrl: 'linkedinUrl',
+    githubUrl: 'githubUrl',
+    portfolioUrl: 'portfolioUrl',
+    source: 'source',
+    sourceDetail: 'sourceDetail',
+    currentRole: 'currentRole',
+    currentCompany: 'currentCompany',
+    yearsExperience: 'yearsExperience',
+    salaryExpectation: 'salaryExpectation',
+    noticePeriod: 'noticePeriod',
+    pipelineStage: 'pipelineStage',
+    rejectionReason: 'rejectionReason',
+    tags: 'tags',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type CandidateScalarFieldEnum = (typeof CandidateScalarFieldEnum)[keyof typeof CandidateScalarFieldEnum]
+
+
+  export const CandidateDocumentScalarFieldEnum: {
+    id: 'id',
+    candidateId: 'candidateId',
+    type: 'type',
+    filename: 'filename',
+    mimeType: 'mimeType',
+    content: 'content',
+    rawData: 'rawData',
+    createdAt: 'createdAt'
+  };
+
+  export type CandidateDocumentScalarFieldEnum = (typeof CandidateDocumentScalarFieldEnum)[keyof typeof CandidateDocumentScalarFieldEnum]
+
+
+  export const CandidateIntelligenceScalarFieldEnum: {
+    id: 'id',
+    candidateId: 'candidateId',
+    type: 'type',
+    data: 'data',
+    sourceText: 'sourceText',
+    createdAt: 'createdAt'
+  };
+
+  export type CandidateIntelligenceScalarFieldEnum = (typeof CandidateIntelligenceScalarFieldEnum)[keyof typeof CandidateIntelligenceScalarFieldEnum]
+
+
+  export const CandidateNoteScalarFieldEnum: {
+    id: 'id',
+    candidateId: 'candidateId',
+    userId: 'userId',
+    userName: 'userName',
+    content: 'content',
+    type: 'type',
+    createdAt: 'createdAt'
+  };
+
+  export type CandidateNoteScalarFieldEnum = (typeof CandidateNoteScalarFieldEnum)[keyof typeof CandidateNoteScalarFieldEnum]
+
+
+  export const CandidateReferenceScalarFieldEnum: {
+    id: 'id',
+    candidateId: 'candidateId',
+    refereeName: 'refereeName',
+    refereeEmail: 'refereeEmail',
+    refereePhone: 'refereePhone',
+    refereeRelation: 'refereeRelation',
+    refereeCompany: 'refereeCompany',
+    status: 'status',
+    token: 'token',
+    responses: 'responses',
+    aiAnalysis: 'aiAnalysis',
+    completedAt: 'completedAt',
+    createdAt: 'createdAt'
+  };
+
+  export type CandidateReferenceScalarFieldEnum = (typeof CandidateReferenceScalarFieldEnum)[keyof typeof CandidateReferenceScalarFieldEnum]
+
+
   export const InterviewSessionScalarFieldEnum: {
     id: 'id',
     organizationId: 'organizationId',
+    candidateId: 'candidateId',
     setup: 'setup',
     status: 'status',
     startedAt: 'startedAt',
@@ -16083,6 +22060,7 @@ export namespace Prisma {
   export const InterviewInviteScalarFieldEnum: {
     id: 'id',
     token: 'token',
+    candidateId: 'candidateId',
     candidateName: 'candidateName',
     candidateEmail: 'candidateEmail',
     roleName: 'roleName',
@@ -16092,6 +22070,7 @@ export namespace Prisma {
     interviewMode: 'interviewMode',
     status: 'status',
     sessionId: 'sessionId',
+    organizationId: 'organizationId',
     expiresAt: 'expiresAt',
     createdAt: 'createdAt'
   };
@@ -16104,6 +22083,7 @@ export namespace Prisma {
     reportId: 'reportId',
     title: 'title',
     status: 'status',
+    organizationId: 'organizationId',
     createdAt: 'createdAt'
   };
 
@@ -16242,9 +22222,16 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'Boolean'
+   * Reference to a field of type 'Int'
    */
-  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+    
+
+
+  /**
+   * Reference to a field of type 'Int[]'
+   */
+  export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
     
 
 
@@ -16263,6 +22250,13 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Boolean'
+   */
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+  /**
    * Reference to a field of type 'Float'
    */
   export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -16273,20 +22267,6 @@ export namespace Prisma {
    * Reference to a field of type 'Float[]'
    */
   export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
-    
-
-
-  /**
-   * Reference to a field of type 'Int'
-   */
-  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
-    
-
-
-  /**
-   * Reference to a field of type 'Int[]'
-   */
-  export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
     
   /**
    * Deep Input Types
@@ -16303,6 +22283,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Organization"> | Date | string
     users?: UserListRelationFilter
     sessions?: InterviewSessionListRelationFilter
+    candidates?: CandidateListRelationFilter
   }
 
   export type OrganizationOrderByWithRelationInput = {
@@ -16312,6 +22293,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     users?: UserOrderByRelationAggregateInput
     sessions?: InterviewSessionOrderByRelationAggregateInput
+    candidates?: CandidateOrderByRelationAggregateInput
   }
 
   export type OrganizationWhereUniqueInput = Prisma.AtLeast<{
@@ -16324,6 +22306,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Organization"> | Date | string
     users?: UserListRelationFilter
     sessions?: InterviewSessionListRelationFilter
+    candidates?: CandidateListRelationFilter
   }, "id">
 
   export type OrganizationOrderByWithAggregationInput = {
@@ -16446,6 +22429,7 @@ export namespace Prisma {
     role?: StringFilter<"Invitation"> | string
     token?: StringFilter<"Invitation"> | string
     invitedById?: StringFilter<"Invitation"> | string
+    organizationId?: StringNullableFilter<"Invitation"> | string | null
     expiresAt?: DateTimeFilter<"Invitation"> | Date | string
     acceptedAt?: DateTimeNullableFilter<"Invitation"> | Date | string | null
     createdAt?: DateTimeFilter<"Invitation"> | Date | string
@@ -16458,6 +22442,7 @@ export namespace Prisma {
     role?: SortOrder
     token?: SortOrder
     invitedById?: SortOrder
+    organizationId?: SortOrderInput | SortOrder
     expiresAt?: SortOrder
     acceptedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -16473,6 +22458,7 @@ export namespace Prisma {
     email?: StringFilter<"Invitation"> | string
     role?: StringFilter<"Invitation"> | string
     invitedById?: StringFilter<"Invitation"> | string
+    organizationId?: StringNullableFilter<"Invitation"> | string | null
     expiresAt?: DateTimeFilter<"Invitation"> | Date | string
     acceptedAt?: DateTimeNullableFilter<"Invitation"> | Date | string | null
     createdAt?: DateTimeFilter<"Invitation"> | Date | string
@@ -16485,6 +22471,7 @@ export namespace Prisma {
     role?: SortOrder
     token?: SortOrder
     invitedById?: SortOrder
+    organizationId?: SortOrderInput | SortOrder
     expiresAt?: SortOrder
     acceptedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -16502,6 +22489,7 @@ export namespace Prisma {
     role?: StringWithAggregatesFilter<"Invitation"> | string
     token?: StringWithAggregatesFilter<"Invitation"> | string
     invitedById?: StringWithAggregatesFilter<"Invitation"> | string
+    organizationId?: StringNullableWithAggregatesFilter<"Invitation"> | string | null
     expiresAt?: DateTimeWithAggregatesFilter<"Invitation"> | Date | string
     acceptedAt?: DateTimeNullableWithAggregatesFilter<"Invitation"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Invitation"> | Date | string
@@ -16567,12 +22555,450 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"ActivityLog"> | Date | string
   }
 
+  export type CandidateWhereInput = {
+    AND?: CandidateWhereInput | CandidateWhereInput[]
+    OR?: CandidateWhereInput[]
+    NOT?: CandidateWhereInput | CandidateWhereInput[]
+    id?: StringFilter<"Candidate"> | string
+    organizationId?: StringNullableFilter<"Candidate"> | string | null
+    name?: StringFilter<"Candidate"> | string
+    email?: StringNullableFilter<"Candidate"> | string | null
+    phone?: StringNullableFilter<"Candidate"> | string | null
+    linkedinUrl?: StringNullableFilter<"Candidate"> | string | null
+    githubUrl?: StringNullableFilter<"Candidate"> | string | null
+    portfolioUrl?: StringNullableFilter<"Candidate"> | string | null
+    source?: StringNullableFilter<"Candidate"> | string | null
+    sourceDetail?: StringNullableFilter<"Candidate"> | string | null
+    currentRole?: StringNullableFilter<"Candidate"> | string | null
+    currentCompany?: StringNullableFilter<"Candidate"> | string | null
+    yearsExperience?: IntNullableFilter<"Candidate"> | number | null
+    salaryExpectation?: StringNullableFilter<"Candidate"> | string | null
+    noticePeriod?: StringNullableFilter<"Candidate"> | string | null
+    pipelineStage?: StringFilter<"Candidate"> | string
+    rejectionReason?: StringNullableFilter<"Candidate"> | string | null
+    tags?: JsonFilter<"Candidate">
+    createdAt?: DateTimeFilter<"Candidate"> | Date | string
+    updatedAt?: DateTimeFilter<"Candidate"> | Date | string
+    organization?: XOR<OrganizationNullableRelationFilter, OrganizationWhereInput> | null
+    sessions?: InterviewSessionListRelationFilter
+    intelligence?: CandidateIntelligenceListRelationFilter
+    notes?: CandidateNoteListRelationFilter
+    references?: CandidateReferenceListRelationFilter
+    documents?: CandidateDocumentListRelationFilter
+  }
+
+  export type CandidateOrderByWithRelationInput = {
+    id?: SortOrder
+    organizationId?: SortOrderInput | SortOrder
+    name?: SortOrder
+    email?: SortOrderInput | SortOrder
+    phone?: SortOrderInput | SortOrder
+    linkedinUrl?: SortOrderInput | SortOrder
+    githubUrl?: SortOrderInput | SortOrder
+    portfolioUrl?: SortOrderInput | SortOrder
+    source?: SortOrderInput | SortOrder
+    sourceDetail?: SortOrderInput | SortOrder
+    currentRole?: SortOrderInput | SortOrder
+    currentCompany?: SortOrderInput | SortOrder
+    yearsExperience?: SortOrderInput | SortOrder
+    salaryExpectation?: SortOrderInput | SortOrder
+    noticePeriod?: SortOrderInput | SortOrder
+    pipelineStage?: SortOrder
+    rejectionReason?: SortOrderInput | SortOrder
+    tags?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    organization?: OrganizationOrderByWithRelationInput
+    sessions?: InterviewSessionOrderByRelationAggregateInput
+    intelligence?: CandidateIntelligenceOrderByRelationAggregateInput
+    notes?: CandidateNoteOrderByRelationAggregateInput
+    references?: CandidateReferenceOrderByRelationAggregateInput
+    documents?: CandidateDocumentOrderByRelationAggregateInput
+  }
+
+  export type CandidateWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: CandidateWhereInput | CandidateWhereInput[]
+    OR?: CandidateWhereInput[]
+    NOT?: CandidateWhereInput | CandidateWhereInput[]
+    organizationId?: StringNullableFilter<"Candidate"> | string | null
+    name?: StringFilter<"Candidate"> | string
+    email?: StringNullableFilter<"Candidate"> | string | null
+    phone?: StringNullableFilter<"Candidate"> | string | null
+    linkedinUrl?: StringNullableFilter<"Candidate"> | string | null
+    githubUrl?: StringNullableFilter<"Candidate"> | string | null
+    portfolioUrl?: StringNullableFilter<"Candidate"> | string | null
+    source?: StringNullableFilter<"Candidate"> | string | null
+    sourceDetail?: StringNullableFilter<"Candidate"> | string | null
+    currentRole?: StringNullableFilter<"Candidate"> | string | null
+    currentCompany?: StringNullableFilter<"Candidate"> | string | null
+    yearsExperience?: IntNullableFilter<"Candidate"> | number | null
+    salaryExpectation?: StringNullableFilter<"Candidate"> | string | null
+    noticePeriod?: StringNullableFilter<"Candidate"> | string | null
+    pipelineStage?: StringFilter<"Candidate"> | string
+    rejectionReason?: StringNullableFilter<"Candidate"> | string | null
+    tags?: JsonFilter<"Candidate">
+    createdAt?: DateTimeFilter<"Candidate"> | Date | string
+    updatedAt?: DateTimeFilter<"Candidate"> | Date | string
+    organization?: XOR<OrganizationNullableRelationFilter, OrganizationWhereInput> | null
+    sessions?: InterviewSessionListRelationFilter
+    intelligence?: CandidateIntelligenceListRelationFilter
+    notes?: CandidateNoteListRelationFilter
+    references?: CandidateReferenceListRelationFilter
+    documents?: CandidateDocumentListRelationFilter
+  }, "id">
+
+  export type CandidateOrderByWithAggregationInput = {
+    id?: SortOrder
+    organizationId?: SortOrderInput | SortOrder
+    name?: SortOrder
+    email?: SortOrderInput | SortOrder
+    phone?: SortOrderInput | SortOrder
+    linkedinUrl?: SortOrderInput | SortOrder
+    githubUrl?: SortOrderInput | SortOrder
+    portfolioUrl?: SortOrderInput | SortOrder
+    source?: SortOrderInput | SortOrder
+    sourceDetail?: SortOrderInput | SortOrder
+    currentRole?: SortOrderInput | SortOrder
+    currentCompany?: SortOrderInput | SortOrder
+    yearsExperience?: SortOrderInput | SortOrder
+    salaryExpectation?: SortOrderInput | SortOrder
+    noticePeriod?: SortOrderInput | SortOrder
+    pipelineStage?: SortOrder
+    rejectionReason?: SortOrderInput | SortOrder
+    tags?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: CandidateCountOrderByAggregateInput
+    _avg?: CandidateAvgOrderByAggregateInput
+    _max?: CandidateMaxOrderByAggregateInput
+    _min?: CandidateMinOrderByAggregateInput
+    _sum?: CandidateSumOrderByAggregateInput
+  }
+
+  export type CandidateScalarWhereWithAggregatesInput = {
+    AND?: CandidateScalarWhereWithAggregatesInput | CandidateScalarWhereWithAggregatesInput[]
+    OR?: CandidateScalarWhereWithAggregatesInput[]
+    NOT?: CandidateScalarWhereWithAggregatesInput | CandidateScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Candidate"> | string
+    organizationId?: StringNullableWithAggregatesFilter<"Candidate"> | string | null
+    name?: StringWithAggregatesFilter<"Candidate"> | string
+    email?: StringNullableWithAggregatesFilter<"Candidate"> | string | null
+    phone?: StringNullableWithAggregatesFilter<"Candidate"> | string | null
+    linkedinUrl?: StringNullableWithAggregatesFilter<"Candidate"> | string | null
+    githubUrl?: StringNullableWithAggregatesFilter<"Candidate"> | string | null
+    portfolioUrl?: StringNullableWithAggregatesFilter<"Candidate"> | string | null
+    source?: StringNullableWithAggregatesFilter<"Candidate"> | string | null
+    sourceDetail?: StringNullableWithAggregatesFilter<"Candidate"> | string | null
+    currentRole?: StringNullableWithAggregatesFilter<"Candidate"> | string | null
+    currentCompany?: StringNullableWithAggregatesFilter<"Candidate"> | string | null
+    yearsExperience?: IntNullableWithAggregatesFilter<"Candidate"> | number | null
+    salaryExpectation?: StringNullableWithAggregatesFilter<"Candidate"> | string | null
+    noticePeriod?: StringNullableWithAggregatesFilter<"Candidate"> | string | null
+    pipelineStage?: StringWithAggregatesFilter<"Candidate"> | string
+    rejectionReason?: StringNullableWithAggregatesFilter<"Candidate"> | string | null
+    tags?: JsonWithAggregatesFilter<"Candidate">
+    createdAt?: DateTimeWithAggregatesFilter<"Candidate"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Candidate"> | Date | string
+  }
+
+  export type CandidateDocumentWhereInput = {
+    AND?: CandidateDocumentWhereInput | CandidateDocumentWhereInput[]
+    OR?: CandidateDocumentWhereInput[]
+    NOT?: CandidateDocumentWhereInput | CandidateDocumentWhereInput[]
+    id?: StringFilter<"CandidateDocument"> | string
+    candidateId?: StringFilter<"CandidateDocument"> | string
+    type?: StringFilter<"CandidateDocument"> | string
+    filename?: StringFilter<"CandidateDocument"> | string
+    mimeType?: StringFilter<"CandidateDocument"> | string
+    content?: StringFilter<"CandidateDocument"> | string
+    rawData?: BytesNullableFilter<"CandidateDocument"> | Buffer | null
+    createdAt?: DateTimeFilter<"CandidateDocument"> | Date | string
+    candidate?: XOR<CandidateRelationFilter, CandidateWhereInput>
+  }
+
+  export type CandidateDocumentOrderByWithRelationInput = {
+    id?: SortOrder
+    candidateId?: SortOrder
+    type?: SortOrder
+    filename?: SortOrder
+    mimeType?: SortOrder
+    content?: SortOrder
+    rawData?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    candidate?: CandidateOrderByWithRelationInput
+  }
+
+  export type CandidateDocumentWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: CandidateDocumentWhereInput | CandidateDocumentWhereInput[]
+    OR?: CandidateDocumentWhereInput[]
+    NOT?: CandidateDocumentWhereInput | CandidateDocumentWhereInput[]
+    candidateId?: StringFilter<"CandidateDocument"> | string
+    type?: StringFilter<"CandidateDocument"> | string
+    filename?: StringFilter<"CandidateDocument"> | string
+    mimeType?: StringFilter<"CandidateDocument"> | string
+    content?: StringFilter<"CandidateDocument"> | string
+    rawData?: BytesNullableFilter<"CandidateDocument"> | Buffer | null
+    createdAt?: DateTimeFilter<"CandidateDocument"> | Date | string
+    candidate?: XOR<CandidateRelationFilter, CandidateWhereInput>
+  }, "id">
+
+  export type CandidateDocumentOrderByWithAggregationInput = {
+    id?: SortOrder
+    candidateId?: SortOrder
+    type?: SortOrder
+    filename?: SortOrder
+    mimeType?: SortOrder
+    content?: SortOrder
+    rawData?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: CandidateDocumentCountOrderByAggregateInput
+    _max?: CandidateDocumentMaxOrderByAggregateInput
+    _min?: CandidateDocumentMinOrderByAggregateInput
+  }
+
+  export type CandidateDocumentScalarWhereWithAggregatesInput = {
+    AND?: CandidateDocumentScalarWhereWithAggregatesInput | CandidateDocumentScalarWhereWithAggregatesInput[]
+    OR?: CandidateDocumentScalarWhereWithAggregatesInput[]
+    NOT?: CandidateDocumentScalarWhereWithAggregatesInput | CandidateDocumentScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"CandidateDocument"> | string
+    candidateId?: StringWithAggregatesFilter<"CandidateDocument"> | string
+    type?: StringWithAggregatesFilter<"CandidateDocument"> | string
+    filename?: StringWithAggregatesFilter<"CandidateDocument"> | string
+    mimeType?: StringWithAggregatesFilter<"CandidateDocument"> | string
+    content?: StringWithAggregatesFilter<"CandidateDocument"> | string
+    rawData?: BytesNullableWithAggregatesFilter<"CandidateDocument"> | Buffer | null
+    createdAt?: DateTimeWithAggregatesFilter<"CandidateDocument"> | Date | string
+  }
+
+  export type CandidateIntelligenceWhereInput = {
+    AND?: CandidateIntelligenceWhereInput | CandidateIntelligenceWhereInput[]
+    OR?: CandidateIntelligenceWhereInput[]
+    NOT?: CandidateIntelligenceWhereInput | CandidateIntelligenceWhereInput[]
+    id?: StringFilter<"CandidateIntelligence"> | string
+    candidateId?: StringFilter<"CandidateIntelligence"> | string
+    type?: StringFilter<"CandidateIntelligence"> | string
+    data?: JsonFilter<"CandidateIntelligence">
+    sourceText?: StringNullableFilter<"CandidateIntelligence"> | string | null
+    createdAt?: DateTimeFilter<"CandidateIntelligence"> | Date | string
+    candidate?: XOR<CandidateRelationFilter, CandidateWhereInput>
+  }
+
+  export type CandidateIntelligenceOrderByWithRelationInput = {
+    id?: SortOrder
+    candidateId?: SortOrder
+    type?: SortOrder
+    data?: SortOrder
+    sourceText?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    candidate?: CandidateOrderByWithRelationInput
+  }
+
+  export type CandidateIntelligenceWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: CandidateIntelligenceWhereInput | CandidateIntelligenceWhereInput[]
+    OR?: CandidateIntelligenceWhereInput[]
+    NOT?: CandidateIntelligenceWhereInput | CandidateIntelligenceWhereInput[]
+    candidateId?: StringFilter<"CandidateIntelligence"> | string
+    type?: StringFilter<"CandidateIntelligence"> | string
+    data?: JsonFilter<"CandidateIntelligence">
+    sourceText?: StringNullableFilter<"CandidateIntelligence"> | string | null
+    createdAt?: DateTimeFilter<"CandidateIntelligence"> | Date | string
+    candidate?: XOR<CandidateRelationFilter, CandidateWhereInput>
+  }, "id">
+
+  export type CandidateIntelligenceOrderByWithAggregationInput = {
+    id?: SortOrder
+    candidateId?: SortOrder
+    type?: SortOrder
+    data?: SortOrder
+    sourceText?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: CandidateIntelligenceCountOrderByAggregateInput
+    _max?: CandidateIntelligenceMaxOrderByAggregateInput
+    _min?: CandidateIntelligenceMinOrderByAggregateInput
+  }
+
+  export type CandidateIntelligenceScalarWhereWithAggregatesInput = {
+    AND?: CandidateIntelligenceScalarWhereWithAggregatesInput | CandidateIntelligenceScalarWhereWithAggregatesInput[]
+    OR?: CandidateIntelligenceScalarWhereWithAggregatesInput[]
+    NOT?: CandidateIntelligenceScalarWhereWithAggregatesInput | CandidateIntelligenceScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"CandidateIntelligence"> | string
+    candidateId?: StringWithAggregatesFilter<"CandidateIntelligence"> | string
+    type?: StringWithAggregatesFilter<"CandidateIntelligence"> | string
+    data?: JsonWithAggregatesFilter<"CandidateIntelligence">
+    sourceText?: StringNullableWithAggregatesFilter<"CandidateIntelligence"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"CandidateIntelligence"> | Date | string
+  }
+
+  export type CandidateNoteWhereInput = {
+    AND?: CandidateNoteWhereInput | CandidateNoteWhereInput[]
+    OR?: CandidateNoteWhereInput[]
+    NOT?: CandidateNoteWhereInput | CandidateNoteWhereInput[]
+    id?: StringFilter<"CandidateNote"> | string
+    candidateId?: StringFilter<"CandidateNote"> | string
+    userId?: StringFilter<"CandidateNote"> | string
+    userName?: StringFilter<"CandidateNote"> | string
+    content?: StringFilter<"CandidateNote"> | string
+    type?: StringFilter<"CandidateNote"> | string
+    createdAt?: DateTimeFilter<"CandidateNote"> | Date | string
+    candidate?: XOR<CandidateRelationFilter, CandidateWhereInput>
+  }
+
+  export type CandidateNoteOrderByWithRelationInput = {
+    id?: SortOrder
+    candidateId?: SortOrder
+    userId?: SortOrder
+    userName?: SortOrder
+    content?: SortOrder
+    type?: SortOrder
+    createdAt?: SortOrder
+    candidate?: CandidateOrderByWithRelationInput
+  }
+
+  export type CandidateNoteWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: CandidateNoteWhereInput | CandidateNoteWhereInput[]
+    OR?: CandidateNoteWhereInput[]
+    NOT?: CandidateNoteWhereInput | CandidateNoteWhereInput[]
+    candidateId?: StringFilter<"CandidateNote"> | string
+    userId?: StringFilter<"CandidateNote"> | string
+    userName?: StringFilter<"CandidateNote"> | string
+    content?: StringFilter<"CandidateNote"> | string
+    type?: StringFilter<"CandidateNote"> | string
+    createdAt?: DateTimeFilter<"CandidateNote"> | Date | string
+    candidate?: XOR<CandidateRelationFilter, CandidateWhereInput>
+  }, "id">
+
+  export type CandidateNoteOrderByWithAggregationInput = {
+    id?: SortOrder
+    candidateId?: SortOrder
+    userId?: SortOrder
+    userName?: SortOrder
+    content?: SortOrder
+    type?: SortOrder
+    createdAt?: SortOrder
+    _count?: CandidateNoteCountOrderByAggregateInput
+    _max?: CandidateNoteMaxOrderByAggregateInput
+    _min?: CandidateNoteMinOrderByAggregateInput
+  }
+
+  export type CandidateNoteScalarWhereWithAggregatesInput = {
+    AND?: CandidateNoteScalarWhereWithAggregatesInput | CandidateNoteScalarWhereWithAggregatesInput[]
+    OR?: CandidateNoteScalarWhereWithAggregatesInput[]
+    NOT?: CandidateNoteScalarWhereWithAggregatesInput | CandidateNoteScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"CandidateNote"> | string
+    candidateId?: StringWithAggregatesFilter<"CandidateNote"> | string
+    userId?: StringWithAggregatesFilter<"CandidateNote"> | string
+    userName?: StringWithAggregatesFilter<"CandidateNote"> | string
+    content?: StringWithAggregatesFilter<"CandidateNote"> | string
+    type?: StringWithAggregatesFilter<"CandidateNote"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"CandidateNote"> | Date | string
+  }
+
+  export type CandidateReferenceWhereInput = {
+    AND?: CandidateReferenceWhereInput | CandidateReferenceWhereInput[]
+    OR?: CandidateReferenceWhereInput[]
+    NOT?: CandidateReferenceWhereInput | CandidateReferenceWhereInput[]
+    id?: StringFilter<"CandidateReference"> | string
+    candidateId?: StringFilter<"CandidateReference"> | string
+    refereeName?: StringFilter<"CandidateReference"> | string
+    refereeEmail?: StringNullableFilter<"CandidateReference"> | string | null
+    refereePhone?: StringNullableFilter<"CandidateReference"> | string | null
+    refereeRelation?: StringFilter<"CandidateReference"> | string
+    refereeCompany?: StringNullableFilter<"CandidateReference"> | string | null
+    status?: StringFilter<"CandidateReference"> | string
+    token?: StringNullableFilter<"CandidateReference"> | string | null
+    responses?: JsonNullableFilter<"CandidateReference">
+    aiAnalysis?: JsonNullableFilter<"CandidateReference">
+    completedAt?: DateTimeNullableFilter<"CandidateReference"> | Date | string | null
+    createdAt?: DateTimeFilter<"CandidateReference"> | Date | string
+    candidate?: XOR<CandidateRelationFilter, CandidateWhereInput>
+  }
+
+  export type CandidateReferenceOrderByWithRelationInput = {
+    id?: SortOrder
+    candidateId?: SortOrder
+    refereeName?: SortOrder
+    refereeEmail?: SortOrderInput | SortOrder
+    refereePhone?: SortOrderInput | SortOrder
+    refereeRelation?: SortOrder
+    refereeCompany?: SortOrderInput | SortOrder
+    status?: SortOrder
+    token?: SortOrderInput | SortOrder
+    responses?: SortOrderInput | SortOrder
+    aiAnalysis?: SortOrderInput | SortOrder
+    completedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    candidate?: CandidateOrderByWithRelationInput
+  }
+
+  export type CandidateReferenceWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    token?: string
+    AND?: CandidateReferenceWhereInput | CandidateReferenceWhereInput[]
+    OR?: CandidateReferenceWhereInput[]
+    NOT?: CandidateReferenceWhereInput | CandidateReferenceWhereInput[]
+    candidateId?: StringFilter<"CandidateReference"> | string
+    refereeName?: StringFilter<"CandidateReference"> | string
+    refereeEmail?: StringNullableFilter<"CandidateReference"> | string | null
+    refereePhone?: StringNullableFilter<"CandidateReference"> | string | null
+    refereeRelation?: StringFilter<"CandidateReference"> | string
+    refereeCompany?: StringNullableFilter<"CandidateReference"> | string | null
+    status?: StringFilter<"CandidateReference"> | string
+    responses?: JsonNullableFilter<"CandidateReference">
+    aiAnalysis?: JsonNullableFilter<"CandidateReference">
+    completedAt?: DateTimeNullableFilter<"CandidateReference"> | Date | string | null
+    createdAt?: DateTimeFilter<"CandidateReference"> | Date | string
+    candidate?: XOR<CandidateRelationFilter, CandidateWhereInput>
+  }, "id" | "token">
+
+  export type CandidateReferenceOrderByWithAggregationInput = {
+    id?: SortOrder
+    candidateId?: SortOrder
+    refereeName?: SortOrder
+    refereeEmail?: SortOrderInput | SortOrder
+    refereePhone?: SortOrderInput | SortOrder
+    refereeRelation?: SortOrder
+    refereeCompany?: SortOrderInput | SortOrder
+    status?: SortOrder
+    token?: SortOrderInput | SortOrder
+    responses?: SortOrderInput | SortOrder
+    aiAnalysis?: SortOrderInput | SortOrder
+    completedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: CandidateReferenceCountOrderByAggregateInput
+    _max?: CandidateReferenceMaxOrderByAggregateInput
+    _min?: CandidateReferenceMinOrderByAggregateInput
+  }
+
+  export type CandidateReferenceScalarWhereWithAggregatesInput = {
+    AND?: CandidateReferenceScalarWhereWithAggregatesInput | CandidateReferenceScalarWhereWithAggregatesInput[]
+    OR?: CandidateReferenceScalarWhereWithAggregatesInput[]
+    NOT?: CandidateReferenceScalarWhereWithAggregatesInput | CandidateReferenceScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"CandidateReference"> | string
+    candidateId?: StringWithAggregatesFilter<"CandidateReference"> | string
+    refereeName?: StringWithAggregatesFilter<"CandidateReference"> | string
+    refereeEmail?: StringNullableWithAggregatesFilter<"CandidateReference"> | string | null
+    refereePhone?: StringNullableWithAggregatesFilter<"CandidateReference"> | string | null
+    refereeRelation?: StringWithAggregatesFilter<"CandidateReference"> | string
+    refereeCompany?: StringNullableWithAggregatesFilter<"CandidateReference"> | string | null
+    status?: StringWithAggregatesFilter<"CandidateReference"> | string
+    token?: StringNullableWithAggregatesFilter<"CandidateReference"> | string | null
+    responses?: JsonNullableWithAggregatesFilter<"CandidateReference">
+    aiAnalysis?: JsonNullableWithAggregatesFilter<"CandidateReference">
+    completedAt?: DateTimeNullableWithAggregatesFilter<"CandidateReference"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"CandidateReference"> | Date | string
+  }
+
   export type InterviewSessionWhereInput = {
     AND?: InterviewSessionWhereInput | InterviewSessionWhereInput[]
     OR?: InterviewSessionWhereInput[]
     NOT?: InterviewSessionWhereInput | InterviewSessionWhereInput[]
     id?: StringFilter<"InterviewSession"> | string
     organizationId?: StringNullableFilter<"InterviewSession"> | string | null
+    candidateId?: StringNullableFilter<"InterviewSession"> | string | null
     setup?: JsonFilter<"InterviewSession">
     status?: StringFilter<"InterviewSession"> | string
     startedAt?: DateTimeNullableFilter<"InterviewSession"> | Date | string | null
@@ -16582,6 +23008,7 @@ export namespace Prisma {
     audioData?: BytesNullableFilter<"InterviewSession"> | Buffer | null
     createdAt?: DateTimeFilter<"InterviewSession"> | Date | string
     organization?: XOR<OrganizationNullableRelationFilter, OrganizationWhereInput> | null
+    candidate?: XOR<CandidateNullableRelationFilter, CandidateWhereInput> | null
     transcripts?: TranscriptEntryListRelationFilter
     observations?: ObservationListRelationFilter
     verdicts?: AssessorVerdictListRelationFilter
@@ -16591,6 +23018,7 @@ export namespace Prisma {
   export type InterviewSessionOrderByWithRelationInput = {
     id?: SortOrder
     organizationId?: SortOrderInput | SortOrder
+    candidateId?: SortOrderInput | SortOrder
     setup?: SortOrder
     status?: SortOrder
     startedAt?: SortOrderInput | SortOrder
@@ -16600,6 +23028,7 @@ export namespace Prisma {
     audioData?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     organization?: OrganizationOrderByWithRelationInput
+    candidate?: CandidateOrderByWithRelationInput
     transcripts?: TranscriptEntryOrderByRelationAggregateInput
     observations?: ObservationOrderByRelationAggregateInput
     verdicts?: AssessorVerdictOrderByRelationAggregateInput
@@ -16612,6 +23041,7 @@ export namespace Prisma {
     OR?: InterviewSessionWhereInput[]
     NOT?: InterviewSessionWhereInput | InterviewSessionWhereInput[]
     organizationId?: StringNullableFilter<"InterviewSession"> | string | null
+    candidateId?: StringNullableFilter<"InterviewSession"> | string | null
     setup?: JsonFilter<"InterviewSession">
     status?: StringFilter<"InterviewSession"> | string
     startedAt?: DateTimeNullableFilter<"InterviewSession"> | Date | string | null
@@ -16621,6 +23051,7 @@ export namespace Prisma {
     audioData?: BytesNullableFilter<"InterviewSession"> | Buffer | null
     createdAt?: DateTimeFilter<"InterviewSession"> | Date | string
     organization?: XOR<OrganizationNullableRelationFilter, OrganizationWhereInput> | null
+    candidate?: XOR<CandidateNullableRelationFilter, CandidateWhereInput> | null
     transcripts?: TranscriptEntryListRelationFilter
     observations?: ObservationListRelationFilter
     verdicts?: AssessorVerdictListRelationFilter
@@ -16630,6 +23061,7 @@ export namespace Prisma {
   export type InterviewSessionOrderByWithAggregationInput = {
     id?: SortOrder
     organizationId?: SortOrderInput | SortOrder
+    candidateId?: SortOrderInput | SortOrder
     setup?: SortOrder
     status?: SortOrder
     startedAt?: SortOrderInput | SortOrder
@@ -16649,6 +23081,7 @@ export namespace Prisma {
     NOT?: InterviewSessionScalarWhereWithAggregatesInput | InterviewSessionScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"InterviewSession"> | string
     organizationId?: StringNullableWithAggregatesFilter<"InterviewSession"> | string | null
+    candidateId?: StringNullableWithAggregatesFilter<"InterviewSession"> | string | null
     setup?: JsonWithAggregatesFilter<"InterviewSession">
     status?: StringWithAggregatesFilter<"InterviewSession"> | string
     startedAt?: DateTimeNullableWithAggregatesFilter<"InterviewSession"> | Date | string | null
@@ -16902,6 +23335,7 @@ export namespace Prisma {
     coachingReport?: JsonNullableFilter<"Report">
     createdAt?: DateTimeFilter<"Report"> | Date | string
     session?: XOR<InterviewSessionRelationFilter, InterviewSessionWhereInput>
+    feedback?: ReportFeedbackListRelationFilter
   }
 
   export type ReportOrderByWithRelationInput = {
@@ -16913,6 +23347,7 @@ export namespace Prisma {
     coachingReport?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     session?: InterviewSessionOrderByWithRelationInput
+    feedback?: ReportFeedbackOrderByRelationAggregateInput
   }
 
   export type ReportWhereUniqueInput = Prisma.AtLeast<{
@@ -16927,6 +23362,7 @@ export namespace Prisma {
     coachingReport?: JsonNullableFilter<"Report">
     createdAt?: DateTimeFilter<"Report"> | Date | string
     session?: XOR<InterviewSessionRelationFilter, InterviewSessionWhereInput>
+    feedback?: ReportFeedbackListRelationFilter
   }, "id">
 
   export type ReportOrderByWithAggregationInput = {
@@ -16961,6 +23397,7 @@ export namespace Prisma {
     NOT?: InterviewInviteWhereInput | InterviewInviteWhereInput[]
     id?: StringFilter<"InterviewInvite"> | string
     token?: StringFilter<"InterviewInvite"> | string
+    candidateId?: StringNullableFilter<"InterviewInvite"> | string | null
     candidateName?: StringFilter<"InterviewInvite"> | string
     candidateEmail?: StringNullableFilter<"InterviewInvite"> | string | null
     roleName?: StringFilter<"InterviewInvite"> | string
@@ -16970,6 +23407,7 @@ export namespace Prisma {
     interviewMode?: StringFilter<"InterviewInvite"> | string
     status?: StringFilter<"InterviewInvite"> | string
     sessionId?: StringNullableFilter<"InterviewInvite"> | string | null
+    organizationId?: StringNullableFilter<"InterviewInvite"> | string | null
     expiresAt?: DateTimeFilter<"InterviewInvite"> | Date | string
     createdAt?: DateTimeFilter<"InterviewInvite"> | Date | string
   }
@@ -16977,6 +23415,7 @@ export namespace Prisma {
   export type InterviewInviteOrderByWithRelationInput = {
     id?: SortOrder
     token?: SortOrder
+    candidateId?: SortOrderInput | SortOrder
     candidateName?: SortOrder
     candidateEmail?: SortOrderInput | SortOrder
     roleName?: SortOrder
@@ -16986,6 +23425,7 @@ export namespace Prisma {
     interviewMode?: SortOrder
     status?: SortOrder
     sessionId?: SortOrderInput | SortOrder
+    organizationId?: SortOrderInput | SortOrder
     expiresAt?: SortOrder
     createdAt?: SortOrder
   }
@@ -16996,6 +23436,7 @@ export namespace Prisma {
     AND?: InterviewInviteWhereInput | InterviewInviteWhereInput[]
     OR?: InterviewInviteWhereInput[]
     NOT?: InterviewInviteWhereInput | InterviewInviteWhereInput[]
+    candidateId?: StringNullableFilter<"InterviewInvite"> | string | null
     candidateName?: StringFilter<"InterviewInvite"> | string
     candidateEmail?: StringNullableFilter<"InterviewInvite"> | string | null
     roleName?: StringFilter<"InterviewInvite"> | string
@@ -17005,6 +23446,7 @@ export namespace Prisma {
     interviewMode?: StringFilter<"InterviewInvite"> | string
     status?: StringFilter<"InterviewInvite"> | string
     sessionId?: StringNullableFilter<"InterviewInvite"> | string | null
+    organizationId?: StringNullableFilter<"InterviewInvite"> | string | null
     expiresAt?: DateTimeFilter<"InterviewInvite"> | Date | string
     createdAt?: DateTimeFilter<"InterviewInvite"> | Date | string
   }, "id" | "token">
@@ -17012,6 +23454,7 @@ export namespace Prisma {
   export type InterviewInviteOrderByWithAggregationInput = {
     id?: SortOrder
     token?: SortOrder
+    candidateId?: SortOrderInput | SortOrder
     candidateName?: SortOrder
     candidateEmail?: SortOrderInput | SortOrder
     roleName?: SortOrder
@@ -17021,6 +23464,7 @@ export namespace Prisma {
     interviewMode?: SortOrder
     status?: SortOrder
     sessionId?: SortOrderInput | SortOrder
+    organizationId?: SortOrderInput | SortOrder
     expiresAt?: SortOrder
     createdAt?: SortOrder
     _count?: InterviewInviteCountOrderByAggregateInput
@@ -17034,6 +23478,7 @@ export namespace Prisma {
     NOT?: InterviewInviteScalarWhereWithAggregatesInput | InterviewInviteScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"InterviewInvite"> | string
     token?: StringWithAggregatesFilter<"InterviewInvite"> | string
+    candidateId?: StringNullableWithAggregatesFilter<"InterviewInvite"> | string | null
     candidateName?: StringWithAggregatesFilter<"InterviewInvite"> | string
     candidateEmail?: StringNullableWithAggregatesFilter<"InterviewInvite"> | string | null
     roleName?: StringWithAggregatesFilter<"InterviewInvite"> | string
@@ -17043,6 +23488,7 @@ export namespace Prisma {
     interviewMode?: StringWithAggregatesFilter<"InterviewInvite"> | string
     status?: StringWithAggregatesFilter<"InterviewInvite"> | string
     sessionId?: StringNullableWithAggregatesFilter<"InterviewInvite"> | string | null
+    organizationId?: StringNullableWithAggregatesFilter<"InterviewInvite"> | string | null
     expiresAt?: DateTimeWithAggregatesFilter<"InterviewInvite"> | Date | string
     createdAt?: DateTimeWithAggregatesFilter<"InterviewInvite"> | Date | string
   }
@@ -17055,6 +23501,7 @@ export namespace Prisma {
     reportId?: StringFilter<"CalibrationSession"> | string
     title?: StringFilter<"CalibrationSession"> | string
     status?: StringFilter<"CalibrationSession"> | string
+    organizationId?: StringNullableFilter<"CalibrationSession"> | string | null
     createdAt?: DateTimeFilter<"CalibrationSession"> | Date | string
     notes?: CalibrationNoteListRelationFilter
   }
@@ -17064,6 +23511,7 @@ export namespace Prisma {
     reportId?: SortOrder
     title?: SortOrder
     status?: SortOrder
+    organizationId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     notes?: CalibrationNoteOrderByRelationAggregateInput
   }
@@ -17076,6 +23524,7 @@ export namespace Prisma {
     reportId?: StringFilter<"CalibrationSession"> | string
     title?: StringFilter<"CalibrationSession"> | string
     status?: StringFilter<"CalibrationSession"> | string
+    organizationId?: StringNullableFilter<"CalibrationSession"> | string | null
     createdAt?: DateTimeFilter<"CalibrationSession"> | Date | string
     notes?: CalibrationNoteListRelationFilter
   }, "id">
@@ -17085,6 +23534,7 @@ export namespace Prisma {
     reportId?: SortOrder
     title?: SortOrder
     status?: SortOrder
+    organizationId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     _count?: CalibrationSessionCountOrderByAggregateInput
     _max?: CalibrationSessionMaxOrderByAggregateInput
@@ -17099,6 +23549,7 @@ export namespace Prisma {
     reportId?: StringWithAggregatesFilter<"CalibrationSession"> | string
     title?: StringWithAggregatesFilter<"CalibrationSession"> | string
     status?: StringWithAggregatesFilter<"CalibrationSession"> | string
+    organizationId?: StringNullableWithAggregatesFilter<"CalibrationSession"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"CalibrationSession"> | Date | string
   }
 
@@ -17182,6 +23633,7 @@ export namespace Prisma {
     comments?: StringNullableFilter<"ReportFeedback"> | string | null
     createdAt?: DateTimeFilter<"ReportFeedback"> | Date | string
     updatedAt?: DateTimeFilter<"ReportFeedback"> | Date | string
+    report?: XOR<ReportRelationFilter, ReportWhereInput>
   }
 
   export type ReportFeedbackOrderByWithRelationInput = {
@@ -17196,6 +23648,7 @@ export namespace Prisma {
     comments?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    report?: ReportOrderByWithRelationInput
   }
 
   export type ReportFeedbackWhereUniqueInput = Prisma.AtLeast<{
@@ -17214,6 +23667,7 @@ export namespace Prisma {
     comments?: StringNullableFilter<"ReportFeedback"> | string | null
     createdAt?: DateTimeFilter<"ReportFeedback"> | Date | string
     updatedAt?: DateTimeFilter<"ReportFeedback"> | Date | string
+    report?: XOR<ReportRelationFilter, ReportWhereInput>
   }, "id" | "reportId_userId">
 
   export type ReportFeedbackOrderByWithAggregationInput = {
@@ -17324,6 +23778,7 @@ export namespace Prisma {
     createdAt?: Date | string
     users?: UserCreateNestedManyWithoutOrganizationInput
     sessions?: InterviewSessionCreateNestedManyWithoutOrganizationInput
+    candidates?: CandidateCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateInput = {
@@ -17333,6 +23788,7 @@ export namespace Prisma {
     createdAt?: Date | string
     users?: UserUncheckedCreateNestedManyWithoutOrganizationInput
     sessions?: InterviewSessionUncheckedCreateNestedManyWithoutOrganizationInput
+    candidates?: CandidateUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUpdateInput = {
@@ -17342,6 +23798,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     users?: UserUpdateManyWithoutOrganizationNestedInput
     sessions?: InterviewSessionUpdateManyWithoutOrganizationNestedInput
+    candidates?: CandidateUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateInput = {
@@ -17351,6 +23808,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     users?: UserUncheckedUpdateManyWithoutOrganizationNestedInput
     sessions?: InterviewSessionUncheckedUpdateManyWithoutOrganizationNestedInput
+    candidates?: CandidateUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationCreateManyInput = {
@@ -17484,6 +23942,7 @@ export namespace Prisma {
     email: string
     role?: string
     token: string
+    organizationId?: string | null
     expiresAt: Date | string
     acceptedAt?: Date | string | null
     createdAt?: Date | string
@@ -17496,6 +23955,7 @@ export namespace Prisma {
     role?: string
     token: string
     invitedById: string
+    organizationId?: string | null
     expiresAt: Date | string
     acceptedAt?: Date | string | null
     createdAt?: Date | string
@@ -17506,6 +23966,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
+    organizationId?: NullableStringFieldUpdateOperationsInput | string | null
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -17518,6 +23979,7 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
     invitedById?: StringFieldUpdateOperationsInput | string
+    organizationId?: NullableStringFieldUpdateOperationsInput | string | null
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -17529,6 +23991,7 @@ export namespace Prisma {
     role?: string
     token: string
     invitedById: string
+    organizationId?: string | null
     expiresAt: Date | string
     acceptedAt?: Date | string | null
     createdAt?: Date | string
@@ -17539,6 +24002,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
+    organizationId?: NullableStringFieldUpdateOperationsInput | string | null
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -17550,6 +24014,7 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
     invitedById?: StringFieldUpdateOperationsInput | string
+    organizationId?: NullableStringFieldUpdateOperationsInput | string | null
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -17617,6 +24082,504 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type CandidateCreateInput = {
+    id?: string
+    name: string
+    email?: string | null
+    phone?: string | null
+    linkedinUrl?: string | null
+    githubUrl?: string | null
+    portfolioUrl?: string | null
+    source?: string | null
+    sourceDetail?: string | null
+    currentRole?: string | null
+    currentCompany?: string | null
+    yearsExperience?: number | null
+    salaryExpectation?: string | null
+    noticePeriod?: string | null
+    pipelineStage?: string
+    rejectionReason?: string | null
+    tags?: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization?: OrganizationCreateNestedOneWithoutCandidatesInput
+    sessions?: InterviewSessionCreateNestedManyWithoutCandidateInput
+    intelligence?: CandidateIntelligenceCreateNestedManyWithoutCandidateInput
+    notes?: CandidateNoteCreateNestedManyWithoutCandidateInput
+    references?: CandidateReferenceCreateNestedManyWithoutCandidateInput
+    documents?: CandidateDocumentCreateNestedManyWithoutCandidateInput
+  }
+
+  export type CandidateUncheckedCreateInput = {
+    id?: string
+    organizationId?: string | null
+    name: string
+    email?: string | null
+    phone?: string | null
+    linkedinUrl?: string | null
+    githubUrl?: string | null
+    portfolioUrl?: string | null
+    source?: string | null
+    sourceDetail?: string | null
+    currentRole?: string | null
+    currentCompany?: string | null
+    yearsExperience?: number | null
+    salaryExpectation?: string | null
+    noticePeriod?: string | null
+    pipelineStage?: string
+    rejectionReason?: string | null
+    tags?: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessions?: InterviewSessionUncheckedCreateNestedManyWithoutCandidateInput
+    intelligence?: CandidateIntelligenceUncheckedCreateNestedManyWithoutCandidateInput
+    notes?: CandidateNoteUncheckedCreateNestedManyWithoutCandidateInput
+    references?: CandidateReferenceUncheckedCreateNestedManyWithoutCandidateInput
+    documents?: CandidateDocumentUncheckedCreateNestedManyWithoutCandidateInput
+  }
+
+  export type CandidateUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    portfolioUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceDetail?: NullableStringFieldUpdateOperationsInput | string | null
+    currentRole?: NullableStringFieldUpdateOperationsInput | string | null
+    currentCompany?: NullableStringFieldUpdateOperationsInput | string | null
+    yearsExperience?: NullableIntFieldUpdateOperationsInput | number | null
+    salaryExpectation?: NullableStringFieldUpdateOperationsInput | string | null
+    noticePeriod?: NullableStringFieldUpdateOperationsInput | string | null
+    pipelineStage?: StringFieldUpdateOperationsInput | string
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    tags?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneWithoutCandidatesNestedInput
+    sessions?: InterviewSessionUpdateManyWithoutCandidateNestedInput
+    intelligence?: CandidateIntelligenceUpdateManyWithoutCandidateNestedInput
+    notes?: CandidateNoteUpdateManyWithoutCandidateNestedInput
+    references?: CandidateReferenceUpdateManyWithoutCandidateNestedInput
+    documents?: CandidateDocumentUpdateManyWithoutCandidateNestedInput
+  }
+
+  export type CandidateUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    portfolioUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceDetail?: NullableStringFieldUpdateOperationsInput | string | null
+    currentRole?: NullableStringFieldUpdateOperationsInput | string | null
+    currentCompany?: NullableStringFieldUpdateOperationsInput | string | null
+    yearsExperience?: NullableIntFieldUpdateOperationsInput | number | null
+    salaryExpectation?: NullableStringFieldUpdateOperationsInput | string | null
+    noticePeriod?: NullableStringFieldUpdateOperationsInput | string | null
+    pipelineStage?: StringFieldUpdateOperationsInput | string
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    tags?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: InterviewSessionUncheckedUpdateManyWithoutCandidateNestedInput
+    intelligence?: CandidateIntelligenceUncheckedUpdateManyWithoutCandidateNestedInput
+    notes?: CandidateNoteUncheckedUpdateManyWithoutCandidateNestedInput
+    references?: CandidateReferenceUncheckedUpdateManyWithoutCandidateNestedInput
+    documents?: CandidateDocumentUncheckedUpdateManyWithoutCandidateNestedInput
+  }
+
+  export type CandidateCreateManyInput = {
+    id?: string
+    organizationId?: string | null
+    name: string
+    email?: string | null
+    phone?: string | null
+    linkedinUrl?: string | null
+    githubUrl?: string | null
+    portfolioUrl?: string | null
+    source?: string | null
+    sourceDetail?: string | null
+    currentRole?: string | null
+    currentCompany?: string | null
+    yearsExperience?: number | null
+    salaryExpectation?: string | null
+    noticePeriod?: string | null
+    pipelineStage?: string
+    rejectionReason?: string | null
+    tags?: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CandidateUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    portfolioUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceDetail?: NullableStringFieldUpdateOperationsInput | string | null
+    currentRole?: NullableStringFieldUpdateOperationsInput | string | null
+    currentCompany?: NullableStringFieldUpdateOperationsInput | string | null
+    yearsExperience?: NullableIntFieldUpdateOperationsInput | number | null
+    salaryExpectation?: NullableStringFieldUpdateOperationsInput | string | null
+    noticePeriod?: NullableStringFieldUpdateOperationsInput | string | null
+    pipelineStage?: StringFieldUpdateOperationsInput | string
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    tags?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CandidateUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    portfolioUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceDetail?: NullableStringFieldUpdateOperationsInput | string | null
+    currentRole?: NullableStringFieldUpdateOperationsInput | string | null
+    currentCompany?: NullableStringFieldUpdateOperationsInput | string | null
+    yearsExperience?: NullableIntFieldUpdateOperationsInput | number | null
+    salaryExpectation?: NullableStringFieldUpdateOperationsInput | string | null
+    noticePeriod?: NullableStringFieldUpdateOperationsInput | string | null
+    pipelineStage?: StringFieldUpdateOperationsInput | string
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    tags?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CandidateDocumentCreateInput = {
+    id?: string
+    type: string
+    filename: string
+    mimeType: string
+    content: string
+    rawData?: Buffer | null
+    createdAt?: Date | string
+    candidate: CandidateCreateNestedOneWithoutDocumentsInput
+  }
+
+  export type CandidateDocumentUncheckedCreateInput = {
+    id?: string
+    candidateId: string
+    type: string
+    filename: string
+    mimeType: string
+    content: string
+    rawData?: Buffer | null
+    createdAt?: Date | string
+  }
+
+  export type CandidateDocumentUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    filename?: StringFieldUpdateOperationsInput | string
+    mimeType?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    rawData?: NullableBytesFieldUpdateOperationsInput | Buffer | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    candidate?: CandidateUpdateOneRequiredWithoutDocumentsNestedInput
+  }
+
+  export type CandidateDocumentUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    candidateId?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    filename?: StringFieldUpdateOperationsInput | string
+    mimeType?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    rawData?: NullableBytesFieldUpdateOperationsInput | Buffer | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CandidateDocumentCreateManyInput = {
+    id?: string
+    candidateId: string
+    type: string
+    filename: string
+    mimeType: string
+    content: string
+    rawData?: Buffer | null
+    createdAt?: Date | string
+  }
+
+  export type CandidateDocumentUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    filename?: StringFieldUpdateOperationsInput | string
+    mimeType?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    rawData?: NullableBytesFieldUpdateOperationsInput | Buffer | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CandidateDocumentUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    candidateId?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    filename?: StringFieldUpdateOperationsInput | string
+    mimeType?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    rawData?: NullableBytesFieldUpdateOperationsInput | Buffer | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CandidateIntelligenceCreateInput = {
+    id?: string
+    type: string
+    data: JsonNullValueInput | InputJsonValue
+    sourceText?: string | null
+    createdAt?: Date | string
+    candidate: CandidateCreateNestedOneWithoutIntelligenceInput
+  }
+
+  export type CandidateIntelligenceUncheckedCreateInput = {
+    id?: string
+    candidateId: string
+    type: string
+    data: JsonNullValueInput | InputJsonValue
+    sourceText?: string | null
+    createdAt?: Date | string
+  }
+
+  export type CandidateIntelligenceUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    data?: JsonNullValueInput | InputJsonValue
+    sourceText?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    candidate?: CandidateUpdateOneRequiredWithoutIntelligenceNestedInput
+  }
+
+  export type CandidateIntelligenceUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    candidateId?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    data?: JsonNullValueInput | InputJsonValue
+    sourceText?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CandidateIntelligenceCreateManyInput = {
+    id?: string
+    candidateId: string
+    type: string
+    data: JsonNullValueInput | InputJsonValue
+    sourceText?: string | null
+    createdAt?: Date | string
+  }
+
+  export type CandidateIntelligenceUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    data?: JsonNullValueInput | InputJsonValue
+    sourceText?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CandidateIntelligenceUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    candidateId?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    data?: JsonNullValueInput | InputJsonValue
+    sourceText?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CandidateNoteCreateInput = {
+    id?: string
+    userId: string
+    userName: string
+    content: string
+    type?: string
+    createdAt?: Date | string
+    candidate: CandidateCreateNestedOneWithoutNotesInput
+  }
+
+  export type CandidateNoteUncheckedCreateInput = {
+    id?: string
+    candidateId: string
+    userId: string
+    userName: string
+    content: string
+    type?: string
+    createdAt?: Date | string
+  }
+
+  export type CandidateNoteUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    userName?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    candidate?: CandidateUpdateOneRequiredWithoutNotesNestedInput
+  }
+
+  export type CandidateNoteUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    candidateId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    userName?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CandidateNoteCreateManyInput = {
+    id?: string
+    candidateId: string
+    userId: string
+    userName: string
+    content: string
+    type?: string
+    createdAt?: Date | string
+  }
+
+  export type CandidateNoteUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    userName?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CandidateNoteUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    candidateId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    userName?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CandidateReferenceCreateInput = {
+    id?: string
+    refereeName: string
+    refereeEmail?: string | null
+    refereePhone?: string | null
+    refereeRelation: string
+    refereeCompany?: string | null
+    status?: string
+    token?: string | null
+    responses?: NullableJsonNullValueInput | InputJsonValue
+    aiAnalysis?: NullableJsonNullValueInput | InputJsonValue
+    completedAt?: Date | string | null
+    createdAt?: Date | string
+    candidate: CandidateCreateNestedOneWithoutReferencesInput
+  }
+
+  export type CandidateReferenceUncheckedCreateInput = {
+    id?: string
+    candidateId: string
+    refereeName: string
+    refereeEmail?: string | null
+    refereePhone?: string | null
+    refereeRelation: string
+    refereeCompany?: string | null
+    status?: string
+    token?: string | null
+    responses?: NullableJsonNullValueInput | InputJsonValue
+    aiAnalysis?: NullableJsonNullValueInput | InputJsonValue
+    completedAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type CandidateReferenceUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    refereeName?: StringFieldUpdateOperationsInput | string
+    refereeEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    refereePhone?: NullableStringFieldUpdateOperationsInput | string | null
+    refereeRelation?: StringFieldUpdateOperationsInput | string
+    refereeCompany?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    token?: NullableStringFieldUpdateOperationsInput | string | null
+    responses?: NullableJsonNullValueInput | InputJsonValue
+    aiAnalysis?: NullableJsonNullValueInput | InputJsonValue
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    candidate?: CandidateUpdateOneRequiredWithoutReferencesNestedInput
+  }
+
+  export type CandidateReferenceUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    candidateId?: StringFieldUpdateOperationsInput | string
+    refereeName?: StringFieldUpdateOperationsInput | string
+    refereeEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    refereePhone?: NullableStringFieldUpdateOperationsInput | string | null
+    refereeRelation?: StringFieldUpdateOperationsInput | string
+    refereeCompany?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    token?: NullableStringFieldUpdateOperationsInput | string | null
+    responses?: NullableJsonNullValueInput | InputJsonValue
+    aiAnalysis?: NullableJsonNullValueInput | InputJsonValue
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CandidateReferenceCreateManyInput = {
+    id?: string
+    candidateId: string
+    refereeName: string
+    refereeEmail?: string | null
+    refereePhone?: string | null
+    refereeRelation: string
+    refereeCompany?: string | null
+    status?: string
+    token?: string | null
+    responses?: NullableJsonNullValueInput | InputJsonValue
+    aiAnalysis?: NullableJsonNullValueInput | InputJsonValue
+    completedAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type CandidateReferenceUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    refereeName?: StringFieldUpdateOperationsInput | string
+    refereeEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    refereePhone?: NullableStringFieldUpdateOperationsInput | string | null
+    refereeRelation?: StringFieldUpdateOperationsInput | string
+    refereeCompany?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    token?: NullableStringFieldUpdateOperationsInput | string | null
+    responses?: NullableJsonNullValueInput | InputJsonValue
+    aiAnalysis?: NullableJsonNullValueInput | InputJsonValue
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CandidateReferenceUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    candidateId?: StringFieldUpdateOperationsInput | string
+    refereeName?: StringFieldUpdateOperationsInput | string
+    refereeEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    refereePhone?: NullableStringFieldUpdateOperationsInput | string | null
+    refereeRelation?: StringFieldUpdateOperationsInput | string
+    refereeCompany?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    token?: NullableStringFieldUpdateOperationsInput | string | null
+    responses?: NullableJsonNullValueInput | InputJsonValue
+    aiAnalysis?: NullableJsonNullValueInput | InputJsonValue
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type InterviewSessionCreateInput = {
     id?: string
     setup: JsonNullValueInput | InputJsonValue
@@ -17628,6 +24591,7 @@ export namespace Prisma {
     audioData?: Buffer | null
     createdAt?: Date | string
     organization?: OrganizationCreateNestedOneWithoutSessionsInput
+    candidate?: CandidateCreateNestedOneWithoutSessionsInput
     transcripts?: TranscriptEntryCreateNestedManyWithoutSessionInput
     observations?: ObservationCreateNestedManyWithoutSessionInput
     verdicts?: AssessorVerdictCreateNestedManyWithoutSessionInput
@@ -17637,6 +24601,7 @@ export namespace Prisma {
   export type InterviewSessionUncheckedCreateInput = {
     id?: string
     organizationId?: string | null
+    candidateId?: string | null
     setup: JsonNullValueInput | InputJsonValue
     status?: string
     startedAt?: Date | string | null
@@ -17662,6 +24627,7 @@ export namespace Prisma {
     audioData?: NullableBytesFieldUpdateOperationsInput | Buffer | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organization?: OrganizationUpdateOneWithoutSessionsNestedInput
+    candidate?: CandidateUpdateOneWithoutSessionsNestedInput
     transcripts?: TranscriptEntryUpdateManyWithoutSessionNestedInput
     observations?: ObservationUpdateManyWithoutSessionNestedInput
     verdicts?: AssessorVerdictUpdateManyWithoutSessionNestedInput
@@ -17671,6 +24637,7 @@ export namespace Prisma {
   export type InterviewSessionUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     organizationId?: NullableStringFieldUpdateOperationsInput | string | null
+    candidateId?: NullableStringFieldUpdateOperationsInput | string | null
     setup?: JsonNullValueInput | InputJsonValue
     status?: StringFieldUpdateOperationsInput | string
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -17688,6 +24655,7 @@ export namespace Prisma {
   export type InterviewSessionCreateManyInput = {
     id?: string
     organizationId?: string | null
+    candidateId?: string | null
     setup: JsonNullValueInput | InputJsonValue
     status?: string
     startedAt?: Date | string | null
@@ -17713,6 +24681,7 @@ export namespace Prisma {
   export type InterviewSessionUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     organizationId?: NullableStringFieldUpdateOperationsInput | string | null
+    candidateId?: NullableStringFieldUpdateOperationsInput | string | null
     setup?: JsonNullValueInput | InputJsonValue
     status?: StringFieldUpdateOperationsInput | string
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -17980,6 +24949,7 @@ export namespace Prisma {
     coachingReport?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     session: InterviewSessionCreateNestedOneWithoutReportsInput
+    feedback?: ReportFeedbackCreateNestedManyWithoutReportInput
   }
 
   export type ReportUncheckedCreateInput = {
@@ -17990,6 +24960,7 @@ export namespace Prisma {
     reportData: JsonNullValueInput | InputJsonValue
     coachingReport?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
+    feedback?: ReportFeedbackUncheckedCreateNestedManyWithoutReportInput
   }
 
   export type ReportUpdateInput = {
@@ -18000,6 +24971,7 @@ export namespace Prisma {
     coachingReport?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     session?: InterviewSessionUpdateOneRequiredWithoutReportsNestedInput
+    feedback?: ReportFeedbackUpdateManyWithoutReportNestedInput
   }
 
   export type ReportUncheckedUpdateInput = {
@@ -18010,6 +24982,7 @@ export namespace Prisma {
     reportData?: JsonNullValueInput | InputJsonValue
     coachingReport?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    feedback?: ReportFeedbackUncheckedUpdateManyWithoutReportNestedInput
   }
 
   export type ReportCreateManyInput = {
@@ -18044,6 +25017,7 @@ export namespace Prisma {
   export type InterviewInviteCreateInput = {
     id?: string
     token: string
+    candidateId?: string | null
     candidateName: string
     candidateEmail?: string | null
     roleName: string
@@ -18053,6 +25027,7 @@ export namespace Prisma {
     interviewMode?: string
     status?: string
     sessionId?: string | null
+    organizationId?: string | null
     expiresAt: Date | string
     createdAt?: Date | string
   }
@@ -18060,6 +25035,7 @@ export namespace Prisma {
   export type InterviewInviteUncheckedCreateInput = {
     id?: string
     token: string
+    candidateId?: string | null
     candidateName: string
     candidateEmail?: string | null
     roleName: string
@@ -18069,6 +25045,7 @@ export namespace Prisma {
     interviewMode?: string
     status?: string
     sessionId?: string | null
+    organizationId?: string | null
     expiresAt: Date | string
     createdAt?: Date | string
   }
@@ -18076,6 +25053,7 @@ export namespace Prisma {
   export type InterviewInviteUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
+    candidateId?: NullableStringFieldUpdateOperationsInput | string | null
     candidateName?: StringFieldUpdateOperationsInput | string
     candidateEmail?: NullableStringFieldUpdateOperationsInput | string | null
     roleName?: StringFieldUpdateOperationsInput | string
@@ -18085,6 +25063,7 @@ export namespace Prisma {
     interviewMode?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     sessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    organizationId?: NullableStringFieldUpdateOperationsInput | string | null
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -18092,6 +25071,7 @@ export namespace Prisma {
   export type InterviewInviteUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
+    candidateId?: NullableStringFieldUpdateOperationsInput | string | null
     candidateName?: StringFieldUpdateOperationsInput | string
     candidateEmail?: NullableStringFieldUpdateOperationsInput | string | null
     roleName?: StringFieldUpdateOperationsInput | string
@@ -18101,6 +25081,7 @@ export namespace Prisma {
     interviewMode?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     sessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    organizationId?: NullableStringFieldUpdateOperationsInput | string | null
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -18108,6 +25089,7 @@ export namespace Prisma {
   export type InterviewInviteCreateManyInput = {
     id?: string
     token: string
+    candidateId?: string | null
     candidateName: string
     candidateEmail?: string | null
     roleName: string
@@ -18117,6 +25099,7 @@ export namespace Prisma {
     interviewMode?: string
     status?: string
     sessionId?: string | null
+    organizationId?: string | null
     expiresAt: Date | string
     createdAt?: Date | string
   }
@@ -18124,6 +25107,7 @@ export namespace Prisma {
   export type InterviewInviteUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
+    candidateId?: NullableStringFieldUpdateOperationsInput | string | null
     candidateName?: StringFieldUpdateOperationsInput | string
     candidateEmail?: NullableStringFieldUpdateOperationsInput | string | null
     roleName?: StringFieldUpdateOperationsInput | string
@@ -18133,6 +25117,7 @@ export namespace Prisma {
     interviewMode?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     sessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    organizationId?: NullableStringFieldUpdateOperationsInput | string | null
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -18140,6 +25125,7 @@ export namespace Prisma {
   export type InterviewInviteUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
+    candidateId?: NullableStringFieldUpdateOperationsInput | string | null
     candidateName?: StringFieldUpdateOperationsInput | string
     candidateEmail?: NullableStringFieldUpdateOperationsInput | string | null
     roleName?: StringFieldUpdateOperationsInput | string
@@ -18149,6 +25135,7 @@ export namespace Prisma {
     interviewMode?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     sessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    organizationId?: NullableStringFieldUpdateOperationsInput | string | null
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -18158,6 +25145,7 @@ export namespace Prisma {
     reportId: string
     title: string
     status?: string
+    organizationId?: string | null
     createdAt?: Date | string
     notes?: CalibrationNoteCreateNestedManyWithoutSessionInput
   }
@@ -18167,6 +25155,7 @@ export namespace Prisma {
     reportId: string
     title: string
     status?: string
+    organizationId?: string | null
     createdAt?: Date | string
     notes?: CalibrationNoteUncheckedCreateNestedManyWithoutSessionInput
   }
@@ -18176,6 +25165,7 @@ export namespace Prisma {
     reportId?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
+    organizationId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     notes?: CalibrationNoteUpdateManyWithoutSessionNestedInput
   }
@@ -18185,6 +25175,7 @@ export namespace Prisma {
     reportId?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
+    organizationId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     notes?: CalibrationNoteUncheckedUpdateManyWithoutSessionNestedInput
   }
@@ -18194,6 +25185,7 @@ export namespace Prisma {
     reportId: string
     title: string
     status?: string
+    organizationId?: string | null
     createdAt?: Date | string
   }
 
@@ -18202,6 +25194,7 @@ export namespace Prisma {
     reportId?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
+    organizationId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -18210,6 +25203,7 @@ export namespace Prisma {
     reportId?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
+    organizationId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -18284,7 +25278,6 @@ export namespace Prisma {
 
   export type ReportFeedbackCreateInput = {
     id?: string
-    reportId: string
     userId: string
     overallAccuracy: number
     hireOutcome?: string | null
@@ -18294,6 +25287,7 @@ export namespace Prisma {
     comments?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    report: ReportCreateNestedOneWithoutFeedbackInput
   }
 
   export type ReportFeedbackUncheckedCreateInput = {
@@ -18312,7 +25306,6 @@ export namespace Prisma {
 
   export type ReportFeedbackUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    reportId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     overallAccuracy?: IntFieldUpdateOperationsInput | number
     hireOutcome?: NullableStringFieldUpdateOperationsInput | string | null
@@ -18322,6 +25315,7 @@ export namespace Prisma {
     comments?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    report?: ReportUpdateOneRequiredWithoutFeedbackNestedInput
   }
 
   export type ReportFeedbackUncheckedUpdateInput = {
@@ -18354,7 +25348,6 @@ export namespace Prisma {
 
   export type ReportFeedbackUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    reportId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     overallAccuracy?: IntFieldUpdateOperationsInput | number
     hireOutcome?: NullableStringFieldUpdateOperationsInput | string | null
@@ -18510,11 +25503,21 @@ export namespace Prisma {
     none?: InterviewSessionWhereInput
   }
 
+  export type CandidateListRelationFilter = {
+    every?: CandidateWhereInput
+    some?: CandidateWhereInput
+    none?: CandidateWhereInput
+  }
+
   export type UserOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
   export type InterviewSessionOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type CandidateOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -18735,6 +25738,7 @@ export namespace Prisma {
     role?: SortOrder
     token?: SortOrder
     invitedById?: SortOrder
+    organizationId?: SortOrder
     expiresAt?: SortOrder
     acceptedAt?: SortOrder
     createdAt?: SortOrder
@@ -18746,6 +25750,7 @@ export namespace Prisma {
     role?: SortOrder
     token?: SortOrder
     invitedById?: SortOrder
+    organizationId?: SortOrder
     expiresAt?: SortOrder
     acceptedAt?: SortOrder
     createdAt?: SortOrder
@@ -18757,6 +25762,7 @@ export namespace Prisma {
     role?: SortOrder
     token?: SortOrder
     invitedById?: SortOrder
+    organizationId?: SortOrder
     expiresAt?: SortOrder
     acceptedAt?: SortOrder
     createdAt?: SortOrder
@@ -18792,9 +25798,146 @@ export namespace Prisma {
     createdAt?: SortOrder
   }
 
-  export type BoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type CandidateIntelligenceListRelationFilter = {
+    every?: CandidateIntelligenceWhereInput
+    some?: CandidateIntelligenceWhereInput
+    none?: CandidateIntelligenceWhereInput
+  }
+
+  export type CandidateNoteListRelationFilter = {
+    every?: CandidateNoteWhereInput
+    some?: CandidateNoteWhereInput
+    none?: CandidateNoteWhereInput
+  }
+
+  export type CandidateReferenceListRelationFilter = {
+    every?: CandidateReferenceWhereInput
+    some?: CandidateReferenceWhereInput
+    none?: CandidateReferenceWhereInput
+  }
+
+  export type CandidateDocumentListRelationFilter = {
+    every?: CandidateDocumentWhereInput
+    some?: CandidateDocumentWhereInput
+    none?: CandidateDocumentWhereInput
+  }
+
+  export type CandidateIntelligenceOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type CandidateNoteOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type CandidateReferenceOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type CandidateDocumentOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type CandidateCountOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    name?: SortOrder
+    email?: SortOrder
+    phone?: SortOrder
+    linkedinUrl?: SortOrder
+    githubUrl?: SortOrder
+    portfolioUrl?: SortOrder
+    source?: SortOrder
+    sourceDetail?: SortOrder
+    currentRole?: SortOrder
+    currentCompany?: SortOrder
+    yearsExperience?: SortOrder
+    salaryExpectation?: SortOrder
+    noticePeriod?: SortOrder
+    pipelineStage?: SortOrder
+    rejectionReason?: SortOrder
+    tags?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CandidateAvgOrderByAggregateInput = {
+    yearsExperience?: SortOrder
+  }
+
+  export type CandidateMaxOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    name?: SortOrder
+    email?: SortOrder
+    phone?: SortOrder
+    linkedinUrl?: SortOrder
+    githubUrl?: SortOrder
+    portfolioUrl?: SortOrder
+    source?: SortOrder
+    sourceDetail?: SortOrder
+    currentRole?: SortOrder
+    currentCompany?: SortOrder
+    yearsExperience?: SortOrder
+    salaryExpectation?: SortOrder
+    noticePeriod?: SortOrder
+    pipelineStage?: SortOrder
+    rejectionReason?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CandidateMinOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    name?: SortOrder
+    email?: SortOrder
+    phone?: SortOrder
+    linkedinUrl?: SortOrder
+    githubUrl?: SortOrder
+    portfolioUrl?: SortOrder
+    source?: SortOrder
+    sourceDetail?: SortOrder
+    currentRole?: SortOrder
+    currentCompany?: SortOrder
+    yearsExperience?: SortOrder
+    salaryExpectation?: SortOrder
+    noticePeriod?: SortOrder
+    pipelineStage?: SortOrder
+    rejectionReason?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CandidateSumOrderByAggregateInput = {
+    yearsExperience?: SortOrder
+  }
+
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type BytesNullableFilter<$PrismaModel = never> = {
@@ -18802,6 +25945,210 @@ export namespace Prisma {
     in?: Buffer[] | ListBytesFieldRefInput<$PrismaModel> | null
     notIn?: Buffer[] | ListBytesFieldRefInput<$PrismaModel> | null
     not?: NestedBytesNullableFilter<$PrismaModel> | Buffer | null
+  }
+
+  export type CandidateRelationFilter = {
+    is?: CandidateWhereInput
+    isNot?: CandidateWhereInput
+  }
+
+  export type CandidateDocumentCountOrderByAggregateInput = {
+    id?: SortOrder
+    candidateId?: SortOrder
+    type?: SortOrder
+    filename?: SortOrder
+    mimeType?: SortOrder
+    content?: SortOrder
+    rawData?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type CandidateDocumentMaxOrderByAggregateInput = {
+    id?: SortOrder
+    candidateId?: SortOrder
+    type?: SortOrder
+    filename?: SortOrder
+    mimeType?: SortOrder
+    content?: SortOrder
+    rawData?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type CandidateDocumentMinOrderByAggregateInput = {
+    id?: SortOrder
+    candidateId?: SortOrder
+    type?: SortOrder
+    filename?: SortOrder
+    mimeType?: SortOrder
+    content?: SortOrder
+    rawData?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type BytesNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Buffer | BytesFieldRefInput<$PrismaModel> | null
+    in?: Buffer[] | ListBytesFieldRefInput<$PrismaModel> | null
+    notIn?: Buffer[] | ListBytesFieldRefInput<$PrismaModel> | null
+    not?: NestedBytesNullableWithAggregatesFilter<$PrismaModel> | Buffer | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedBytesNullableFilter<$PrismaModel>
+    _max?: NestedBytesNullableFilter<$PrismaModel>
+  }
+
+  export type CandidateIntelligenceCountOrderByAggregateInput = {
+    id?: SortOrder
+    candidateId?: SortOrder
+    type?: SortOrder
+    data?: SortOrder
+    sourceText?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type CandidateIntelligenceMaxOrderByAggregateInput = {
+    id?: SortOrder
+    candidateId?: SortOrder
+    type?: SortOrder
+    sourceText?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type CandidateIntelligenceMinOrderByAggregateInput = {
+    id?: SortOrder
+    candidateId?: SortOrder
+    type?: SortOrder
+    sourceText?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type CandidateNoteCountOrderByAggregateInput = {
+    id?: SortOrder
+    candidateId?: SortOrder
+    userId?: SortOrder
+    userName?: SortOrder
+    content?: SortOrder
+    type?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type CandidateNoteMaxOrderByAggregateInput = {
+    id?: SortOrder
+    candidateId?: SortOrder
+    userId?: SortOrder
+    userName?: SortOrder
+    content?: SortOrder
+    type?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type CandidateNoteMinOrderByAggregateInput = {
+    id?: SortOrder
+    candidateId?: SortOrder
+    userId?: SortOrder
+    userName?: SortOrder
+    content?: SortOrder
+    type?: SortOrder
+    createdAt?: SortOrder
+  }
+  export type JsonNullableFilter<$PrismaModel = never> = 
+    | PatchUndefined<
+        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
+  export type CandidateReferenceCountOrderByAggregateInput = {
+    id?: SortOrder
+    candidateId?: SortOrder
+    refereeName?: SortOrder
+    refereeEmail?: SortOrder
+    refereePhone?: SortOrder
+    refereeRelation?: SortOrder
+    refereeCompany?: SortOrder
+    status?: SortOrder
+    token?: SortOrder
+    responses?: SortOrder
+    aiAnalysis?: SortOrder
+    completedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type CandidateReferenceMaxOrderByAggregateInput = {
+    id?: SortOrder
+    candidateId?: SortOrder
+    refereeName?: SortOrder
+    refereeEmail?: SortOrder
+    refereePhone?: SortOrder
+    refereeRelation?: SortOrder
+    refereeCompany?: SortOrder
+    status?: SortOrder
+    token?: SortOrder
+    completedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type CandidateReferenceMinOrderByAggregateInput = {
+    id?: SortOrder
+    candidateId?: SortOrder
+    refereeName?: SortOrder
+    refereeEmail?: SortOrder
+    refereePhone?: SortOrder
+    refereeRelation?: SortOrder
+    refereeCompany?: SortOrder
+    status?: SortOrder
+    token?: SortOrder
+    completedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> = 
+    | PatchUndefined<
+        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedJsonNullableFilter<$PrismaModel>
+    _max?: NestedJsonNullableFilter<$PrismaModel>
+  }
+
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type CandidateNullableRelationFilter = {
+    is?: CandidateWhereInput | null
+    isNot?: CandidateWhereInput | null
   }
 
   export type TranscriptEntryListRelationFilter = {
@@ -18847,6 +26194,7 @@ export namespace Prisma {
   export type InterviewSessionCountOrderByAggregateInput = {
     id?: SortOrder
     organizationId?: SortOrder
+    candidateId?: SortOrder
     setup?: SortOrder
     status?: SortOrder
     startedAt?: SortOrder
@@ -18860,6 +26208,7 @@ export namespace Prisma {
   export type InterviewSessionMaxOrderByAggregateInput = {
     id?: SortOrder
     organizationId?: SortOrder
+    candidateId?: SortOrder
     status?: SortOrder
     startedAt?: SortOrder
     endedAt?: SortOrder
@@ -18872,6 +26221,7 @@ export namespace Prisma {
   export type InterviewSessionMinOrderByAggregateInput = {
     id?: SortOrder
     organizationId?: SortOrder
+    candidateId?: SortOrder
     status?: SortOrder
     startedAt?: SortOrder
     endedAt?: SortOrder
@@ -18887,16 +26237,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedBoolFilter<$PrismaModel>
     _max?: NestedBoolFilter<$PrismaModel>
-  }
-
-  export type BytesNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Buffer | BytesFieldRefInput<$PrismaModel> | null
-    in?: Buffer[] | ListBytesFieldRefInput<$PrismaModel> | null
-    notIn?: Buffer[] | ListBytesFieldRefInput<$PrismaModel> | null
-    not?: NestedBytesNullableWithAggregatesFilter<$PrismaModel> | Buffer | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedBytesNullableFilter<$PrismaModel>
-    _max?: NestedBytesNullableFilter<$PrismaModel>
   }
 
   export type FloatNullableFilter<$PrismaModel = never> = {
@@ -19036,28 +26376,6 @@ export namespace Prisma {
     _min?: NestedFloatFilter<$PrismaModel>
     _max?: NestedFloatFilter<$PrismaModel>
   }
-  export type JsonNullableFilter<$PrismaModel = never> = 
-    | PatchUndefined<
-        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
-        Required<JsonNullableFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
-
-  export type JsonNullableFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-  }
 
   export type AssessorVerdictCountOrderByAggregateInput = {
     id?: SortOrder
@@ -19101,30 +26419,15 @@ export namespace Prisma {
   export type AssessorVerdictSumOrderByAggregateInput = {
     confidence?: SortOrder
   }
-  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> = 
-    | PatchUndefined<
-        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
-        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
 
-  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedJsonNullableFilter<$PrismaModel>
-    _max?: NestedJsonNullableFilter<$PrismaModel>
+  export type ReportFeedbackListRelationFilter = {
+    every?: ReportFeedbackWhereInput
+    some?: ReportFeedbackWhereInput
+    none?: ReportFeedbackWhereInput
+  }
+
+  export type ReportFeedbackOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type ReportCountOrderByAggregateInput = {
@@ -19156,6 +26459,7 @@ export namespace Prisma {
   export type InterviewInviteCountOrderByAggregateInput = {
     id?: SortOrder
     token?: SortOrder
+    candidateId?: SortOrder
     candidateName?: SortOrder
     candidateEmail?: SortOrder
     roleName?: SortOrder
@@ -19165,6 +26469,7 @@ export namespace Prisma {
     interviewMode?: SortOrder
     status?: SortOrder
     sessionId?: SortOrder
+    organizationId?: SortOrder
     expiresAt?: SortOrder
     createdAt?: SortOrder
   }
@@ -19172,6 +26477,7 @@ export namespace Prisma {
   export type InterviewInviteMaxOrderByAggregateInput = {
     id?: SortOrder
     token?: SortOrder
+    candidateId?: SortOrder
     candidateName?: SortOrder
     candidateEmail?: SortOrder
     roleName?: SortOrder
@@ -19180,6 +26486,7 @@ export namespace Prisma {
     interviewMode?: SortOrder
     status?: SortOrder
     sessionId?: SortOrder
+    organizationId?: SortOrder
     expiresAt?: SortOrder
     createdAt?: SortOrder
   }
@@ -19187,6 +26494,7 @@ export namespace Prisma {
   export type InterviewInviteMinOrderByAggregateInput = {
     id?: SortOrder
     token?: SortOrder
+    candidateId?: SortOrder
     candidateName?: SortOrder
     candidateEmail?: SortOrder
     roleName?: SortOrder
@@ -19195,6 +26503,7 @@ export namespace Prisma {
     interviewMode?: SortOrder
     status?: SortOrder
     sessionId?: SortOrder
+    organizationId?: SortOrder
     expiresAt?: SortOrder
     createdAt?: SortOrder
   }
@@ -19214,6 +26523,7 @@ export namespace Prisma {
     reportId?: SortOrder
     title?: SortOrder
     status?: SortOrder
+    organizationId?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -19222,6 +26532,7 @@ export namespace Prisma {
     reportId?: SortOrder
     title?: SortOrder
     status?: SortOrder
+    organizationId?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -19230,6 +26541,7 @@ export namespace Prisma {
     reportId?: SortOrder
     title?: SortOrder
     status?: SortOrder
+    organizationId?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -19277,6 +26589,11 @@ export namespace Prisma {
     gt?: number | IntFieldRefInput<$PrismaModel>
     gte?: number | IntFieldRefInput<$PrismaModel>
     not?: NestedIntFilter<$PrismaModel> | number
+  }
+
+  export type ReportRelationFilter = {
+    is?: ReportWhereInput
+    isNot?: ReportWhereInput
   }
 
   export type ReportFeedbackReportIdUserIdCompoundUniqueInput = {
@@ -19401,6 +26718,13 @@ export namespace Prisma {
     connect?: InterviewSessionWhereUniqueInput | InterviewSessionWhereUniqueInput[]
   }
 
+  export type CandidateCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<CandidateCreateWithoutOrganizationInput, CandidateUncheckedCreateWithoutOrganizationInput> | CandidateCreateWithoutOrganizationInput[] | CandidateUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: CandidateCreateOrConnectWithoutOrganizationInput | CandidateCreateOrConnectWithoutOrganizationInput[]
+    createMany?: CandidateCreateManyOrganizationInputEnvelope
+    connect?: CandidateWhereUniqueInput | CandidateWhereUniqueInput[]
+  }
+
   export type UserUncheckedCreateNestedManyWithoutOrganizationInput = {
     create?: XOR<UserCreateWithoutOrganizationInput, UserUncheckedCreateWithoutOrganizationInput> | UserCreateWithoutOrganizationInput[] | UserUncheckedCreateWithoutOrganizationInput[]
     connectOrCreate?: UserCreateOrConnectWithoutOrganizationInput | UserCreateOrConnectWithoutOrganizationInput[]
@@ -19413,6 +26737,13 @@ export namespace Prisma {
     connectOrCreate?: InterviewSessionCreateOrConnectWithoutOrganizationInput | InterviewSessionCreateOrConnectWithoutOrganizationInput[]
     createMany?: InterviewSessionCreateManyOrganizationInputEnvelope
     connect?: InterviewSessionWhereUniqueInput | InterviewSessionWhereUniqueInput[]
+  }
+
+  export type CandidateUncheckedCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<CandidateCreateWithoutOrganizationInput, CandidateUncheckedCreateWithoutOrganizationInput> | CandidateCreateWithoutOrganizationInput[] | CandidateUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: CandidateCreateOrConnectWithoutOrganizationInput | CandidateCreateOrConnectWithoutOrganizationInput[]
+    createMany?: CandidateCreateManyOrganizationInputEnvelope
+    connect?: CandidateWhereUniqueInput | CandidateWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -19451,6 +26782,20 @@ export namespace Prisma {
     deleteMany?: InterviewSessionScalarWhereInput | InterviewSessionScalarWhereInput[]
   }
 
+  export type CandidateUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<CandidateCreateWithoutOrganizationInput, CandidateUncheckedCreateWithoutOrganizationInput> | CandidateCreateWithoutOrganizationInput[] | CandidateUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: CandidateCreateOrConnectWithoutOrganizationInput | CandidateCreateOrConnectWithoutOrganizationInput[]
+    upsert?: CandidateUpsertWithWhereUniqueWithoutOrganizationInput | CandidateUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: CandidateCreateManyOrganizationInputEnvelope
+    set?: CandidateWhereUniqueInput | CandidateWhereUniqueInput[]
+    disconnect?: CandidateWhereUniqueInput | CandidateWhereUniqueInput[]
+    delete?: CandidateWhereUniqueInput | CandidateWhereUniqueInput[]
+    connect?: CandidateWhereUniqueInput | CandidateWhereUniqueInput[]
+    update?: CandidateUpdateWithWhereUniqueWithoutOrganizationInput | CandidateUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: CandidateUpdateManyWithWhereWithoutOrganizationInput | CandidateUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: CandidateScalarWhereInput | CandidateScalarWhereInput[]
+  }
+
   export type UserUncheckedUpdateManyWithoutOrganizationNestedInput = {
     create?: XOR<UserCreateWithoutOrganizationInput, UserUncheckedCreateWithoutOrganizationInput> | UserCreateWithoutOrganizationInput[] | UserUncheckedCreateWithoutOrganizationInput[]
     connectOrCreate?: UserCreateOrConnectWithoutOrganizationInput | UserCreateOrConnectWithoutOrganizationInput[]
@@ -19477,6 +26822,20 @@ export namespace Prisma {
     update?: InterviewSessionUpdateWithWhereUniqueWithoutOrganizationInput | InterviewSessionUpdateWithWhereUniqueWithoutOrganizationInput[]
     updateMany?: InterviewSessionUpdateManyWithWhereWithoutOrganizationInput | InterviewSessionUpdateManyWithWhereWithoutOrganizationInput[]
     deleteMany?: InterviewSessionScalarWhereInput | InterviewSessionScalarWhereInput[]
+  }
+
+  export type CandidateUncheckedUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<CandidateCreateWithoutOrganizationInput, CandidateUncheckedCreateWithoutOrganizationInput> | CandidateCreateWithoutOrganizationInput[] | CandidateUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: CandidateCreateOrConnectWithoutOrganizationInput | CandidateCreateOrConnectWithoutOrganizationInput[]
+    upsert?: CandidateUpsertWithWhereUniqueWithoutOrganizationInput | CandidateUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: CandidateCreateManyOrganizationInputEnvelope
+    set?: CandidateWhereUniqueInput | CandidateWhereUniqueInput[]
+    disconnect?: CandidateWhereUniqueInput | CandidateWhereUniqueInput[]
+    delete?: CandidateWhereUniqueInput | CandidateWhereUniqueInput[]
+    connect?: CandidateWhereUniqueInput | CandidateWhereUniqueInput[]
+    update?: CandidateUpdateWithWhereUniqueWithoutOrganizationInput | CandidateUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: CandidateUpdateManyWithWhereWithoutOrganizationInput | CandidateUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: CandidateScalarWhereInput | CandidateScalarWhereInput[]
   }
 
   export type OrganizationCreateNestedOneWithoutUsersInput = {
@@ -19617,10 +26976,310 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutActivityLogsInput, UserUpdateWithoutActivityLogsInput>, UserUncheckedUpdateWithoutActivityLogsInput>
   }
 
+  export type OrganizationCreateNestedOneWithoutCandidatesInput = {
+    create?: XOR<OrganizationCreateWithoutCandidatesInput, OrganizationUncheckedCreateWithoutCandidatesInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutCandidatesInput
+    connect?: OrganizationWhereUniqueInput
+  }
+
+  export type InterviewSessionCreateNestedManyWithoutCandidateInput = {
+    create?: XOR<InterviewSessionCreateWithoutCandidateInput, InterviewSessionUncheckedCreateWithoutCandidateInput> | InterviewSessionCreateWithoutCandidateInput[] | InterviewSessionUncheckedCreateWithoutCandidateInput[]
+    connectOrCreate?: InterviewSessionCreateOrConnectWithoutCandidateInput | InterviewSessionCreateOrConnectWithoutCandidateInput[]
+    createMany?: InterviewSessionCreateManyCandidateInputEnvelope
+    connect?: InterviewSessionWhereUniqueInput | InterviewSessionWhereUniqueInput[]
+  }
+
+  export type CandidateIntelligenceCreateNestedManyWithoutCandidateInput = {
+    create?: XOR<CandidateIntelligenceCreateWithoutCandidateInput, CandidateIntelligenceUncheckedCreateWithoutCandidateInput> | CandidateIntelligenceCreateWithoutCandidateInput[] | CandidateIntelligenceUncheckedCreateWithoutCandidateInput[]
+    connectOrCreate?: CandidateIntelligenceCreateOrConnectWithoutCandidateInput | CandidateIntelligenceCreateOrConnectWithoutCandidateInput[]
+    createMany?: CandidateIntelligenceCreateManyCandidateInputEnvelope
+    connect?: CandidateIntelligenceWhereUniqueInput | CandidateIntelligenceWhereUniqueInput[]
+  }
+
+  export type CandidateNoteCreateNestedManyWithoutCandidateInput = {
+    create?: XOR<CandidateNoteCreateWithoutCandidateInput, CandidateNoteUncheckedCreateWithoutCandidateInput> | CandidateNoteCreateWithoutCandidateInput[] | CandidateNoteUncheckedCreateWithoutCandidateInput[]
+    connectOrCreate?: CandidateNoteCreateOrConnectWithoutCandidateInput | CandidateNoteCreateOrConnectWithoutCandidateInput[]
+    createMany?: CandidateNoteCreateManyCandidateInputEnvelope
+    connect?: CandidateNoteWhereUniqueInput | CandidateNoteWhereUniqueInput[]
+  }
+
+  export type CandidateReferenceCreateNestedManyWithoutCandidateInput = {
+    create?: XOR<CandidateReferenceCreateWithoutCandidateInput, CandidateReferenceUncheckedCreateWithoutCandidateInput> | CandidateReferenceCreateWithoutCandidateInput[] | CandidateReferenceUncheckedCreateWithoutCandidateInput[]
+    connectOrCreate?: CandidateReferenceCreateOrConnectWithoutCandidateInput | CandidateReferenceCreateOrConnectWithoutCandidateInput[]
+    createMany?: CandidateReferenceCreateManyCandidateInputEnvelope
+    connect?: CandidateReferenceWhereUniqueInput | CandidateReferenceWhereUniqueInput[]
+  }
+
+  export type CandidateDocumentCreateNestedManyWithoutCandidateInput = {
+    create?: XOR<CandidateDocumentCreateWithoutCandidateInput, CandidateDocumentUncheckedCreateWithoutCandidateInput> | CandidateDocumentCreateWithoutCandidateInput[] | CandidateDocumentUncheckedCreateWithoutCandidateInput[]
+    connectOrCreate?: CandidateDocumentCreateOrConnectWithoutCandidateInput | CandidateDocumentCreateOrConnectWithoutCandidateInput[]
+    createMany?: CandidateDocumentCreateManyCandidateInputEnvelope
+    connect?: CandidateDocumentWhereUniqueInput | CandidateDocumentWhereUniqueInput[]
+  }
+
+  export type InterviewSessionUncheckedCreateNestedManyWithoutCandidateInput = {
+    create?: XOR<InterviewSessionCreateWithoutCandidateInput, InterviewSessionUncheckedCreateWithoutCandidateInput> | InterviewSessionCreateWithoutCandidateInput[] | InterviewSessionUncheckedCreateWithoutCandidateInput[]
+    connectOrCreate?: InterviewSessionCreateOrConnectWithoutCandidateInput | InterviewSessionCreateOrConnectWithoutCandidateInput[]
+    createMany?: InterviewSessionCreateManyCandidateInputEnvelope
+    connect?: InterviewSessionWhereUniqueInput | InterviewSessionWhereUniqueInput[]
+  }
+
+  export type CandidateIntelligenceUncheckedCreateNestedManyWithoutCandidateInput = {
+    create?: XOR<CandidateIntelligenceCreateWithoutCandidateInput, CandidateIntelligenceUncheckedCreateWithoutCandidateInput> | CandidateIntelligenceCreateWithoutCandidateInput[] | CandidateIntelligenceUncheckedCreateWithoutCandidateInput[]
+    connectOrCreate?: CandidateIntelligenceCreateOrConnectWithoutCandidateInput | CandidateIntelligenceCreateOrConnectWithoutCandidateInput[]
+    createMany?: CandidateIntelligenceCreateManyCandidateInputEnvelope
+    connect?: CandidateIntelligenceWhereUniqueInput | CandidateIntelligenceWhereUniqueInput[]
+  }
+
+  export type CandidateNoteUncheckedCreateNestedManyWithoutCandidateInput = {
+    create?: XOR<CandidateNoteCreateWithoutCandidateInput, CandidateNoteUncheckedCreateWithoutCandidateInput> | CandidateNoteCreateWithoutCandidateInput[] | CandidateNoteUncheckedCreateWithoutCandidateInput[]
+    connectOrCreate?: CandidateNoteCreateOrConnectWithoutCandidateInput | CandidateNoteCreateOrConnectWithoutCandidateInput[]
+    createMany?: CandidateNoteCreateManyCandidateInputEnvelope
+    connect?: CandidateNoteWhereUniqueInput | CandidateNoteWhereUniqueInput[]
+  }
+
+  export type CandidateReferenceUncheckedCreateNestedManyWithoutCandidateInput = {
+    create?: XOR<CandidateReferenceCreateWithoutCandidateInput, CandidateReferenceUncheckedCreateWithoutCandidateInput> | CandidateReferenceCreateWithoutCandidateInput[] | CandidateReferenceUncheckedCreateWithoutCandidateInput[]
+    connectOrCreate?: CandidateReferenceCreateOrConnectWithoutCandidateInput | CandidateReferenceCreateOrConnectWithoutCandidateInput[]
+    createMany?: CandidateReferenceCreateManyCandidateInputEnvelope
+    connect?: CandidateReferenceWhereUniqueInput | CandidateReferenceWhereUniqueInput[]
+  }
+
+  export type CandidateDocumentUncheckedCreateNestedManyWithoutCandidateInput = {
+    create?: XOR<CandidateDocumentCreateWithoutCandidateInput, CandidateDocumentUncheckedCreateWithoutCandidateInput> | CandidateDocumentCreateWithoutCandidateInput[] | CandidateDocumentUncheckedCreateWithoutCandidateInput[]
+    connectOrCreate?: CandidateDocumentCreateOrConnectWithoutCandidateInput | CandidateDocumentCreateOrConnectWithoutCandidateInput[]
+    createMany?: CandidateDocumentCreateManyCandidateInputEnvelope
+    connect?: CandidateDocumentWhereUniqueInput | CandidateDocumentWhereUniqueInput[]
+  }
+
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type OrganizationUpdateOneWithoutCandidatesNestedInput = {
+    create?: XOR<OrganizationCreateWithoutCandidatesInput, OrganizationUncheckedCreateWithoutCandidatesInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutCandidatesInput
+    upsert?: OrganizationUpsertWithoutCandidatesInput
+    disconnect?: OrganizationWhereInput | boolean
+    delete?: OrganizationWhereInput | boolean
+    connect?: OrganizationWhereUniqueInput
+    update?: XOR<XOR<OrganizationUpdateToOneWithWhereWithoutCandidatesInput, OrganizationUpdateWithoutCandidatesInput>, OrganizationUncheckedUpdateWithoutCandidatesInput>
+  }
+
+  export type InterviewSessionUpdateManyWithoutCandidateNestedInput = {
+    create?: XOR<InterviewSessionCreateWithoutCandidateInput, InterviewSessionUncheckedCreateWithoutCandidateInput> | InterviewSessionCreateWithoutCandidateInput[] | InterviewSessionUncheckedCreateWithoutCandidateInput[]
+    connectOrCreate?: InterviewSessionCreateOrConnectWithoutCandidateInput | InterviewSessionCreateOrConnectWithoutCandidateInput[]
+    upsert?: InterviewSessionUpsertWithWhereUniqueWithoutCandidateInput | InterviewSessionUpsertWithWhereUniqueWithoutCandidateInput[]
+    createMany?: InterviewSessionCreateManyCandidateInputEnvelope
+    set?: InterviewSessionWhereUniqueInput | InterviewSessionWhereUniqueInput[]
+    disconnect?: InterviewSessionWhereUniqueInput | InterviewSessionWhereUniqueInput[]
+    delete?: InterviewSessionWhereUniqueInput | InterviewSessionWhereUniqueInput[]
+    connect?: InterviewSessionWhereUniqueInput | InterviewSessionWhereUniqueInput[]
+    update?: InterviewSessionUpdateWithWhereUniqueWithoutCandidateInput | InterviewSessionUpdateWithWhereUniqueWithoutCandidateInput[]
+    updateMany?: InterviewSessionUpdateManyWithWhereWithoutCandidateInput | InterviewSessionUpdateManyWithWhereWithoutCandidateInput[]
+    deleteMany?: InterviewSessionScalarWhereInput | InterviewSessionScalarWhereInput[]
+  }
+
+  export type CandidateIntelligenceUpdateManyWithoutCandidateNestedInput = {
+    create?: XOR<CandidateIntelligenceCreateWithoutCandidateInput, CandidateIntelligenceUncheckedCreateWithoutCandidateInput> | CandidateIntelligenceCreateWithoutCandidateInput[] | CandidateIntelligenceUncheckedCreateWithoutCandidateInput[]
+    connectOrCreate?: CandidateIntelligenceCreateOrConnectWithoutCandidateInput | CandidateIntelligenceCreateOrConnectWithoutCandidateInput[]
+    upsert?: CandidateIntelligenceUpsertWithWhereUniqueWithoutCandidateInput | CandidateIntelligenceUpsertWithWhereUniqueWithoutCandidateInput[]
+    createMany?: CandidateIntelligenceCreateManyCandidateInputEnvelope
+    set?: CandidateIntelligenceWhereUniqueInput | CandidateIntelligenceWhereUniqueInput[]
+    disconnect?: CandidateIntelligenceWhereUniqueInput | CandidateIntelligenceWhereUniqueInput[]
+    delete?: CandidateIntelligenceWhereUniqueInput | CandidateIntelligenceWhereUniqueInput[]
+    connect?: CandidateIntelligenceWhereUniqueInput | CandidateIntelligenceWhereUniqueInput[]
+    update?: CandidateIntelligenceUpdateWithWhereUniqueWithoutCandidateInput | CandidateIntelligenceUpdateWithWhereUniqueWithoutCandidateInput[]
+    updateMany?: CandidateIntelligenceUpdateManyWithWhereWithoutCandidateInput | CandidateIntelligenceUpdateManyWithWhereWithoutCandidateInput[]
+    deleteMany?: CandidateIntelligenceScalarWhereInput | CandidateIntelligenceScalarWhereInput[]
+  }
+
+  export type CandidateNoteUpdateManyWithoutCandidateNestedInput = {
+    create?: XOR<CandidateNoteCreateWithoutCandidateInput, CandidateNoteUncheckedCreateWithoutCandidateInput> | CandidateNoteCreateWithoutCandidateInput[] | CandidateNoteUncheckedCreateWithoutCandidateInput[]
+    connectOrCreate?: CandidateNoteCreateOrConnectWithoutCandidateInput | CandidateNoteCreateOrConnectWithoutCandidateInput[]
+    upsert?: CandidateNoteUpsertWithWhereUniqueWithoutCandidateInput | CandidateNoteUpsertWithWhereUniqueWithoutCandidateInput[]
+    createMany?: CandidateNoteCreateManyCandidateInputEnvelope
+    set?: CandidateNoteWhereUniqueInput | CandidateNoteWhereUniqueInput[]
+    disconnect?: CandidateNoteWhereUniqueInput | CandidateNoteWhereUniqueInput[]
+    delete?: CandidateNoteWhereUniqueInput | CandidateNoteWhereUniqueInput[]
+    connect?: CandidateNoteWhereUniqueInput | CandidateNoteWhereUniqueInput[]
+    update?: CandidateNoteUpdateWithWhereUniqueWithoutCandidateInput | CandidateNoteUpdateWithWhereUniqueWithoutCandidateInput[]
+    updateMany?: CandidateNoteUpdateManyWithWhereWithoutCandidateInput | CandidateNoteUpdateManyWithWhereWithoutCandidateInput[]
+    deleteMany?: CandidateNoteScalarWhereInput | CandidateNoteScalarWhereInput[]
+  }
+
+  export type CandidateReferenceUpdateManyWithoutCandidateNestedInput = {
+    create?: XOR<CandidateReferenceCreateWithoutCandidateInput, CandidateReferenceUncheckedCreateWithoutCandidateInput> | CandidateReferenceCreateWithoutCandidateInput[] | CandidateReferenceUncheckedCreateWithoutCandidateInput[]
+    connectOrCreate?: CandidateReferenceCreateOrConnectWithoutCandidateInput | CandidateReferenceCreateOrConnectWithoutCandidateInput[]
+    upsert?: CandidateReferenceUpsertWithWhereUniqueWithoutCandidateInput | CandidateReferenceUpsertWithWhereUniqueWithoutCandidateInput[]
+    createMany?: CandidateReferenceCreateManyCandidateInputEnvelope
+    set?: CandidateReferenceWhereUniqueInput | CandidateReferenceWhereUniqueInput[]
+    disconnect?: CandidateReferenceWhereUniqueInput | CandidateReferenceWhereUniqueInput[]
+    delete?: CandidateReferenceWhereUniqueInput | CandidateReferenceWhereUniqueInput[]
+    connect?: CandidateReferenceWhereUniqueInput | CandidateReferenceWhereUniqueInput[]
+    update?: CandidateReferenceUpdateWithWhereUniqueWithoutCandidateInput | CandidateReferenceUpdateWithWhereUniqueWithoutCandidateInput[]
+    updateMany?: CandidateReferenceUpdateManyWithWhereWithoutCandidateInput | CandidateReferenceUpdateManyWithWhereWithoutCandidateInput[]
+    deleteMany?: CandidateReferenceScalarWhereInput | CandidateReferenceScalarWhereInput[]
+  }
+
+  export type CandidateDocumentUpdateManyWithoutCandidateNestedInput = {
+    create?: XOR<CandidateDocumentCreateWithoutCandidateInput, CandidateDocumentUncheckedCreateWithoutCandidateInput> | CandidateDocumentCreateWithoutCandidateInput[] | CandidateDocumentUncheckedCreateWithoutCandidateInput[]
+    connectOrCreate?: CandidateDocumentCreateOrConnectWithoutCandidateInput | CandidateDocumentCreateOrConnectWithoutCandidateInput[]
+    upsert?: CandidateDocumentUpsertWithWhereUniqueWithoutCandidateInput | CandidateDocumentUpsertWithWhereUniqueWithoutCandidateInput[]
+    createMany?: CandidateDocumentCreateManyCandidateInputEnvelope
+    set?: CandidateDocumentWhereUniqueInput | CandidateDocumentWhereUniqueInput[]
+    disconnect?: CandidateDocumentWhereUniqueInput | CandidateDocumentWhereUniqueInput[]
+    delete?: CandidateDocumentWhereUniqueInput | CandidateDocumentWhereUniqueInput[]
+    connect?: CandidateDocumentWhereUniqueInput | CandidateDocumentWhereUniqueInput[]
+    update?: CandidateDocumentUpdateWithWhereUniqueWithoutCandidateInput | CandidateDocumentUpdateWithWhereUniqueWithoutCandidateInput[]
+    updateMany?: CandidateDocumentUpdateManyWithWhereWithoutCandidateInput | CandidateDocumentUpdateManyWithWhereWithoutCandidateInput[]
+    deleteMany?: CandidateDocumentScalarWhereInput | CandidateDocumentScalarWhereInput[]
+  }
+
+  export type InterviewSessionUncheckedUpdateManyWithoutCandidateNestedInput = {
+    create?: XOR<InterviewSessionCreateWithoutCandidateInput, InterviewSessionUncheckedCreateWithoutCandidateInput> | InterviewSessionCreateWithoutCandidateInput[] | InterviewSessionUncheckedCreateWithoutCandidateInput[]
+    connectOrCreate?: InterviewSessionCreateOrConnectWithoutCandidateInput | InterviewSessionCreateOrConnectWithoutCandidateInput[]
+    upsert?: InterviewSessionUpsertWithWhereUniqueWithoutCandidateInput | InterviewSessionUpsertWithWhereUniqueWithoutCandidateInput[]
+    createMany?: InterviewSessionCreateManyCandidateInputEnvelope
+    set?: InterviewSessionWhereUniqueInput | InterviewSessionWhereUniqueInput[]
+    disconnect?: InterviewSessionWhereUniqueInput | InterviewSessionWhereUniqueInput[]
+    delete?: InterviewSessionWhereUniqueInput | InterviewSessionWhereUniqueInput[]
+    connect?: InterviewSessionWhereUniqueInput | InterviewSessionWhereUniqueInput[]
+    update?: InterviewSessionUpdateWithWhereUniqueWithoutCandidateInput | InterviewSessionUpdateWithWhereUniqueWithoutCandidateInput[]
+    updateMany?: InterviewSessionUpdateManyWithWhereWithoutCandidateInput | InterviewSessionUpdateManyWithWhereWithoutCandidateInput[]
+    deleteMany?: InterviewSessionScalarWhereInput | InterviewSessionScalarWhereInput[]
+  }
+
+  export type CandidateIntelligenceUncheckedUpdateManyWithoutCandidateNestedInput = {
+    create?: XOR<CandidateIntelligenceCreateWithoutCandidateInput, CandidateIntelligenceUncheckedCreateWithoutCandidateInput> | CandidateIntelligenceCreateWithoutCandidateInput[] | CandidateIntelligenceUncheckedCreateWithoutCandidateInput[]
+    connectOrCreate?: CandidateIntelligenceCreateOrConnectWithoutCandidateInput | CandidateIntelligenceCreateOrConnectWithoutCandidateInput[]
+    upsert?: CandidateIntelligenceUpsertWithWhereUniqueWithoutCandidateInput | CandidateIntelligenceUpsertWithWhereUniqueWithoutCandidateInput[]
+    createMany?: CandidateIntelligenceCreateManyCandidateInputEnvelope
+    set?: CandidateIntelligenceWhereUniqueInput | CandidateIntelligenceWhereUniqueInput[]
+    disconnect?: CandidateIntelligenceWhereUniqueInput | CandidateIntelligenceWhereUniqueInput[]
+    delete?: CandidateIntelligenceWhereUniqueInput | CandidateIntelligenceWhereUniqueInput[]
+    connect?: CandidateIntelligenceWhereUniqueInput | CandidateIntelligenceWhereUniqueInput[]
+    update?: CandidateIntelligenceUpdateWithWhereUniqueWithoutCandidateInput | CandidateIntelligenceUpdateWithWhereUniqueWithoutCandidateInput[]
+    updateMany?: CandidateIntelligenceUpdateManyWithWhereWithoutCandidateInput | CandidateIntelligenceUpdateManyWithWhereWithoutCandidateInput[]
+    deleteMany?: CandidateIntelligenceScalarWhereInput | CandidateIntelligenceScalarWhereInput[]
+  }
+
+  export type CandidateNoteUncheckedUpdateManyWithoutCandidateNestedInput = {
+    create?: XOR<CandidateNoteCreateWithoutCandidateInput, CandidateNoteUncheckedCreateWithoutCandidateInput> | CandidateNoteCreateWithoutCandidateInput[] | CandidateNoteUncheckedCreateWithoutCandidateInput[]
+    connectOrCreate?: CandidateNoteCreateOrConnectWithoutCandidateInput | CandidateNoteCreateOrConnectWithoutCandidateInput[]
+    upsert?: CandidateNoteUpsertWithWhereUniqueWithoutCandidateInput | CandidateNoteUpsertWithWhereUniqueWithoutCandidateInput[]
+    createMany?: CandidateNoteCreateManyCandidateInputEnvelope
+    set?: CandidateNoteWhereUniqueInput | CandidateNoteWhereUniqueInput[]
+    disconnect?: CandidateNoteWhereUniqueInput | CandidateNoteWhereUniqueInput[]
+    delete?: CandidateNoteWhereUniqueInput | CandidateNoteWhereUniqueInput[]
+    connect?: CandidateNoteWhereUniqueInput | CandidateNoteWhereUniqueInput[]
+    update?: CandidateNoteUpdateWithWhereUniqueWithoutCandidateInput | CandidateNoteUpdateWithWhereUniqueWithoutCandidateInput[]
+    updateMany?: CandidateNoteUpdateManyWithWhereWithoutCandidateInput | CandidateNoteUpdateManyWithWhereWithoutCandidateInput[]
+    deleteMany?: CandidateNoteScalarWhereInput | CandidateNoteScalarWhereInput[]
+  }
+
+  export type CandidateReferenceUncheckedUpdateManyWithoutCandidateNestedInput = {
+    create?: XOR<CandidateReferenceCreateWithoutCandidateInput, CandidateReferenceUncheckedCreateWithoutCandidateInput> | CandidateReferenceCreateWithoutCandidateInput[] | CandidateReferenceUncheckedCreateWithoutCandidateInput[]
+    connectOrCreate?: CandidateReferenceCreateOrConnectWithoutCandidateInput | CandidateReferenceCreateOrConnectWithoutCandidateInput[]
+    upsert?: CandidateReferenceUpsertWithWhereUniqueWithoutCandidateInput | CandidateReferenceUpsertWithWhereUniqueWithoutCandidateInput[]
+    createMany?: CandidateReferenceCreateManyCandidateInputEnvelope
+    set?: CandidateReferenceWhereUniqueInput | CandidateReferenceWhereUniqueInput[]
+    disconnect?: CandidateReferenceWhereUniqueInput | CandidateReferenceWhereUniqueInput[]
+    delete?: CandidateReferenceWhereUniqueInput | CandidateReferenceWhereUniqueInput[]
+    connect?: CandidateReferenceWhereUniqueInput | CandidateReferenceWhereUniqueInput[]
+    update?: CandidateReferenceUpdateWithWhereUniqueWithoutCandidateInput | CandidateReferenceUpdateWithWhereUniqueWithoutCandidateInput[]
+    updateMany?: CandidateReferenceUpdateManyWithWhereWithoutCandidateInput | CandidateReferenceUpdateManyWithWhereWithoutCandidateInput[]
+    deleteMany?: CandidateReferenceScalarWhereInput | CandidateReferenceScalarWhereInput[]
+  }
+
+  export type CandidateDocumentUncheckedUpdateManyWithoutCandidateNestedInput = {
+    create?: XOR<CandidateDocumentCreateWithoutCandidateInput, CandidateDocumentUncheckedCreateWithoutCandidateInput> | CandidateDocumentCreateWithoutCandidateInput[] | CandidateDocumentUncheckedCreateWithoutCandidateInput[]
+    connectOrCreate?: CandidateDocumentCreateOrConnectWithoutCandidateInput | CandidateDocumentCreateOrConnectWithoutCandidateInput[]
+    upsert?: CandidateDocumentUpsertWithWhereUniqueWithoutCandidateInput | CandidateDocumentUpsertWithWhereUniqueWithoutCandidateInput[]
+    createMany?: CandidateDocumentCreateManyCandidateInputEnvelope
+    set?: CandidateDocumentWhereUniqueInput | CandidateDocumentWhereUniqueInput[]
+    disconnect?: CandidateDocumentWhereUniqueInput | CandidateDocumentWhereUniqueInput[]
+    delete?: CandidateDocumentWhereUniqueInput | CandidateDocumentWhereUniqueInput[]
+    connect?: CandidateDocumentWhereUniqueInput | CandidateDocumentWhereUniqueInput[]
+    update?: CandidateDocumentUpdateWithWhereUniqueWithoutCandidateInput | CandidateDocumentUpdateWithWhereUniqueWithoutCandidateInput[]
+    updateMany?: CandidateDocumentUpdateManyWithWhereWithoutCandidateInput | CandidateDocumentUpdateManyWithWhereWithoutCandidateInput[]
+    deleteMany?: CandidateDocumentScalarWhereInput | CandidateDocumentScalarWhereInput[]
+  }
+
+  export type CandidateCreateNestedOneWithoutDocumentsInput = {
+    create?: XOR<CandidateCreateWithoutDocumentsInput, CandidateUncheckedCreateWithoutDocumentsInput>
+    connectOrCreate?: CandidateCreateOrConnectWithoutDocumentsInput
+    connect?: CandidateWhereUniqueInput
+  }
+
+  export type NullableBytesFieldUpdateOperationsInput = {
+    set?: Buffer | null
+  }
+
+  export type CandidateUpdateOneRequiredWithoutDocumentsNestedInput = {
+    create?: XOR<CandidateCreateWithoutDocumentsInput, CandidateUncheckedCreateWithoutDocumentsInput>
+    connectOrCreate?: CandidateCreateOrConnectWithoutDocumentsInput
+    upsert?: CandidateUpsertWithoutDocumentsInput
+    connect?: CandidateWhereUniqueInput
+    update?: XOR<XOR<CandidateUpdateToOneWithWhereWithoutDocumentsInput, CandidateUpdateWithoutDocumentsInput>, CandidateUncheckedUpdateWithoutDocumentsInput>
+  }
+
+  export type CandidateCreateNestedOneWithoutIntelligenceInput = {
+    create?: XOR<CandidateCreateWithoutIntelligenceInput, CandidateUncheckedCreateWithoutIntelligenceInput>
+    connectOrCreate?: CandidateCreateOrConnectWithoutIntelligenceInput
+    connect?: CandidateWhereUniqueInput
+  }
+
+  export type CandidateUpdateOneRequiredWithoutIntelligenceNestedInput = {
+    create?: XOR<CandidateCreateWithoutIntelligenceInput, CandidateUncheckedCreateWithoutIntelligenceInput>
+    connectOrCreate?: CandidateCreateOrConnectWithoutIntelligenceInput
+    upsert?: CandidateUpsertWithoutIntelligenceInput
+    connect?: CandidateWhereUniqueInput
+    update?: XOR<XOR<CandidateUpdateToOneWithWhereWithoutIntelligenceInput, CandidateUpdateWithoutIntelligenceInput>, CandidateUncheckedUpdateWithoutIntelligenceInput>
+  }
+
+  export type CandidateCreateNestedOneWithoutNotesInput = {
+    create?: XOR<CandidateCreateWithoutNotesInput, CandidateUncheckedCreateWithoutNotesInput>
+    connectOrCreate?: CandidateCreateOrConnectWithoutNotesInput
+    connect?: CandidateWhereUniqueInput
+  }
+
+  export type CandidateUpdateOneRequiredWithoutNotesNestedInput = {
+    create?: XOR<CandidateCreateWithoutNotesInput, CandidateUncheckedCreateWithoutNotesInput>
+    connectOrCreate?: CandidateCreateOrConnectWithoutNotesInput
+    upsert?: CandidateUpsertWithoutNotesInput
+    connect?: CandidateWhereUniqueInput
+    update?: XOR<XOR<CandidateUpdateToOneWithWhereWithoutNotesInput, CandidateUpdateWithoutNotesInput>, CandidateUncheckedUpdateWithoutNotesInput>
+  }
+
+  export type CandidateCreateNestedOneWithoutReferencesInput = {
+    create?: XOR<CandidateCreateWithoutReferencesInput, CandidateUncheckedCreateWithoutReferencesInput>
+    connectOrCreate?: CandidateCreateOrConnectWithoutReferencesInput
+    connect?: CandidateWhereUniqueInput
+  }
+
+  export type CandidateUpdateOneRequiredWithoutReferencesNestedInput = {
+    create?: XOR<CandidateCreateWithoutReferencesInput, CandidateUncheckedCreateWithoutReferencesInput>
+    connectOrCreate?: CandidateCreateOrConnectWithoutReferencesInput
+    upsert?: CandidateUpsertWithoutReferencesInput
+    connect?: CandidateWhereUniqueInput
+    update?: XOR<XOR<CandidateUpdateToOneWithWhereWithoutReferencesInput, CandidateUpdateWithoutReferencesInput>, CandidateUncheckedUpdateWithoutReferencesInput>
+  }
+
   export type OrganizationCreateNestedOneWithoutSessionsInput = {
     create?: XOR<OrganizationCreateWithoutSessionsInput, OrganizationUncheckedCreateWithoutSessionsInput>
     connectOrCreate?: OrganizationCreateOrConnectWithoutSessionsInput
     connect?: OrganizationWhereUniqueInput
+  }
+
+  export type CandidateCreateNestedOneWithoutSessionsInput = {
+    create?: XOR<CandidateCreateWithoutSessionsInput, CandidateUncheckedCreateWithoutSessionsInput>
+    connectOrCreate?: CandidateCreateOrConnectWithoutSessionsInput
+    connect?: CandidateWhereUniqueInput
   }
 
   export type TranscriptEntryCreateNestedManyWithoutSessionInput = {
@@ -19683,10 +27342,6 @@ export namespace Prisma {
     set?: boolean
   }
 
-  export type NullableBytesFieldUpdateOperationsInput = {
-    set?: Buffer | null
-  }
-
   export type OrganizationUpdateOneWithoutSessionsNestedInput = {
     create?: XOR<OrganizationCreateWithoutSessionsInput, OrganizationUncheckedCreateWithoutSessionsInput>
     connectOrCreate?: OrganizationCreateOrConnectWithoutSessionsInput
@@ -19695,6 +27350,16 @@ export namespace Prisma {
     delete?: OrganizationWhereInput | boolean
     connect?: OrganizationWhereUniqueInput
     update?: XOR<XOR<OrganizationUpdateToOneWithWhereWithoutSessionsInput, OrganizationUpdateWithoutSessionsInput>, OrganizationUncheckedUpdateWithoutSessionsInput>
+  }
+
+  export type CandidateUpdateOneWithoutSessionsNestedInput = {
+    create?: XOR<CandidateCreateWithoutSessionsInput, CandidateUncheckedCreateWithoutSessionsInput>
+    connectOrCreate?: CandidateCreateOrConnectWithoutSessionsInput
+    upsert?: CandidateUpsertWithoutSessionsInput
+    disconnect?: CandidateWhereInput | boolean
+    delete?: CandidateWhereInput | boolean
+    connect?: CandidateWhereUniqueInput
+    update?: XOR<XOR<CandidateUpdateToOneWithWhereWithoutSessionsInput, CandidateUpdateWithoutSessionsInput>, CandidateUncheckedUpdateWithoutSessionsInput>
   }
 
   export type TranscriptEntryUpdateManyWithoutSessionNestedInput = {
@@ -19873,12 +27538,54 @@ export namespace Prisma {
     connect?: InterviewSessionWhereUniqueInput
   }
 
+  export type ReportFeedbackCreateNestedManyWithoutReportInput = {
+    create?: XOR<ReportFeedbackCreateWithoutReportInput, ReportFeedbackUncheckedCreateWithoutReportInput> | ReportFeedbackCreateWithoutReportInput[] | ReportFeedbackUncheckedCreateWithoutReportInput[]
+    connectOrCreate?: ReportFeedbackCreateOrConnectWithoutReportInput | ReportFeedbackCreateOrConnectWithoutReportInput[]
+    createMany?: ReportFeedbackCreateManyReportInputEnvelope
+    connect?: ReportFeedbackWhereUniqueInput | ReportFeedbackWhereUniqueInput[]
+  }
+
+  export type ReportFeedbackUncheckedCreateNestedManyWithoutReportInput = {
+    create?: XOR<ReportFeedbackCreateWithoutReportInput, ReportFeedbackUncheckedCreateWithoutReportInput> | ReportFeedbackCreateWithoutReportInput[] | ReportFeedbackUncheckedCreateWithoutReportInput[]
+    connectOrCreate?: ReportFeedbackCreateOrConnectWithoutReportInput | ReportFeedbackCreateOrConnectWithoutReportInput[]
+    createMany?: ReportFeedbackCreateManyReportInputEnvelope
+    connect?: ReportFeedbackWhereUniqueInput | ReportFeedbackWhereUniqueInput[]
+  }
+
   export type InterviewSessionUpdateOneRequiredWithoutReportsNestedInput = {
     create?: XOR<InterviewSessionCreateWithoutReportsInput, InterviewSessionUncheckedCreateWithoutReportsInput>
     connectOrCreate?: InterviewSessionCreateOrConnectWithoutReportsInput
     upsert?: InterviewSessionUpsertWithoutReportsInput
     connect?: InterviewSessionWhereUniqueInput
     update?: XOR<XOR<InterviewSessionUpdateToOneWithWhereWithoutReportsInput, InterviewSessionUpdateWithoutReportsInput>, InterviewSessionUncheckedUpdateWithoutReportsInput>
+  }
+
+  export type ReportFeedbackUpdateManyWithoutReportNestedInput = {
+    create?: XOR<ReportFeedbackCreateWithoutReportInput, ReportFeedbackUncheckedCreateWithoutReportInput> | ReportFeedbackCreateWithoutReportInput[] | ReportFeedbackUncheckedCreateWithoutReportInput[]
+    connectOrCreate?: ReportFeedbackCreateOrConnectWithoutReportInput | ReportFeedbackCreateOrConnectWithoutReportInput[]
+    upsert?: ReportFeedbackUpsertWithWhereUniqueWithoutReportInput | ReportFeedbackUpsertWithWhereUniqueWithoutReportInput[]
+    createMany?: ReportFeedbackCreateManyReportInputEnvelope
+    set?: ReportFeedbackWhereUniqueInput | ReportFeedbackWhereUniqueInput[]
+    disconnect?: ReportFeedbackWhereUniqueInput | ReportFeedbackWhereUniqueInput[]
+    delete?: ReportFeedbackWhereUniqueInput | ReportFeedbackWhereUniqueInput[]
+    connect?: ReportFeedbackWhereUniqueInput | ReportFeedbackWhereUniqueInput[]
+    update?: ReportFeedbackUpdateWithWhereUniqueWithoutReportInput | ReportFeedbackUpdateWithWhereUniqueWithoutReportInput[]
+    updateMany?: ReportFeedbackUpdateManyWithWhereWithoutReportInput | ReportFeedbackUpdateManyWithWhereWithoutReportInput[]
+    deleteMany?: ReportFeedbackScalarWhereInput | ReportFeedbackScalarWhereInput[]
+  }
+
+  export type ReportFeedbackUncheckedUpdateManyWithoutReportNestedInput = {
+    create?: XOR<ReportFeedbackCreateWithoutReportInput, ReportFeedbackUncheckedCreateWithoutReportInput> | ReportFeedbackCreateWithoutReportInput[] | ReportFeedbackUncheckedCreateWithoutReportInput[]
+    connectOrCreate?: ReportFeedbackCreateOrConnectWithoutReportInput | ReportFeedbackCreateOrConnectWithoutReportInput[]
+    upsert?: ReportFeedbackUpsertWithWhereUniqueWithoutReportInput | ReportFeedbackUpsertWithWhereUniqueWithoutReportInput[]
+    createMany?: ReportFeedbackCreateManyReportInputEnvelope
+    set?: ReportFeedbackWhereUniqueInput | ReportFeedbackWhereUniqueInput[]
+    disconnect?: ReportFeedbackWhereUniqueInput | ReportFeedbackWhereUniqueInput[]
+    delete?: ReportFeedbackWhereUniqueInput | ReportFeedbackWhereUniqueInput[]
+    connect?: ReportFeedbackWhereUniqueInput | ReportFeedbackWhereUniqueInput[]
+    update?: ReportFeedbackUpdateWithWhereUniqueWithoutReportInput | ReportFeedbackUpdateWithWhereUniqueWithoutReportInput[]
+    updateMany?: ReportFeedbackUpdateManyWithWhereWithoutReportInput | ReportFeedbackUpdateManyWithWhereWithoutReportInput[]
+    deleteMany?: ReportFeedbackScalarWhereInput | ReportFeedbackScalarWhereInput[]
   }
 
   export type CalibrationNoteCreateNestedManyWithoutSessionInput = {
@@ -19937,12 +27644,26 @@ export namespace Prisma {
     update?: XOR<XOR<CalibrationSessionUpdateToOneWithWhereWithoutNotesInput, CalibrationSessionUpdateWithoutNotesInput>, CalibrationSessionUncheckedUpdateWithoutNotesInput>
   }
 
+  export type ReportCreateNestedOneWithoutFeedbackInput = {
+    create?: XOR<ReportCreateWithoutFeedbackInput, ReportUncheckedCreateWithoutFeedbackInput>
+    connectOrCreate?: ReportCreateOrConnectWithoutFeedbackInput
+    connect?: ReportWhereUniqueInput
+  }
+
   export type IntFieldUpdateOperationsInput = {
     set?: number
     increment?: number
     decrement?: number
     multiply?: number
     divide?: number
+  }
+
+  export type ReportUpdateOneRequiredWithoutFeedbackNestedInput = {
+    create?: XOR<ReportCreateWithoutFeedbackInput, ReportUncheckedCreateWithoutFeedbackInput>
+    connectOrCreate?: ReportCreateOrConnectWithoutFeedbackInput
+    upsert?: ReportUpsertWithoutFeedbackInput
+    connect?: ReportWhereUniqueInput
+    update?: XOR<XOR<ReportUpdateToOneWithWhereWithoutFeedbackInput, ReportUpdateWithoutFeedbackInput>, ReportUncheckedUpdateWithoutFeedbackInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -20101,34 +27822,20 @@ export namespace Prisma {
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
-  export type NestedBoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
-  }
-
-  export type NestedBytesNullableFilter<$PrismaModel = never> = {
-    equals?: Buffer | BytesFieldRefInput<$PrismaModel> | null
-    in?: Buffer[] | ListBytesFieldRefInput<$PrismaModel> | null
-    notIn?: Buffer[] | ListBytesFieldRefInput<$PrismaModel> | null
-    not?: NestedBytesNullableFilter<$PrismaModel> | Buffer | null
-  }
-
-  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
-  }
-
-  export type NestedBytesNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Buffer | BytesFieldRefInput<$PrismaModel> | null
-    in?: Buffer[] | ListBytesFieldRefInput<$PrismaModel> | null
-    notIn?: Buffer[] | ListBytesFieldRefInput<$PrismaModel> | null
-    not?: NestedBytesNullableWithAggregatesFilter<$PrismaModel> | Buffer | null
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
     _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedBytesNullableFilter<$PrismaModel>
-    _max?: NestedBytesNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type NestedFloatNullableFilter<$PrismaModel = never> = {
@@ -20140,6 +27847,58 @@ export namespace Prisma {
     gt?: number | FloatFieldRefInput<$PrismaModel>
     gte?: number | FloatFieldRefInput<$PrismaModel>
     not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type NestedBytesNullableFilter<$PrismaModel = never> = {
+    equals?: Buffer | BytesFieldRefInput<$PrismaModel> | null
+    in?: Buffer[] | ListBytesFieldRefInput<$PrismaModel> | null
+    notIn?: Buffer[] | ListBytesFieldRefInput<$PrismaModel> | null
+    not?: NestedBytesNullableFilter<$PrismaModel> | Buffer | null
+  }
+
+  export type NestedBytesNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Buffer | BytesFieldRefInput<$PrismaModel> | null
+    in?: Buffer[] | ListBytesFieldRefInput<$PrismaModel> | null
+    notIn?: Buffer[] | ListBytesFieldRefInput<$PrismaModel> | null
+    not?: NestedBytesNullableWithAggregatesFilter<$PrismaModel> | Buffer | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedBytesNullableFilter<$PrismaModel>
+    _max?: NestedBytesNullableFilter<$PrismaModel>
+  }
+  export type NestedJsonNullableFilter<$PrismaModel = never> = 
+    | PatchUndefined<
+        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -20183,28 +27942,6 @@ export namespace Prisma {
     _sum?: NestedFloatFilter<$PrismaModel>
     _min?: NestedFloatFilter<$PrismaModel>
     _max?: NestedFloatFilter<$PrismaModel>
-  }
-  export type NestedJsonNullableFilter<$PrismaModel = never> = 
-    | PatchUndefined<
-        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
-        Required<NestedJsonNullableFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
-
-  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
   export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
@@ -20273,6 +28010,7 @@ export namespace Prisma {
     videoEnabled?: boolean
     audioData?: Buffer | null
     createdAt?: Date | string
+    candidate?: CandidateCreateNestedOneWithoutSessionsInput
     transcripts?: TranscriptEntryCreateNestedManyWithoutSessionInput
     observations?: ObservationCreateNestedManyWithoutSessionInput
     verdicts?: AssessorVerdictCreateNestedManyWithoutSessionInput
@@ -20281,6 +28019,7 @@ export namespace Prisma {
 
   export type InterviewSessionUncheckedCreateWithoutOrganizationInput = {
     id?: string
+    candidateId?: string | null
     setup: JsonNullValueInput | InputJsonValue
     status?: string
     startedAt?: Date | string | null
@@ -20302,6 +28041,70 @@ export namespace Prisma {
 
   export type InterviewSessionCreateManyOrganizationInputEnvelope = {
     data: InterviewSessionCreateManyOrganizationInput | InterviewSessionCreateManyOrganizationInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CandidateCreateWithoutOrganizationInput = {
+    id?: string
+    name: string
+    email?: string | null
+    phone?: string | null
+    linkedinUrl?: string | null
+    githubUrl?: string | null
+    portfolioUrl?: string | null
+    source?: string | null
+    sourceDetail?: string | null
+    currentRole?: string | null
+    currentCompany?: string | null
+    yearsExperience?: number | null
+    salaryExpectation?: string | null
+    noticePeriod?: string | null
+    pipelineStage?: string
+    rejectionReason?: string | null
+    tags?: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessions?: InterviewSessionCreateNestedManyWithoutCandidateInput
+    intelligence?: CandidateIntelligenceCreateNestedManyWithoutCandidateInput
+    notes?: CandidateNoteCreateNestedManyWithoutCandidateInput
+    references?: CandidateReferenceCreateNestedManyWithoutCandidateInput
+    documents?: CandidateDocumentCreateNestedManyWithoutCandidateInput
+  }
+
+  export type CandidateUncheckedCreateWithoutOrganizationInput = {
+    id?: string
+    name: string
+    email?: string | null
+    phone?: string | null
+    linkedinUrl?: string | null
+    githubUrl?: string | null
+    portfolioUrl?: string | null
+    source?: string | null
+    sourceDetail?: string | null
+    currentRole?: string | null
+    currentCompany?: string | null
+    yearsExperience?: number | null
+    salaryExpectation?: string | null
+    noticePeriod?: string | null
+    pipelineStage?: string
+    rejectionReason?: string | null
+    tags?: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessions?: InterviewSessionUncheckedCreateNestedManyWithoutCandidateInput
+    intelligence?: CandidateIntelligenceUncheckedCreateNestedManyWithoutCandidateInput
+    notes?: CandidateNoteUncheckedCreateNestedManyWithoutCandidateInput
+    references?: CandidateReferenceUncheckedCreateNestedManyWithoutCandidateInput
+    documents?: CandidateDocumentUncheckedCreateNestedManyWithoutCandidateInput
+  }
+
+  export type CandidateCreateOrConnectWithoutOrganizationInput = {
+    where: CandidateWhereUniqueInput
+    create: XOR<CandidateCreateWithoutOrganizationInput, CandidateUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type CandidateCreateManyOrganizationInputEnvelope = {
+    data: CandidateCreateManyOrganizationInput | CandidateCreateManyOrganizationInput[]
     skipDuplicates?: boolean
   }
 
@@ -20360,6 +28163,7 @@ export namespace Prisma {
     NOT?: InterviewSessionScalarWhereInput | InterviewSessionScalarWhereInput[]
     id?: StringFilter<"InterviewSession"> | string
     organizationId?: StringNullableFilter<"InterviewSession"> | string | null
+    candidateId?: StringNullableFilter<"InterviewSession"> | string | null
     setup?: JsonFilter<"InterviewSession">
     status?: StringFilter<"InterviewSession"> | string
     startedAt?: DateTimeNullableFilter<"InterviewSession"> | Date | string | null
@@ -20370,12 +28174,55 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"InterviewSession"> | Date | string
   }
 
+  export type CandidateUpsertWithWhereUniqueWithoutOrganizationInput = {
+    where: CandidateWhereUniqueInput
+    update: XOR<CandidateUpdateWithoutOrganizationInput, CandidateUncheckedUpdateWithoutOrganizationInput>
+    create: XOR<CandidateCreateWithoutOrganizationInput, CandidateUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type CandidateUpdateWithWhereUniqueWithoutOrganizationInput = {
+    where: CandidateWhereUniqueInput
+    data: XOR<CandidateUpdateWithoutOrganizationInput, CandidateUncheckedUpdateWithoutOrganizationInput>
+  }
+
+  export type CandidateUpdateManyWithWhereWithoutOrganizationInput = {
+    where: CandidateScalarWhereInput
+    data: XOR<CandidateUpdateManyMutationInput, CandidateUncheckedUpdateManyWithoutOrganizationInput>
+  }
+
+  export type CandidateScalarWhereInput = {
+    AND?: CandidateScalarWhereInput | CandidateScalarWhereInput[]
+    OR?: CandidateScalarWhereInput[]
+    NOT?: CandidateScalarWhereInput | CandidateScalarWhereInput[]
+    id?: StringFilter<"Candidate"> | string
+    organizationId?: StringNullableFilter<"Candidate"> | string | null
+    name?: StringFilter<"Candidate"> | string
+    email?: StringNullableFilter<"Candidate"> | string | null
+    phone?: StringNullableFilter<"Candidate"> | string | null
+    linkedinUrl?: StringNullableFilter<"Candidate"> | string | null
+    githubUrl?: StringNullableFilter<"Candidate"> | string | null
+    portfolioUrl?: StringNullableFilter<"Candidate"> | string | null
+    source?: StringNullableFilter<"Candidate"> | string | null
+    sourceDetail?: StringNullableFilter<"Candidate"> | string | null
+    currentRole?: StringNullableFilter<"Candidate"> | string | null
+    currentCompany?: StringNullableFilter<"Candidate"> | string | null
+    yearsExperience?: IntNullableFilter<"Candidate"> | number | null
+    salaryExpectation?: StringNullableFilter<"Candidate"> | string | null
+    noticePeriod?: StringNullableFilter<"Candidate"> | string | null
+    pipelineStage?: StringFilter<"Candidate"> | string
+    rejectionReason?: StringNullableFilter<"Candidate"> | string | null
+    tags?: JsonFilter<"Candidate">
+    createdAt?: DateTimeFilter<"Candidate"> | Date | string
+    updatedAt?: DateTimeFilter<"Candidate"> | Date | string
+  }
+
   export type OrganizationCreateWithoutUsersInput = {
     id?: string
     name: string
     settings?: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     sessions?: InterviewSessionCreateNestedManyWithoutOrganizationInput
+    candidates?: CandidateCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutUsersInput = {
@@ -20384,6 +28231,7 @@ export namespace Prisma {
     settings?: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     sessions?: InterviewSessionUncheckedCreateNestedManyWithoutOrganizationInput
+    candidates?: CandidateUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutUsersInput = {
@@ -20396,6 +28244,7 @@ export namespace Prisma {
     email: string
     role?: string
     token: string
+    organizationId?: string | null
     expiresAt: Date | string
     acceptedAt?: Date | string | null
     createdAt?: Date | string
@@ -20406,6 +28255,7 @@ export namespace Prisma {
     email: string
     role?: string
     token: string
+    organizationId?: string | null
     expiresAt: Date | string
     acceptedAt?: Date | string | null
     createdAt?: Date | string
@@ -20464,6 +28314,7 @@ export namespace Prisma {
     settings?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: InterviewSessionUpdateManyWithoutOrganizationNestedInput
+    candidates?: CandidateUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutUsersInput = {
@@ -20472,6 +28323,7 @@ export namespace Prisma {
     settings?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: InterviewSessionUncheckedUpdateManyWithoutOrganizationNestedInput
+    candidates?: CandidateUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type InvitationUpsertWithWhereUniqueWithoutInvitedByInput = {
@@ -20499,6 +28351,7 @@ export namespace Prisma {
     role?: StringFilter<"Invitation"> | string
     token?: StringFilter<"Invitation"> | string
     invitedById?: StringFilter<"Invitation"> | string
+    organizationId?: StringNullableFilter<"Invitation"> | string | null
     expiresAt?: DateTimeFilter<"Invitation"> | Date | string
     acceptedAt?: DateTimeNullableFilter<"Invitation"> | Date | string | null
     createdAt?: DateTimeFilter<"Invitation"> | Date | string
@@ -20684,12 +28537,867 @@ export namespace Prisma {
     invitations?: InvitationUncheckedUpdateManyWithoutInvitedByNestedInput
   }
 
+  export type OrganizationCreateWithoutCandidatesInput = {
+    id?: string
+    name: string
+    settings?: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    users?: UserCreateNestedManyWithoutOrganizationInput
+    sessions?: InterviewSessionCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationUncheckedCreateWithoutCandidatesInput = {
+    id?: string
+    name: string
+    settings?: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    users?: UserUncheckedCreateNestedManyWithoutOrganizationInput
+    sessions?: InterviewSessionUncheckedCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationCreateOrConnectWithoutCandidatesInput = {
+    where: OrganizationWhereUniqueInput
+    create: XOR<OrganizationCreateWithoutCandidatesInput, OrganizationUncheckedCreateWithoutCandidatesInput>
+  }
+
+  export type InterviewSessionCreateWithoutCandidateInput = {
+    id?: string
+    setup: JsonNullValueInput | InputJsonValue
+    status?: string
+    startedAt?: Date | string | null
+    endedAt?: Date | string | null
+    voiceProvider?: string
+    videoEnabled?: boolean
+    audioData?: Buffer | null
+    createdAt?: Date | string
+    organization?: OrganizationCreateNestedOneWithoutSessionsInput
+    transcripts?: TranscriptEntryCreateNestedManyWithoutSessionInput
+    observations?: ObservationCreateNestedManyWithoutSessionInput
+    verdicts?: AssessorVerdictCreateNestedManyWithoutSessionInput
+    reports?: ReportCreateNestedManyWithoutSessionInput
+  }
+
+  export type InterviewSessionUncheckedCreateWithoutCandidateInput = {
+    id?: string
+    organizationId?: string | null
+    setup: JsonNullValueInput | InputJsonValue
+    status?: string
+    startedAt?: Date | string | null
+    endedAt?: Date | string | null
+    voiceProvider?: string
+    videoEnabled?: boolean
+    audioData?: Buffer | null
+    createdAt?: Date | string
+    transcripts?: TranscriptEntryUncheckedCreateNestedManyWithoutSessionInput
+    observations?: ObservationUncheckedCreateNestedManyWithoutSessionInput
+    verdicts?: AssessorVerdictUncheckedCreateNestedManyWithoutSessionInput
+    reports?: ReportUncheckedCreateNestedManyWithoutSessionInput
+  }
+
+  export type InterviewSessionCreateOrConnectWithoutCandidateInput = {
+    where: InterviewSessionWhereUniqueInput
+    create: XOR<InterviewSessionCreateWithoutCandidateInput, InterviewSessionUncheckedCreateWithoutCandidateInput>
+  }
+
+  export type InterviewSessionCreateManyCandidateInputEnvelope = {
+    data: InterviewSessionCreateManyCandidateInput | InterviewSessionCreateManyCandidateInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CandidateIntelligenceCreateWithoutCandidateInput = {
+    id?: string
+    type: string
+    data: JsonNullValueInput | InputJsonValue
+    sourceText?: string | null
+    createdAt?: Date | string
+  }
+
+  export type CandidateIntelligenceUncheckedCreateWithoutCandidateInput = {
+    id?: string
+    type: string
+    data: JsonNullValueInput | InputJsonValue
+    sourceText?: string | null
+    createdAt?: Date | string
+  }
+
+  export type CandidateIntelligenceCreateOrConnectWithoutCandidateInput = {
+    where: CandidateIntelligenceWhereUniqueInput
+    create: XOR<CandidateIntelligenceCreateWithoutCandidateInput, CandidateIntelligenceUncheckedCreateWithoutCandidateInput>
+  }
+
+  export type CandidateIntelligenceCreateManyCandidateInputEnvelope = {
+    data: CandidateIntelligenceCreateManyCandidateInput | CandidateIntelligenceCreateManyCandidateInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CandidateNoteCreateWithoutCandidateInput = {
+    id?: string
+    userId: string
+    userName: string
+    content: string
+    type?: string
+    createdAt?: Date | string
+  }
+
+  export type CandidateNoteUncheckedCreateWithoutCandidateInput = {
+    id?: string
+    userId: string
+    userName: string
+    content: string
+    type?: string
+    createdAt?: Date | string
+  }
+
+  export type CandidateNoteCreateOrConnectWithoutCandidateInput = {
+    where: CandidateNoteWhereUniqueInput
+    create: XOR<CandidateNoteCreateWithoutCandidateInput, CandidateNoteUncheckedCreateWithoutCandidateInput>
+  }
+
+  export type CandidateNoteCreateManyCandidateInputEnvelope = {
+    data: CandidateNoteCreateManyCandidateInput | CandidateNoteCreateManyCandidateInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CandidateReferenceCreateWithoutCandidateInput = {
+    id?: string
+    refereeName: string
+    refereeEmail?: string | null
+    refereePhone?: string | null
+    refereeRelation: string
+    refereeCompany?: string | null
+    status?: string
+    token?: string | null
+    responses?: NullableJsonNullValueInput | InputJsonValue
+    aiAnalysis?: NullableJsonNullValueInput | InputJsonValue
+    completedAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type CandidateReferenceUncheckedCreateWithoutCandidateInput = {
+    id?: string
+    refereeName: string
+    refereeEmail?: string | null
+    refereePhone?: string | null
+    refereeRelation: string
+    refereeCompany?: string | null
+    status?: string
+    token?: string | null
+    responses?: NullableJsonNullValueInput | InputJsonValue
+    aiAnalysis?: NullableJsonNullValueInput | InputJsonValue
+    completedAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type CandidateReferenceCreateOrConnectWithoutCandidateInput = {
+    where: CandidateReferenceWhereUniqueInput
+    create: XOR<CandidateReferenceCreateWithoutCandidateInput, CandidateReferenceUncheckedCreateWithoutCandidateInput>
+  }
+
+  export type CandidateReferenceCreateManyCandidateInputEnvelope = {
+    data: CandidateReferenceCreateManyCandidateInput | CandidateReferenceCreateManyCandidateInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CandidateDocumentCreateWithoutCandidateInput = {
+    id?: string
+    type: string
+    filename: string
+    mimeType: string
+    content: string
+    rawData?: Buffer | null
+    createdAt?: Date | string
+  }
+
+  export type CandidateDocumentUncheckedCreateWithoutCandidateInput = {
+    id?: string
+    type: string
+    filename: string
+    mimeType: string
+    content: string
+    rawData?: Buffer | null
+    createdAt?: Date | string
+  }
+
+  export type CandidateDocumentCreateOrConnectWithoutCandidateInput = {
+    where: CandidateDocumentWhereUniqueInput
+    create: XOR<CandidateDocumentCreateWithoutCandidateInput, CandidateDocumentUncheckedCreateWithoutCandidateInput>
+  }
+
+  export type CandidateDocumentCreateManyCandidateInputEnvelope = {
+    data: CandidateDocumentCreateManyCandidateInput | CandidateDocumentCreateManyCandidateInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type OrganizationUpsertWithoutCandidatesInput = {
+    update: XOR<OrganizationUpdateWithoutCandidatesInput, OrganizationUncheckedUpdateWithoutCandidatesInput>
+    create: XOR<OrganizationCreateWithoutCandidatesInput, OrganizationUncheckedCreateWithoutCandidatesInput>
+    where?: OrganizationWhereInput
+  }
+
+  export type OrganizationUpdateToOneWithWhereWithoutCandidatesInput = {
+    where?: OrganizationWhereInput
+    data: XOR<OrganizationUpdateWithoutCandidatesInput, OrganizationUncheckedUpdateWithoutCandidatesInput>
+  }
+
+  export type OrganizationUpdateWithoutCandidatesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    settings?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUpdateManyWithoutOrganizationNestedInput
+    sessions?: InterviewSessionUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type OrganizationUncheckedUpdateWithoutCandidatesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    settings?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUncheckedUpdateManyWithoutOrganizationNestedInput
+    sessions?: InterviewSessionUncheckedUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type InterviewSessionUpsertWithWhereUniqueWithoutCandidateInput = {
+    where: InterviewSessionWhereUniqueInput
+    update: XOR<InterviewSessionUpdateWithoutCandidateInput, InterviewSessionUncheckedUpdateWithoutCandidateInput>
+    create: XOR<InterviewSessionCreateWithoutCandidateInput, InterviewSessionUncheckedCreateWithoutCandidateInput>
+  }
+
+  export type InterviewSessionUpdateWithWhereUniqueWithoutCandidateInput = {
+    where: InterviewSessionWhereUniqueInput
+    data: XOR<InterviewSessionUpdateWithoutCandidateInput, InterviewSessionUncheckedUpdateWithoutCandidateInput>
+  }
+
+  export type InterviewSessionUpdateManyWithWhereWithoutCandidateInput = {
+    where: InterviewSessionScalarWhereInput
+    data: XOR<InterviewSessionUpdateManyMutationInput, InterviewSessionUncheckedUpdateManyWithoutCandidateInput>
+  }
+
+  export type CandidateIntelligenceUpsertWithWhereUniqueWithoutCandidateInput = {
+    where: CandidateIntelligenceWhereUniqueInput
+    update: XOR<CandidateIntelligenceUpdateWithoutCandidateInput, CandidateIntelligenceUncheckedUpdateWithoutCandidateInput>
+    create: XOR<CandidateIntelligenceCreateWithoutCandidateInput, CandidateIntelligenceUncheckedCreateWithoutCandidateInput>
+  }
+
+  export type CandidateIntelligenceUpdateWithWhereUniqueWithoutCandidateInput = {
+    where: CandidateIntelligenceWhereUniqueInput
+    data: XOR<CandidateIntelligenceUpdateWithoutCandidateInput, CandidateIntelligenceUncheckedUpdateWithoutCandidateInput>
+  }
+
+  export type CandidateIntelligenceUpdateManyWithWhereWithoutCandidateInput = {
+    where: CandidateIntelligenceScalarWhereInput
+    data: XOR<CandidateIntelligenceUpdateManyMutationInput, CandidateIntelligenceUncheckedUpdateManyWithoutCandidateInput>
+  }
+
+  export type CandidateIntelligenceScalarWhereInput = {
+    AND?: CandidateIntelligenceScalarWhereInput | CandidateIntelligenceScalarWhereInput[]
+    OR?: CandidateIntelligenceScalarWhereInput[]
+    NOT?: CandidateIntelligenceScalarWhereInput | CandidateIntelligenceScalarWhereInput[]
+    id?: StringFilter<"CandidateIntelligence"> | string
+    candidateId?: StringFilter<"CandidateIntelligence"> | string
+    type?: StringFilter<"CandidateIntelligence"> | string
+    data?: JsonFilter<"CandidateIntelligence">
+    sourceText?: StringNullableFilter<"CandidateIntelligence"> | string | null
+    createdAt?: DateTimeFilter<"CandidateIntelligence"> | Date | string
+  }
+
+  export type CandidateNoteUpsertWithWhereUniqueWithoutCandidateInput = {
+    where: CandidateNoteWhereUniqueInput
+    update: XOR<CandidateNoteUpdateWithoutCandidateInput, CandidateNoteUncheckedUpdateWithoutCandidateInput>
+    create: XOR<CandidateNoteCreateWithoutCandidateInput, CandidateNoteUncheckedCreateWithoutCandidateInput>
+  }
+
+  export type CandidateNoteUpdateWithWhereUniqueWithoutCandidateInput = {
+    where: CandidateNoteWhereUniqueInput
+    data: XOR<CandidateNoteUpdateWithoutCandidateInput, CandidateNoteUncheckedUpdateWithoutCandidateInput>
+  }
+
+  export type CandidateNoteUpdateManyWithWhereWithoutCandidateInput = {
+    where: CandidateNoteScalarWhereInput
+    data: XOR<CandidateNoteUpdateManyMutationInput, CandidateNoteUncheckedUpdateManyWithoutCandidateInput>
+  }
+
+  export type CandidateNoteScalarWhereInput = {
+    AND?: CandidateNoteScalarWhereInput | CandidateNoteScalarWhereInput[]
+    OR?: CandidateNoteScalarWhereInput[]
+    NOT?: CandidateNoteScalarWhereInput | CandidateNoteScalarWhereInput[]
+    id?: StringFilter<"CandidateNote"> | string
+    candidateId?: StringFilter<"CandidateNote"> | string
+    userId?: StringFilter<"CandidateNote"> | string
+    userName?: StringFilter<"CandidateNote"> | string
+    content?: StringFilter<"CandidateNote"> | string
+    type?: StringFilter<"CandidateNote"> | string
+    createdAt?: DateTimeFilter<"CandidateNote"> | Date | string
+  }
+
+  export type CandidateReferenceUpsertWithWhereUniqueWithoutCandidateInput = {
+    where: CandidateReferenceWhereUniqueInput
+    update: XOR<CandidateReferenceUpdateWithoutCandidateInput, CandidateReferenceUncheckedUpdateWithoutCandidateInput>
+    create: XOR<CandidateReferenceCreateWithoutCandidateInput, CandidateReferenceUncheckedCreateWithoutCandidateInput>
+  }
+
+  export type CandidateReferenceUpdateWithWhereUniqueWithoutCandidateInput = {
+    where: CandidateReferenceWhereUniqueInput
+    data: XOR<CandidateReferenceUpdateWithoutCandidateInput, CandidateReferenceUncheckedUpdateWithoutCandidateInput>
+  }
+
+  export type CandidateReferenceUpdateManyWithWhereWithoutCandidateInput = {
+    where: CandidateReferenceScalarWhereInput
+    data: XOR<CandidateReferenceUpdateManyMutationInput, CandidateReferenceUncheckedUpdateManyWithoutCandidateInput>
+  }
+
+  export type CandidateReferenceScalarWhereInput = {
+    AND?: CandidateReferenceScalarWhereInput | CandidateReferenceScalarWhereInput[]
+    OR?: CandidateReferenceScalarWhereInput[]
+    NOT?: CandidateReferenceScalarWhereInput | CandidateReferenceScalarWhereInput[]
+    id?: StringFilter<"CandidateReference"> | string
+    candidateId?: StringFilter<"CandidateReference"> | string
+    refereeName?: StringFilter<"CandidateReference"> | string
+    refereeEmail?: StringNullableFilter<"CandidateReference"> | string | null
+    refereePhone?: StringNullableFilter<"CandidateReference"> | string | null
+    refereeRelation?: StringFilter<"CandidateReference"> | string
+    refereeCompany?: StringNullableFilter<"CandidateReference"> | string | null
+    status?: StringFilter<"CandidateReference"> | string
+    token?: StringNullableFilter<"CandidateReference"> | string | null
+    responses?: JsonNullableFilter<"CandidateReference">
+    aiAnalysis?: JsonNullableFilter<"CandidateReference">
+    completedAt?: DateTimeNullableFilter<"CandidateReference"> | Date | string | null
+    createdAt?: DateTimeFilter<"CandidateReference"> | Date | string
+  }
+
+  export type CandidateDocumentUpsertWithWhereUniqueWithoutCandidateInput = {
+    where: CandidateDocumentWhereUniqueInput
+    update: XOR<CandidateDocumentUpdateWithoutCandidateInput, CandidateDocumentUncheckedUpdateWithoutCandidateInput>
+    create: XOR<CandidateDocumentCreateWithoutCandidateInput, CandidateDocumentUncheckedCreateWithoutCandidateInput>
+  }
+
+  export type CandidateDocumentUpdateWithWhereUniqueWithoutCandidateInput = {
+    where: CandidateDocumentWhereUniqueInput
+    data: XOR<CandidateDocumentUpdateWithoutCandidateInput, CandidateDocumentUncheckedUpdateWithoutCandidateInput>
+  }
+
+  export type CandidateDocumentUpdateManyWithWhereWithoutCandidateInput = {
+    where: CandidateDocumentScalarWhereInput
+    data: XOR<CandidateDocumentUpdateManyMutationInput, CandidateDocumentUncheckedUpdateManyWithoutCandidateInput>
+  }
+
+  export type CandidateDocumentScalarWhereInput = {
+    AND?: CandidateDocumentScalarWhereInput | CandidateDocumentScalarWhereInput[]
+    OR?: CandidateDocumentScalarWhereInput[]
+    NOT?: CandidateDocumentScalarWhereInput | CandidateDocumentScalarWhereInput[]
+    id?: StringFilter<"CandidateDocument"> | string
+    candidateId?: StringFilter<"CandidateDocument"> | string
+    type?: StringFilter<"CandidateDocument"> | string
+    filename?: StringFilter<"CandidateDocument"> | string
+    mimeType?: StringFilter<"CandidateDocument"> | string
+    content?: StringFilter<"CandidateDocument"> | string
+    rawData?: BytesNullableFilter<"CandidateDocument"> | Buffer | null
+    createdAt?: DateTimeFilter<"CandidateDocument"> | Date | string
+  }
+
+  export type CandidateCreateWithoutDocumentsInput = {
+    id?: string
+    name: string
+    email?: string | null
+    phone?: string | null
+    linkedinUrl?: string | null
+    githubUrl?: string | null
+    portfolioUrl?: string | null
+    source?: string | null
+    sourceDetail?: string | null
+    currentRole?: string | null
+    currentCompany?: string | null
+    yearsExperience?: number | null
+    salaryExpectation?: string | null
+    noticePeriod?: string | null
+    pipelineStage?: string
+    rejectionReason?: string | null
+    tags?: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization?: OrganizationCreateNestedOneWithoutCandidatesInput
+    sessions?: InterviewSessionCreateNestedManyWithoutCandidateInput
+    intelligence?: CandidateIntelligenceCreateNestedManyWithoutCandidateInput
+    notes?: CandidateNoteCreateNestedManyWithoutCandidateInput
+    references?: CandidateReferenceCreateNestedManyWithoutCandidateInput
+  }
+
+  export type CandidateUncheckedCreateWithoutDocumentsInput = {
+    id?: string
+    organizationId?: string | null
+    name: string
+    email?: string | null
+    phone?: string | null
+    linkedinUrl?: string | null
+    githubUrl?: string | null
+    portfolioUrl?: string | null
+    source?: string | null
+    sourceDetail?: string | null
+    currentRole?: string | null
+    currentCompany?: string | null
+    yearsExperience?: number | null
+    salaryExpectation?: string | null
+    noticePeriod?: string | null
+    pipelineStage?: string
+    rejectionReason?: string | null
+    tags?: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessions?: InterviewSessionUncheckedCreateNestedManyWithoutCandidateInput
+    intelligence?: CandidateIntelligenceUncheckedCreateNestedManyWithoutCandidateInput
+    notes?: CandidateNoteUncheckedCreateNestedManyWithoutCandidateInput
+    references?: CandidateReferenceUncheckedCreateNestedManyWithoutCandidateInput
+  }
+
+  export type CandidateCreateOrConnectWithoutDocumentsInput = {
+    where: CandidateWhereUniqueInput
+    create: XOR<CandidateCreateWithoutDocumentsInput, CandidateUncheckedCreateWithoutDocumentsInput>
+  }
+
+  export type CandidateUpsertWithoutDocumentsInput = {
+    update: XOR<CandidateUpdateWithoutDocumentsInput, CandidateUncheckedUpdateWithoutDocumentsInput>
+    create: XOR<CandidateCreateWithoutDocumentsInput, CandidateUncheckedCreateWithoutDocumentsInput>
+    where?: CandidateWhereInput
+  }
+
+  export type CandidateUpdateToOneWithWhereWithoutDocumentsInput = {
+    where?: CandidateWhereInput
+    data: XOR<CandidateUpdateWithoutDocumentsInput, CandidateUncheckedUpdateWithoutDocumentsInput>
+  }
+
+  export type CandidateUpdateWithoutDocumentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    portfolioUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceDetail?: NullableStringFieldUpdateOperationsInput | string | null
+    currentRole?: NullableStringFieldUpdateOperationsInput | string | null
+    currentCompany?: NullableStringFieldUpdateOperationsInput | string | null
+    yearsExperience?: NullableIntFieldUpdateOperationsInput | number | null
+    salaryExpectation?: NullableStringFieldUpdateOperationsInput | string | null
+    noticePeriod?: NullableStringFieldUpdateOperationsInput | string | null
+    pipelineStage?: StringFieldUpdateOperationsInput | string
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    tags?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneWithoutCandidatesNestedInput
+    sessions?: InterviewSessionUpdateManyWithoutCandidateNestedInput
+    intelligence?: CandidateIntelligenceUpdateManyWithoutCandidateNestedInput
+    notes?: CandidateNoteUpdateManyWithoutCandidateNestedInput
+    references?: CandidateReferenceUpdateManyWithoutCandidateNestedInput
+  }
+
+  export type CandidateUncheckedUpdateWithoutDocumentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    portfolioUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceDetail?: NullableStringFieldUpdateOperationsInput | string | null
+    currentRole?: NullableStringFieldUpdateOperationsInput | string | null
+    currentCompany?: NullableStringFieldUpdateOperationsInput | string | null
+    yearsExperience?: NullableIntFieldUpdateOperationsInput | number | null
+    salaryExpectation?: NullableStringFieldUpdateOperationsInput | string | null
+    noticePeriod?: NullableStringFieldUpdateOperationsInput | string | null
+    pipelineStage?: StringFieldUpdateOperationsInput | string
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    tags?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: InterviewSessionUncheckedUpdateManyWithoutCandidateNestedInput
+    intelligence?: CandidateIntelligenceUncheckedUpdateManyWithoutCandidateNestedInput
+    notes?: CandidateNoteUncheckedUpdateManyWithoutCandidateNestedInput
+    references?: CandidateReferenceUncheckedUpdateManyWithoutCandidateNestedInput
+  }
+
+  export type CandidateCreateWithoutIntelligenceInput = {
+    id?: string
+    name: string
+    email?: string | null
+    phone?: string | null
+    linkedinUrl?: string | null
+    githubUrl?: string | null
+    portfolioUrl?: string | null
+    source?: string | null
+    sourceDetail?: string | null
+    currentRole?: string | null
+    currentCompany?: string | null
+    yearsExperience?: number | null
+    salaryExpectation?: string | null
+    noticePeriod?: string | null
+    pipelineStage?: string
+    rejectionReason?: string | null
+    tags?: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization?: OrganizationCreateNestedOneWithoutCandidatesInput
+    sessions?: InterviewSessionCreateNestedManyWithoutCandidateInput
+    notes?: CandidateNoteCreateNestedManyWithoutCandidateInput
+    references?: CandidateReferenceCreateNestedManyWithoutCandidateInput
+    documents?: CandidateDocumentCreateNestedManyWithoutCandidateInput
+  }
+
+  export type CandidateUncheckedCreateWithoutIntelligenceInput = {
+    id?: string
+    organizationId?: string | null
+    name: string
+    email?: string | null
+    phone?: string | null
+    linkedinUrl?: string | null
+    githubUrl?: string | null
+    portfolioUrl?: string | null
+    source?: string | null
+    sourceDetail?: string | null
+    currentRole?: string | null
+    currentCompany?: string | null
+    yearsExperience?: number | null
+    salaryExpectation?: string | null
+    noticePeriod?: string | null
+    pipelineStage?: string
+    rejectionReason?: string | null
+    tags?: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessions?: InterviewSessionUncheckedCreateNestedManyWithoutCandidateInput
+    notes?: CandidateNoteUncheckedCreateNestedManyWithoutCandidateInput
+    references?: CandidateReferenceUncheckedCreateNestedManyWithoutCandidateInput
+    documents?: CandidateDocumentUncheckedCreateNestedManyWithoutCandidateInput
+  }
+
+  export type CandidateCreateOrConnectWithoutIntelligenceInput = {
+    where: CandidateWhereUniqueInput
+    create: XOR<CandidateCreateWithoutIntelligenceInput, CandidateUncheckedCreateWithoutIntelligenceInput>
+  }
+
+  export type CandidateUpsertWithoutIntelligenceInput = {
+    update: XOR<CandidateUpdateWithoutIntelligenceInput, CandidateUncheckedUpdateWithoutIntelligenceInput>
+    create: XOR<CandidateCreateWithoutIntelligenceInput, CandidateUncheckedCreateWithoutIntelligenceInput>
+    where?: CandidateWhereInput
+  }
+
+  export type CandidateUpdateToOneWithWhereWithoutIntelligenceInput = {
+    where?: CandidateWhereInput
+    data: XOR<CandidateUpdateWithoutIntelligenceInput, CandidateUncheckedUpdateWithoutIntelligenceInput>
+  }
+
+  export type CandidateUpdateWithoutIntelligenceInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    portfolioUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceDetail?: NullableStringFieldUpdateOperationsInput | string | null
+    currentRole?: NullableStringFieldUpdateOperationsInput | string | null
+    currentCompany?: NullableStringFieldUpdateOperationsInput | string | null
+    yearsExperience?: NullableIntFieldUpdateOperationsInput | number | null
+    salaryExpectation?: NullableStringFieldUpdateOperationsInput | string | null
+    noticePeriod?: NullableStringFieldUpdateOperationsInput | string | null
+    pipelineStage?: StringFieldUpdateOperationsInput | string
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    tags?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneWithoutCandidatesNestedInput
+    sessions?: InterviewSessionUpdateManyWithoutCandidateNestedInput
+    notes?: CandidateNoteUpdateManyWithoutCandidateNestedInput
+    references?: CandidateReferenceUpdateManyWithoutCandidateNestedInput
+    documents?: CandidateDocumentUpdateManyWithoutCandidateNestedInput
+  }
+
+  export type CandidateUncheckedUpdateWithoutIntelligenceInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    portfolioUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceDetail?: NullableStringFieldUpdateOperationsInput | string | null
+    currentRole?: NullableStringFieldUpdateOperationsInput | string | null
+    currentCompany?: NullableStringFieldUpdateOperationsInput | string | null
+    yearsExperience?: NullableIntFieldUpdateOperationsInput | number | null
+    salaryExpectation?: NullableStringFieldUpdateOperationsInput | string | null
+    noticePeriod?: NullableStringFieldUpdateOperationsInput | string | null
+    pipelineStage?: StringFieldUpdateOperationsInput | string
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    tags?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: InterviewSessionUncheckedUpdateManyWithoutCandidateNestedInput
+    notes?: CandidateNoteUncheckedUpdateManyWithoutCandidateNestedInput
+    references?: CandidateReferenceUncheckedUpdateManyWithoutCandidateNestedInput
+    documents?: CandidateDocumentUncheckedUpdateManyWithoutCandidateNestedInput
+  }
+
+  export type CandidateCreateWithoutNotesInput = {
+    id?: string
+    name: string
+    email?: string | null
+    phone?: string | null
+    linkedinUrl?: string | null
+    githubUrl?: string | null
+    portfolioUrl?: string | null
+    source?: string | null
+    sourceDetail?: string | null
+    currentRole?: string | null
+    currentCompany?: string | null
+    yearsExperience?: number | null
+    salaryExpectation?: string | null
+    noticePeriod?: string | null
+    pipelineStage?: string
+    rejectionReason?: string | null
+    tags?: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization?: OrganizationCreateNestedOneWithoutCandidatesInput
+    sessions?: InterviewSessionCreateNestedManyWithoutCandidateInput
+    intelligence?: CandidateIntelligenceCreateNestedManyWithoutCandidateInput
+    references?: CandidateReferenceCreateNestedManyWithoutCandidateInput
+    documents?: CandidateDocumentCreateNestedManyWithoutCandidateInput
+  }
+
+  export type CandidateUncheckedCreateWithoutNotesInput = {
+    id?: string
+    organizationId?: string | null
+    name: string
+    email?: string | null
+    phone?: string | null
+    linkedinUrl?: string | null
+    githubUrl?: string | null
+    portfolioUrl?: string | null
+    source?: string | null
+    sourceDetail?: string | null
+    currentRole?: string | null
+    currentCompany?: string | null
+    yearsExperience?: number | null
+    salaryExpectation?: string | null
+    noticePeriod?: string | null
+    pipelineStage?: string
+    rejectionReason?: string | null
+    tags?: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessions?: InterviewSessionUncheckedCreateNestedManyWithoutCandidateInput
+    intelligence?: CandidateIntelligenceUncheckedCreateNestedManyWithoutCandidateInput
+    references?: CandidateReferenceUncheckedCreateNestedManyWithoutCandidateInput
+    documents?: CandidateDocumentUncheckedCreateNestedManyWithoutCandidateInput
+  }
+
+  export type CandidateCreateOrConnectWithoutNotesInput = {
+    where: CandidateWhereUniqueInput
+    create: XOR<CandidateCreateWithoutNotesInput, CandidateUncheckedCreateWithoutNotesInput>
+  }
+
+  export type CandidateUpsertWithoutNotesInput = {
+    update: XOR<CandidateUpdateWithoutNotesInput, CandidateUncheckedUpdateWithoutNotesInput>
+    create: XOR<CandidateCreateWithoutNotesInput, CandidateUncheckedCreateWithoutNotesInput>
+    where?: CandidateWhereInput
+  }
+
+  export type CandidateUpdateToOneWithWhereWithoutNotesInput = {
+    where?: CandidateWhereInput
+    data: XOR<CandidateUpdateWithoutNotesInput, CandidateUncheckedUpdateWithoutNotesInput>
+  }
+
+  export type CandidateUpdateWithoutNotesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    portfolioUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceDetail?: NullableStringFieldUpdateOperationsInput | string | null
+    currentRole?: NullableStringFieldUpdateOperationsInput | string | null
+    currentCompany?: NullableStringFieldUpdateOperationsInput | string | null
+    yearsExperience?: NullableIntFieldUpdateOperationsInput | number | null
+    salaryExpectation?: NullableStringFieldUpdateOperationsInput | string | null
+    noticePeriod?: NullableStringFieldUpdateOperationsInput | string | null
+    pipelineStage?: StringFieldUpdateOperationsInput | string
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    tags?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneWithoutCandidatesNestedInput
+    sessions?: InterviewSessionUpdateManyWithoutCandidateNestedInput
+    intelligence?: CandidateIntelligenceUpdateManyWithoutCandidateNestedInput
+    references?: CandidateReferenceUpdateManyWithoutCandidateNestedInput
+    documents?: CandidateDocumentUpdateManyWithoutCandidateNestedInput
+  }
+
+  export type CandidateUncheckedUpdateWithoutNotesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    portfolioUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceDetail?: NullableStringFieldUpdateOperationsInput | string | null
+    currentRole?: NullableStringFieldUpdateOperationsInput | string | null
+    currentCompany?: NullableStringFieldUpdateOperationsInput | string | null
+    yearsExperience?: NullableIntFieldUpdateOperationsInput | number | null
+    salaryExpectation?: NullableStringFieldUpdateOperationsInput | string | null
+    noticePeriod?: NullableStringFieldUpdateOperationsInput | string | null
+    pipelineStage?: StringFieldUpdateOperationsInput | string
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    tags?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: InterviewSessionUncheckedUpdateManyWithoutCandidateNestedInput
+    intelligence?: CandidateIntelligenceUncheckedUpdateManyWithoutCandidateNestedInput
+    references?: CandidateReferenceUncheckedUpdateManyWithoutCandidateNestedInput
+    documents?: CandidateDocumentUncheckedUpdateManyWithoutCandidateNestedInput
+  }
+
+  export type CandidateCreateWithoutReferencesInput = {
+    id?: string
+    name: string
+    email?: string | null
+    phone?: string | null
+    linkedinUrl?: string | null
+    githubUrl?: string | null
+    portfolioUrl?: string | null
+    source?: string | null
+    sourceDetail?: string | null
+    currentRole?: string | null
+    currentCompany?: string | null
+    yearsExperience?: number | null
+    salaryExpectation?: string | null
+    noticePeriod?: string | null
+    pipelineStage?: string
+    rejectionReason?: string | null
+    tags?: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization?: OrganizationCreateNestedOneWithoutCandidatesInput
+    sessions?: InterviewSessionCreateNestedManyWithoutCandidateInput
+    intelligence?: CandidateIntelligenceCreateNestedManyWithoutCandidateInput
+    notes?: CandidateNoteCreateNestedManyWithoutCandidateInput
+    documents?: CandidateDocumentCreateNestedManyWithoutCandidateInput
+  }
+
+  export type CandidateUncheckedCreateWithoutReferencesInput = {
+    id?: string
+    organizationId?: string | null
+    name: string
+    email?: string | null
+    phone?: string | null
+    linkedinUrl?: string | null
+    githubUrl?: string | null
+    portfolioUrl?: string | null
+    source?: string | null
+    sourceDetail?: string | null
+    currentRole?: string | null
+    currentCompany?: string | null
+    yearsExperience?: number | null
+    salaryExpectation?: string | null
+    noticePeriod?: string | null
+    pipelineStage?: string
+    rejectionReason?: string | null
+    tags?: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessions?: InterviewSessionUncheckedCreateNestedManyWithoutCandidateInput
+    intelligence?: CandidateIntelligenceUncheckedCreateNestedManyWithoutCandidateInput
+    notes?: CandidateNoteUncheckedCreateNestedManyWithoutCandidateInput
+    documents?: CandidateDocumentUncheckedCreateNestedManyWithoutCandidateInput
+  }
+
+  export type CandidateCreateOrConnectWithoutReferencesInput = {
+    where: CandidateWhereUniqueInput
+    create: XOR<CandidateCreateWithoutReferencesInput, CandidateUncheckedCreateWithoutReferencesInput>
+  }
+
+  export type CandidateUpsertWithoutReferencesInput = {
+    update: XOR<CandidateUpdateWithoutReferencesInput, CandidateUncheckedUpdateWithoutReferencesInput>
+    create: XOR<CandidateCreateWithoutReferencesInput, CandidateUncheckedCreateWithoutReferencesInput>
+    where?: CandidateWhereInput
+  }
+
+  export type CandidateUpdateToOneWithWhereWithoutReferencesInput = {
+    where?: CandidateWhereInput
+    data: XOR<CandidateUpdateWithoutReferencesInput, CandidateUncheckedUpdateWithoutReferencesInput>
+  }
+
+  export type CandidateUpdateWithoutReferencesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    portfolioUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceDetail?: NullableStringFieldUpdateOperationsInput | string | null
+    currentRole?: NullableStringFieldUpdateOperationsInput | string | null
+    currentCompany?: NullableStringFieldUpdateOperationsInput | string | null
+    yearsExperience?: NullableIntFieldUpdateOperationsInput | number | null
+    salaryExpectation?: NullableStringFieldUpdateOperationsInput | string | null
+    noticePeriod?: NullableStringFieldUpdateOperationsInput | string | null
+    pipelineStage?: StringFieldUpdateOperationsInput | string
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    tags?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneWithoutCandidatesNestedInput
+    sessions?: InterviewSessionUpdateManyWithoutCandidateNestedInput
+    intelligence?: CandidateIntelligenceUpdateManyWithoutCandidateNestedInput
+    notes?: CandidateNoteUpdateManyWithoutCandidateNestedInput
+    documents?: CandidateDocumentUpdateManyWithoutCandidateNestedInput
+  }
+
+  export type CandidateUncheckedUpdateWithoutReferencesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    portfolioUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceDetail?: NullableStringFieldUpdateOperationsInput | string | null
+    currentRole?: NullableStringFieldUpdateOperationsInput | string | null
+    currentCompany?: NullableStringFieldUpdateOperationsInput | string | null
+    yearsExperience?: NullableIntFieldUpdateOperationsInput | number | null
+    salaryExpectation?: NullableStringFieldUpdateOperationsInput | string | null
+    noticePeriod?: NullableStringFieldUpdateOperationsInput | string | null
+    pipelineStage?: StringFieldUpdateOperationsInput | string
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    tags?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: InterviewSessionUncheckedUpdateManyWithoutCandidateNestedInput
+    intelligence?: CandidateIntelligenceUncheckedUpdateManyWithoutCandidateNestedInput
+    notes?: CandidateNoteUncheckedUpdateManyWithoutCandidateNestedInput
+    documents?: CandidateDocumentUncheckedUpdateManyWithoutCandidateNestedInput
+  }
+
   export type OrganizationCreateWithoutSessionsInput = {
     id?: string
     name: string
     settings?: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     users?: UserCreateNestedManyWithoutOrganizationInput
+    candidates?: CandidateCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutSessionsInput = {
@@ -20698,11 +29406,71 @@ export namespace Prisma {
     settings?: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     users?: UserUncheckedCreateNestedManyWithoutOrganizationInput
+    candidates?: CandidateUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutSessionsInput = {
     where: OrganizationWhereUniqueInput
     create: XOR<OrganizationCreateWithoutSessionsInput, OrganizationUncheckedCreateWithoutSessionsInput>
+  }
+
+  export type CandidateCreateWithoutSessionsInput = {
+    id?: string
+    name: string
+    email?: string | null
+    phone?: string | null
+    linkedinUrl?: string | null
+    githubUrl?: string | null
+    portfolioUrl?: string | null
+    source?: string | null
+    sourceDetail?: string | null
+    currentRole?: string | null
+    currentCompany?: string | null
+    yearsExperience?: number | null
+    salaryExpectation?: string | null
+    noticePeriod?: string | null
+    pipelineStage?: string
+    rejectionReason?: string | null
+    tags?: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization?: OrganizationCreateNestedOneWithoutCandidatesInput
+    intelligence?: CandidateIntelligenceCreateNestedManyWithoutCandidateInput
+    notes?: CandidateNoteCreateNestedManyWithoutCandidateInput
+    references?: CandidateReferenceCreateNestedManyWithoutCandidateInput
+    documents?: CandidateDocumentCreateNestedManyWithoutCandidateInput
+  }
+
+  export type CandidateUncheckedCreateWithoutSessionsInput = {
+    id?: string
+    organizationId?: string | null
+    name: string
+    email?: string | null
+    phone?: string | null
+    linkedinUrl?: string | null
+    githubUrl?: string | null
+    portfolioUrl?: string | null
+    source?: string | null
+    sourceDetail?: string | null
+    currentRole?: string | null
+    currentCompany?: string | null
+    yearsExperience?: number | null
+    salaryExpectation?: string | null
+    noticePeriod?: string | null
+    pipelineStage?: string
+    rejectionReason?: string | null
+    tags?: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    intelligence?: CandidateIntelligenceUncheckedCreateNestedManyWithoutCandidateInput
+    notes?: CandidateNoteUncheckedCreateNestedManyWithoutCandidateInput
+    references?: CandidateReferenceUncheckedCreateNestedManyWithoutCandidateInput
+    documents?: CandidateDocumentUncheckedCreateNestedManyWithoutCandidateInput
+  }
+
+  export type CandidateCreateOrConnectWithoutSessionsInput = {
+    where: CandidateWhereUniqueInput
+    create: XOR<CandidateCreateWithoutSessionsInput, CandidateUncheckedCreateWithoutSessionsInput>
   }
 
   export type TranscriptEntryCreateWithoutSessionInput = {
@@ -20808,6 +29576,7 @@ export namespace Prisma {
     reportData: JsonNullValueInput | InputJsonValue
     coachingReport?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
+    feedback?: ReportFeedbackCreateNestedManyWithoutReportInput
   }
 
   export type ReportUncheckedCreateWithoutSessionInput = {
@@ -20817,6 +29586,7 @@ export namespace Prisma {
     reportData: JsonNullValueInput | InputJsonValue
     coachingReport?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
+    feedback?: ReportFeedbackUncheckedCreateNestedManyWithoutReportInput
   }
 
   export type ReportCreateOrConnectWithoutSessionInput = {
@@ -20846,6 +29616,7 @@ export namespace Prisma {
     settings?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     users?: UserUpdateManyWithoutOrganizationNestedInput
+    candidates?: CandidateUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutSessionsInput = {
@@ -20854,6 +29625,72 @@ export namespace Prisma {
     settings?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     users?: UserUncheckedUpdateManyWithoutOrganizationNestedInput
+    candidates?: CandidateUncheckedUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type CandidateUpsertWithoutSessionsInput = {
+    update: XOR<CandidateUpdateWithoutSessionsInput, CandidateUncheckedUpdateWithoutSessionsInput>
+    create: XOR<CandidateCreateWithoutSessionsInput, CandidateUncheckedCreateWithoutSessionsInput>
+    where?: CandidateWhereInput
+  }
+
+  export type CandidateUpdateToOneWithWhereWithoutSessionsInput = {
+    where?: CandidateWhereInput
+    data: XOR<CandidateUpdateWithoutSessionsInput, CandidateUncheckedUpdateWithoutSessionsInput>
+  }
+
+  export type CandidateUpdateWithoutSessionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    portfolioUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceDetail?: NullableStringFieldUpdateOperationsInput | string | null
+    currentRole?: NullableStringFieldUpdateOperationsInput | string | null
+    currentCompany?: NullableStringFieldUpdateOperationsInput | string | null
+    yearsExperience?: NullableIntFieldUpdateOperationsInput | number | null
+    salaryExpectation?: NullableStringFieldUpdateOperationsInput | string | null
+    noticePeriod?: NullableStringFieldUpdateOperationsInput | string | null
+    pipelineStage?: StringFieldUpdateOperationsInput | string
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    tags?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneWithoutCandidatesNestedInput
+    intelligence?: CandidateIntelligenceUpdateManyWithoutCandidateNestedInput
+    notes?: CandidateNoteUpdateManyWithoutCandidateNestedInput
+    references?: CandidateReferenceUpdateManyWithoutCandidateNestedInput
+    documents?: CandidateDocumentUpdateManyWithoutCandidateNestedInput
+  }
+
+  export type CandidateUncheckedUpdateWithoutSessionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    portfolioUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceDetail?: NullableStringFieldUpdateOperationsInput | string | null
+    currentRole?: NullableStringFieldUpdateOperationsInput | string | null
+    currentCompany?: NullableStringFieldUpdateOperationsInput | string | null
+    yearsExperience?: NullableIntFieldUpdateOperationsInput | number | null
+    salaryExpectation?: NullableStringFieldUpdateOperationsInput | string | null
+    noticePeriod?: NullableStringFieldUpdateOperationsInput | string | null
+    pipelineStage?: StringFieldUpdateOperationsInput | string
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    tags?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    intelligence?: CandidateIntelligenceUncheckedUpdateManyWithoutCandidateNestedInput
+    notes?: CandidateNoteUncheckedUpdateManyWithoutCandidateNestedInput
+    references?: CandidateReferenceUncheckedUpdateManyWithoutCandidateNestedInput
+    documents?: CandidateDocumentUncheckedUpdateManyWithoutCandidateNestedInput
   }
 
   export type TranscriptEntryUpsertWithWhereUniqueWithoutSessionInput = {
@@ -20989,6 +29826,7 @@ export namespace Prisma {
     audioData?: Buffer | null
     createdAt?: Date | string
     organization?: OrganizationCreateNestedOneWithoutSessionsInput
+    candidate?: CandidateCreateNestedOneWithoutSessionsInput
     observations?: ObservationCreateNestedManyWithoutSessionInput
     verdicts?: AssessorVerdictCreateNestedManyWithoutSessionInput
     reports?: ReportCreateNestedManyWithoutSessionInput
@@ -20997,6 +29835,7 @@ export namespace Prisma {
   export type InterviewSessionUncheckedCreateWithoutTranscriptsInput = {
     id?: string
     organizationId?: string | null
+    candidateId?: string | null
     setup: JsonNullValueInput | InputJsonValue
     status?: string
     startedAt?: Date | string | null
@@ -21037,6 +29876,7 @@ export namespace Prisma {
     audioData?: NullableBytesFieldUpdateOperationsInput | Buffer | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organization?: OrganizationUpdateOneWithoutSessionsNestedInput
+    candidate?: CandidateUpdateOneWithoutSessionsNestedInput
     observations?: ObservationUpdateManyWithoutSessionNestedInput
     verdicts?: AssessorVerdictUpdateManyWithoutSessionNestedInput
     reports?: ReportUpdateManyWithoutSessionNestedInput
@@ -21045,6 +29885,7 @@ export namespace Prisma {
   export type InterviewSessionUncheckedUpdateWithoutTranscriptsInput = {
     id?: StringFieldUpdateOperationsInput | string
     organizationId?: NullableStringFieldUpdateOperationsInput | string | null
+    candidateId?: NullableStringFieldUpdateOperationsInput | string | null
     setup?: JsonNullValueInput | InputJsonValue
     status?: StringFieldUpdateOperationsInput | string
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -21069,6 +29910,7 @@ export namespace Prisma {
     audioData?: Buffer | null
     createdAt?: Date | string
     organization?: OrganizationCreateNestedOneWithoutSessionsInput
+    candidate?: CandidateCreateNestedOneWithoutSessionsInput
     transcripts?: TranscriptEntryCreateNestedManyWithoutSessionInput
     verdicts?: AssessorVerdictCreateNestedManyWithoutSessionInput
     reports?: ReportCreateNestedManyWithoutSessionInput
@@ -21077,6 +29919,7 @@ export namespace Prisma {
   export type InterviewSessionUncheckedCreateWithoutObservationsInput = {
     id?: string
     organizationId?: string | null
+    candidateId?: string | null
     setup: JsonNullValueInput | InputJsonValue
     status?: string
     startedAt?: Date | string | null
@@ -21117,6 +29960,7 @@ export namespace Prisma {
     audioData?: NullableBytesFieldUpdateOperationsInput | Buffer | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organization?: OrganizationUpdateOneWithoutSessionsNestedInput
+    candidate?: CandidateUpdateOneWithoutSessionsNestedInput
     transcripts?: TranscriptEntryUpdateManyWithoutSessionNestedInput
     verdicts?: AssessorVerdictUpdateManyWithoutSessionNestedInput
     reports?: ReportUpdateManyWithoutSessionNestedInput
@@ -21125,6 +29969,7 @@ export namespace Prisma {
   export type InterviewSessionUncheckedUpdateWithoutObservationsInput = {
     id?: StringFieldUpdateOperationsInput | string
     organizationId?: NullableStringFieldUpdateOperationsInput | string | null
+    candidateId?: NullableStringFieldUpdateOperationsInput | string | null
     setup?: JsonNullValueInput | InputJsonValue
     status?: StringFieldUpdateOperationsInput | string
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -21149,6 +29994,7 @@ export namespace Prisma {
     audioData?: Buffer | null
     createdAt?: Date | string
     organization?: OrganizationCreateNestedOneWithoutSessionsInput
+    candidate?: CandidateCreateNestedOneWithoutSessionsInput
     transcripts?: TranscriptEntryCreateNestedManyWithoutSessionInput
     observations?: ObservationCreateNestedManyWithoutSessionInput
     reports?: ReportCreateNestedManyWithoutSessionInput
@@ -21157,6 +30003,7 @@ export namespace Prisma {
   export type InterviewSessionUncheckedCreateWithoutVerdictsInput = {
     id?: string
     organizationId?: string | null
+    candidateId?: string | null
     setup: JsonNullValueInput | InputJsonValue
     status?: string
     startedAt?: Date | string | null
@@ -21197,6 +30044,7 @@ export namespace Prisma {
     audioData?: NullableBytesFieldUpdateOperationsInput | Buffer | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organization?: OrganizationUpdateOneWithoutSessionsNestedInput
+    candidate?: CandidateUpdateOneWithoutSessionsNestedInput
     transcripts?: TranscriptEntryUpdateManyWithoutSessionNestedInput
     observations?: ObservationUpdateManyWithoutSessionNestedInput
     reports?: ReportUpdateManyWithoutSessionNestedInput
@@ -21205,6 +30053,7 @@ export namespace Prisma {
   export type InterviewSessionUncheckedUpdateWithoutVerdictsInput = {
     id?: StringFieldUpdateOperationsInput | string
     organizationId?: NullableStringFieldUpdateOperationsInput | string | null
+    candidateId?: NullableStringFieldUpdateOperationsInput | string | null
     setup?: JsonNullValueInput | InputJsonValue
     status?: StringFieldUpdateOperationsInput | string
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -21229,6 +30078,7 @@ export namespace Prisma {
     audioData?: Buffer | null
     createdAt?: Date | string
     organization?: OrganizationCreateNestedOneWithoutSessionsInput
+    candidate?: CandidateCreateNestedOneWithoutSessionsInput
     transcripts?: TranscriptEntryCreateNestedManyWithoutSessionInput
     observations?: ObservationCreateNestedManyWithoutSessionInput
     verdicts?: AssessorVerdictCreateNestedManyWithoutSessionInput
@@ -21237,6 +30087,7 @@ export namespace Prisma {
   export type InterviewSessionUncheckedCreateWithoutReportsInput = {
     id?: string
     organizationId?: string | null
+    candidateId?: string | null
     setup: JsonNullValueInput | InputJsonValue
     status?: string
     startedAt?: Date | string | null
@@ -21253,6 +30104,42 @@ export namespace Prisma {
   export type InterviewSessionCreateOrConnectWithoutReportsInput = {
     where: InterviewSessionWhereUniqueInput
     create: XOR<InterviewSessionCreateWithoutReportsInput, InterviewSessionUncheckedCreateWithoutReportsInput>
+  }
+
+  export type ReportFeedbackCreateWithoutReportInput = {
+    id?: string
+    userId: string
+    overallAccuracy: number
+    hireOutcome?: string | null
+    performanceNote?: string | null
+    dimensionFeedback?: NullableJsonNullValueInput | InputJsonValue
+    gateFeedback?: NullableJsonNullValueInput | InputJsonValue
+    comments?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ReportFeedbackUncheckedCreateWithoutReportInput = {
+    id?: string
+    userId: string
+    overallAccuracy: number
+    hireOutcome?: string | null
+    performanceNote?: string | null
+    dimensionFeedback?: NullableJsonNullValueInput | InputJsonValue
+    gateFeedback?: NullableJsonNullValueInput | InputJsonValue
+    comments?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ReportFeedbackCreateOrConnectWithoutReportInput = {
+    where: ReportFeedbackWhereUniqueInput
+    create: XOR<ReportFeedbackCreateWithoutReportInput, ReportFeedbackUncheckedCreateWithoutReportInput>
+  }
+
+  export type ReportFeedbackCreateManyReportInputEnvelope = {
+    data: ReportFeedbackCreateManyReportInput | ReportFeedbackCreateManyReportInput[]
+    skipDuplicates?: boolean
   }
 
   export type InterviewSessionUpsertWithoutReportsInput = {
@@ -21277,6 +30164,7 @@ export namespace Prisma {
     audioData?: NullableBytesFieldUpdateOperationsInput | Buffer | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organization?: OrganizationUpdateOneWithoutSessionsNestedInput
+    candidate?: CandidateUpdateOneWithoutSessionsNestedInput
     transcripts?: TranscriptEntryUpdateManyWithoutSessionNestedInput
     observations?: ObservationUpdateManyWithoutSessionNestedInput
     verdicts?: AssessorVerdictUpdateManyWithoutSessionNestedInput
@@ -21285,6 +30173,7 @@ export namespace Prisma {
   export type InterviewSessionUncheckedUpdateWithoutReportsInput = {
     id?: StringFieldUpdateOperationsInput | string
     organizationId?: NullableStringFieldUpdateOperationsInput | string | null
+    candidateId?: NullableStringFieldUpdateOperationsInput | string | null
     setup?: JsonNullValueInput | InputJsonValue
     status?: StringFieldUpdateOperationsInput | string
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -21296,6 +30185,39 @@ export namespace Prisma {
     transcripts?: TranscriptEntryUncheckedUpdateManyWithoutSessionNestedInput
     observations?: ObservationUncheckedUpdateManyWithoutSessionNestedInput
     verdicts?: AssessorVerdictUncheckedUpdateManyWithoutSessionNestedInput
+  }
+
+  export type ReportFeedbackUpsertWithWhereUniqueWithoutReportInput = {
+    where: ReportFeedbackWhereUniqueInput
+    update: XOR<ReportFeedbackUpdateWithoutReportInput, ReportFeedbackUncheckedUpdateWithoutReportInput>
+    create: XOR<ReportFeedbackCreateWithoutReportInput, ReportFeedbackUncheckedCreateWithoutReportInput>
+  }
+
+  export type ReportFeedbackUpdateWithWhereUniqueWithoutReportInput = {
+    where: ReportFeedbackWhereUniqueInput
+    data: XOR<ReportFeedbackUpdateWithoutReportInput, ReportFeedbackUncheckedUpdateWithoutReportInput>
+  }
+
+  export type ReportFeedbackUpdateManyWithWhereWithoutReportInput = {
+    where: ReportFeedbackScalarWhereInput
+    data: XOR<ReportFeedbackUpdateManyMutationInput, ReportFeedbackUncheckedUpdateManyWithoutReportInput>
+  }
+
+  export type ReportFeedbackScalarWhereInput = {
+    AND?: ReportFeedbackScalarWhereInput | ReportFeedbackScalarWhereInput[]
+    OR?: ReportFeedbackScalarWhereInput[]
+    NOT?: ReportFeedbackScalarWhereInput | ReportFeedbackScalarWhereInput[]
+    id?: StringFilter<"ReportFeedback"> | string
+    reportId?: StringFilter<"ReportFeedback"> | string
+    userId?: StringFilter<"ReportFeedback"> | string
+    overallAccuracy?: IntFilter<"ReportFeedback"> | number
+    hireOutcome?: StringNullableFilter<"ReportFeedback"> | string | null
+    performanceNote?: StringNullableFilter<"ReportFeedback"> | string | null
+    dimensionFeedback?: JsonNullableFilter<"ReportFeedback">
+    gateFeedback?: JsonNullableFilter<"ReportFeedback">
+    comments?: StringNullableFilter<"ReportFeedback"> | string | null
+    createdAt?: DateTimeFilter<"ReportFeedback"> | Date | string
+    updatedAt?: DateTimeFilter<"ReportFeedback"> | Date | string
   }
 
   export type CalibrationNoteCreateWithoutSessionInput = {
@@ -21360,6 +30282,7 @@ export namespace Prisma {
     reportId: string
     title: string
     status?: string
+    organizationId?: string | null
     createdAt?: Date | string
   }
 
@@ -21368,6 +30291,7 @@ export namespace Prisma {
     reportId: string
     title: string
     status?: string
+    organizationId?: string | null
     createdAt?: Date | string
   }
 
@@ -21392,6 +30316,7 @@ export namespace Prisma {
     reportId?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
+    organizationId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -21400,6 +30325,63 @@ export namespace Prisma {
     reportId?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
+    organizationId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReportCreateWithoutFeedbackInput = {
+    id?: string
+    candidateName: string
+    roleName: string
+    reportData: JsonNullValueInput | InputJsonValue
+    coachingReport?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    session: InterviewSessionCreateNestedOneWithoutReportsInput
+  }
+
+  export type ReportUncheckedCreateWithoutFeedbackInput = {
+    id?: string
+    sessionId: string
+    candidateName: string
+    roleName: string
+    reportData: JsonNullValueInput | InputJsonValue
+    coachingReport?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+  }
+
+  export type ReportCreateOrConnectWithoutFeedbackInput = {
+    where: ReportWhereUniqueInput
+    create: XOR<ReportCreateWithoutFeedbackInput, ReportUncheckedCreateWithoutFeedbackInput>
+  }
+
+  export type ReportUpsertWithoutFeedbackInput = {
+    update: XOR<ReportUpdateWithoutFeedbackInput, ReportUncheckedUpdateWithoutFeedbackInput>
+    create: XOR<ReportCreateWithoutFeedbackInput, ReportUncheckedCreateWithoutFeedbackInput>
+    where?: ReportWhereInput
+  }
+
+  export type ReportUpdateToOneWithWhereWithoutFeedbackInput = {
+    where?: ReportWhereInput
+    data: XOR<ReportUpdateWithoutFeedbackInput, ReportUncheckedUpdateWithoutFeedbackInput>
+  }
+
+  export type ReportUpdateWithoutFeedbackInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    candidateName?: StringFieldUpdateOperationsInput | string
+    roleName?: StringFieldUpdateOperationsInput | string
+    reportData?: JsonNullValueInput | InputJsonValue
+    coachingReport?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    session?: InterviewSessionUpdateOneRequiredWithoutReportsNestedInput
+  }
+
+  export type ReportUncheckedUpdateWithoutFeedbackInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sessionId?: StringFieldUpdateOperationsInput | string
+    candidateName?: StringFieldUpdateOperationsInput | string
+    roleName?: StringFieldUpdateOperationsInput | string
+    reportData?: JsonNullValueInput | InputJsonValue
+    coachingReport?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -21418,6 +30400,7 @@ export namespace Prisma {
 
   export type InterviewSessionCreateManyOrganizationInput = {
     id?: string
+    candidateId?: string | null
     setup: JsonNullValueInput | InputJsonValue
     status?: string
     startedAt?: Date | string | null
@@ -21426,6 +30409,28 @@ export namespace Prisma {
     videoEnabled?: boolean
     audioData?: Buffer | null
     createdAt?: Date | string
+  }
+
+  export type CandidateCreateManyOrganizationInput = {
+    id?: string
+    name: string
+    email?: string | null
+    phone?: string | null
+    linkedinUrl?: string | null
+    githubUrl?: string | null
+    portfolioUrl?: string | null
+    source?: string | null
+    sourceDetail?: string | null
+    currentRole?: string | null
+    currentCompany?: string | null
+    yearsExperience?: number | null
+    salaryExpectation?: string | null
+    noticePeriod?: string | null
+    pipelineStage?: string
+    rejectionReason?: string | null
+    tags?: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type UserUpdateWithoutOrganizationInput = {
@@ -21481,6 +30486,7 @@ export namespace Prisma {
     videoEnabled?: BoolFieldUpdateOperationsInput | boolean
     audioData?: NullableBytesFieldUpdateOperationsInput | Buffer | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    candidate?: CandidateUpdateOneWithoutSessionsNestedInput
     transcripts?: TranscriptEntryUpdateManyWithoutSessionNestedInput
     observations?: ObservationUpdateManyWithoutSessionNestedInput
     verdicts?: AssessorVerdictUpdateManyWithoutSessionNestedInput
@@ -21489,6 +30495,7 @@ export namespace Prisma {
 
   export type InterviewSessionUncheckedUpdateWithoutOrganizationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    candidateId?: NullableStringFieldUpdateOperationsInput | string | null
     setup?: JsonNullValueInput | InputJsonValue
     status?: StringFieldUpdateOperationsInput | string
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -21505,6 +30512,7 @@ export namespace Prisma {
 
   export type InterviewSessionUncheckedUpdateManyWithoutOrganizationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    candidateId?: NullableStringFieldUpdateOperationsInput | string | null
     setup?: JsonNullValueInput | InputJsonValue
     status?: StringFieldUpdateOperationsInput | string
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -21515,11 +30523,88 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type CandidateUpdateWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    portfolioUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceDetail?: NullableStringFieldUpdateOperationsInput | string | null
+    currentRole?: NullableStringFieldUpdateOperationsInput | string | null
+    currentCompany?: NullableStringFieldUpdateOperationsInput | string | null
+    yearsExperience?: NullableIntFieldUpdateOperationsInput | number | null
+    salaryExpectation?: NullableStringFieldUpdateOperationsInput | string | null
+    noticePeriod?: NullableStringFieldUpdateOperationsInput | string | null
+    pipelineStage?: StringFieldUpdateOperationsInput | string
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    tags?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: InterviewSessionUpdateManyWithoutCandidateNestedInput
+    intelligence?: CandidateIntelligenceUpdateManyWithoutCandidateNestedInput
+    notes?: CandidateNoteUpdateManyWithoutCandidateNestedInput
+    references?: CandidateReferenceUpdateManyWithoutCandidateNestedInput
+    documents?: CandidateDocumentUpdateManyWithoutCandidateNestedInput
+  }
+
+  export type CandidateUncheckedUpdateWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    portfolioUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceDetail?: NullableStringFieldUpdateOperationsInput | string | null
+    currentRole?: NullableStringFieldUpdateOperationsInput | string | null
+    currentCompany?: NullableStringFieldUpdateOperationsInput | string | null
+    yearsExperience?: NullableIntFieldUpdateOperationsInput | number | null
+    salaryExpectation?: NullableStringFieldUpdateOperationsInput | string | null
+    noticePeriod?: NullableStringFieldUpdateOperationsInput | string | null
+    pipelineStage?: StringFieldUpdateOperationsInput | string
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    tags?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: InterviewSessionUncheckedUpdateManyWithoutCandidateNestedInput
+    intelligence?: CandidateIntelligenceUncheckedUpdateManyWithoutCandidateNestedInput
+    notes?: CandidateNoteUncheckedUpdateManyWithoutCandidateNestedInput
+    references?: CandidateReferenceUncheckedUpdateManyWithoutCandidateNestedInput
+    documents?: CandidateDocumentUncheckedUpdateManyWithoutCandidateNestedInput
+  }
+
+  export type CandidateUncheckedUpdateManyWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    githubUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    portfolioUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceDetail?: NullableStringFieldUpdateOperationsInput | string | null
+    currentRole?: NullableStringFieldUpdateOperationsInput | string | null
+    currentCompany?: NullableStringFieldUpdateOperationsInput | string | null
+    yearsExperience?: NullableIntFieldUpdateOperationsInput | number | null
+    salaryExpectation?: NullableStringFieldUpdateOperationsInput | string | null
+    noticePeriod?: NullableStringFieldUpdateOperationsInput | string | null
+    pipelineStage?: StringFieldUpdateOperationsInput | string
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    tags?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type InvitationCreateManyInvitedByInput = {
     id?: string
     email: string
     role?: string
     token: string
+    organizationId?: string | null
     expiresAt: Date | string
     acceptedAt?: Date | string | null
     createdAt?: Date | string
@@ -21538,6 +30623,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
+    organizationId?: NullableStringFieldUpdateOperationsInput | string | null
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21548,6 +30634,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
+    organizationId?: NullableStringFieldUpdateOperationsInput | string | null
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21558,6 +30645,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
+    organizationId?: NullableStringFieldUpdateOperationsInput | string | null
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     acceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21584,6 +30672,234 @@ export namespace Prisma {
     actorId?: NullableStringFieldUpdateOperationsInput | string | null
     action?: StringFieldUpdateOperationsInput | string
     details?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type InterviewSessionCreateManyCandidateInput = {
+    id?: string
+    organizationId?: string | null
+    setup: JsonNullValueInput | InputJsonValue
+    status?: string
+    startedAt?: Date | string | null
+    endedAt?: Date | string | null
+    voiceProvider?: string
+    videoEnabled?: boolean
+    audioData?: Buffer | null
+    createdAt?: Date | string
+  }
+
+  export type CandidateIntelligenceCreateManyCandidateInput = {
+    id?: string
+    type: string
+    data: JsonNullValueInput | InputJsonValue
+    sourceText?: string | null
+    createdAt?: Date | string
+  }
+
+  export type CandidateNoteCreateManyCandidateInput = {
+    id?: string
+    userId: string
+    userName: string
+    content: string
+    type?: string
+    createdAt?: Date | string
+  }
+
+  export type CandidateReferenceCreateManyCandidateInput = {
+    id?: string
+    refereeName: string
+    refereeEmail?: string | null
+    refereePhone?: string | null
+    refereeRelation: string
+    refereeCompany?: string | null
+    status?: string
+    token?: string | null
+    responses?: NullableJsonNullValueInput | InputJsonValue
+    aiAnalysis?: NullableJsonNullValueInput | InputJsonValue
+    completedAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type CandidateDocumentCreateManyCandidateInput = {
+    id?: string
+    type: string
+    filename: string
+    mimeType: string
+    content: string
+    rawData?: Buffer | null
+    createdAt?: Date | string
+  }
+
+  export type InterviewSessionUpdateWithoutCandidateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    setup?: JsonNullValueInput | InputJsonValue
+    status?: StringFieldUpdateOperationsInput | string
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    voiceProvider?: StringFieldUpdateOperationsInput | string
+    videoEnabled?: BoolFieldUpdateOperationsInput | boolean
+    audioData?: NullableBytesFieldUpdateOperationsInput | Buffer | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneWithoutSessionsNestedInput
+    transcripts?: TranscriptEntryUpdateManyWithoutSessionNestedInput
+    observations?: ObservationUpdateManyWithoutSessionNestedInput
+    verdicts?: AssessorVerdictUpdateManyWithoutSessionNestedInput
+    reports?: ReportUpdateManyWithoutSessionNestedInput
+  }
+
+  export type InterviewSessionUncheckedUpdateWithoutCandidateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: NullableStringFieldUpdateOperationsInput | string | null
+    setup?: JsonNullValueInput | InputJsonValue
+    status?: StringFieldUpdateOperationsInput | string
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    voiceProvider?: StringFieldUpdateOperationsInput | string
+    videoEnabled?: BoolFieldUpdateOperationsInput | boolean
+    audioData?: NullableBytesFieldUpdateOperationsInput | Buffer | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    transcripts?: TranscriptEntryUncheckedUpdateManyWithoutSessionNestedInput
+    observations?: ObservationUncheckedUpdateManyWithoutSessionNestedInput
+    verdicts?: AssessorVerdictUncheckedUpdateManyWithoutSessionNestedInput
+    reports?: ReportUncheckedUpdateManyWithoutSessionNestedInput
+  }
+
+  export type InterviewSessionUncheckedUpdateManyWithoutCandidateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: NullableStringFieldUpdateOperationsInput | string | null
+    setup?: JsonNullValueInput | InputJsonValue
+    status?: StringFieldUpdateOperationsInput | string
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    voiceProvider?: StringFieldUpdateOperationsInput | string
+    videoEnabled?: BoolFieldUpdateOperationsInput | boolean
+    audioData?: NullableBytesFieldUpdateOperationsInput | Buffer | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CandidateIntelligenceUpdateWithoutCandidateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    data?: JsonNullValueInput | InputJsonValue
+    sourceText?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CandidateIntelligenceUncheckedUpdateWithoutCandidateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    data?: JsonNullValueInput | InputJsonValue
+    sourceText?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CandidateIntelligenceUncheckedUpdateManyWithoutCandidateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    data?: JsonNullValueInput | InputJsonValue
+    sourceText?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CandidateNoteUpdateWithoutCandidateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    userName?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CandidateNoteUncheckedUpdateWithoutCandidateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    userName?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CandidateNoteUncheckedUpdateManyWithoutCandidateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    userName?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CandidateReferenceUpdateWithoutCandidateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    refereeName?: StringFieldUpdateOperationsInput | string
+    refereeEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    refereePhone?: NullableStringFieldUpdateOperationsInput | string | null
+    refereeRelation?: StringFieldUpdateOperationsInput | string
+    refereeCompany?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    token?: NullableStringFieldUpdateOperationsInput | string | null
+    responses?: NullableJsonNullValueInput | InputJsonValue
+    aiAnalysis?: NullableJsonNullValueInput | InputJsonValue
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CandidateReferenceUncheckedUpdateWithoutCandidateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    refereeName?: StringFieldUpdateOperationsInput | string
+    refereeEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    refereePhone?: NullableStringFieldUpdateOperationsInput | string | null
+    refereeRelation?: StringFieldUpdateOperationsInput | string
+    refereeCompany?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    token?: NullableStringFieldUpdateOperationsInput | string | null
+    responses?: NullableJsonNullValueInput | InputJsonValue
+    aiAnalysis?: NullableJsonNullValueInput | InputJsonValue
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CandidateReferenceUncheckedUpdateManyWithoutCandidateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    refereeName?: StringFieldUpdateOperationsInput | string
+    refereeEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    refereePhone?: NullableStringFieldUpdateOperationsInput | string | null
+    refereeRelation?: StringFieldUpdateOperationsInput | string
+    refereeCompany?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    token?: NullableStringFieldUpdateOperationsInput | string | null
+    responses?: NullableJsonNullValueInput | InputJsonValue
+    aiAnalysis?: NullableJsonNullValueInput | InputJsonValue
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CandidateDocumentUpdateWithoutCandidateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    filename?: StringFieldUpdateOperationsInput | string
+    mimeType?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    rawData?: NullableBytesFieldUpdateOperationsInput | Buffer | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CandidateDocumentUncheckedUpdateWithoutCandidateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    filename?: StringFieldUpdateOperationsInput | string
+    mimeType?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    rawData?: NullableBytesFieldUpdateOperationsInput | Buffer | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CandidateDocumentUncheckedUpdateManyWithoutCandidateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    filename?: StringFieldUpdateOperationsInput | string
+    mimeType?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    rawData?: NullableBytesFieldUpdateOperationsInput | Buffer | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -21735,6 +31051,7 @@ export namespace Prisma {
     reportData?: JsonNullValueInput | InputJsonValue
     coachingReport?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    feedback?: ReportFeedbackUpdateManyWithoutReportNestedInput
   }
 
   export type ReportUncheckedUpdateWithoutSessionInput = {
@@ -21744,6 +31061,7 @@ export namespace Prisma {
     reportData?: JsonNullValueInput | InputJsonValue
     coachingReport?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    feedback?: ReportFeedbackUncheckedUpdateManyWithoutReportNestedInput
   }
 
   export type ReportUncheckedUpdateManyWithoutSessionInput = {
@@ -21753,6 +31071,58 @@ export namespace Prisma {
     reportData?: JsonNullValueInput | InputJsonValue
     coachingReport?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReportFeedbackCreateManyReportInput = {
+    id?: string
+    userId: string
+    overallAccuracy: number
+    hireOutcome?: string | null
+    performanceNote?: string | null
+    dimensionFeedback?: NullableJsonNullValueInput | InputJsonValue
+    gateFeedback?: NullableJsonNullValueInput | InputJsonValue
+    comments?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ReportFeedbackUpdateWithoutReportInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    overallAccuracy?: IntFieldUpdateOperationsInput | number
+    hireOutcome?: NullableStringFieldUpdateOperationsInput | string | null
+    performanceNote?: NullableStringFieldUpdateOperationsInput | string | null
+    dimensionFeedback?: NullableJsonNullValueInput | InputJsonValue
+    gateFeedback?: NullableJsonNullValueInput | InputJsonValue
+    comments?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReportFeedbackUncheckedUpdateWithoutReportInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    overallAccuracy?: IntFieldUpdateOperationsInput | number
+    hireOutcome?: NullableStringFieldUpdateOperationsInput | string | null
+    performanceNote?: NullableStringFieldUpdateOperationsInput | string | null
+    dimensionFeedback?: NullableJsonNullValueInput | InputJsonValue
+    gateFeedback?: NullableJsonNullValueInput | InputJsonValue
+    comments?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReportFeedbackUncheckedUpdateManyWithoutReportInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    overallAccuracy?: IntFieldUpdateOperationsInput | number
+    hireOutcome?: NullableStringFieldUpdateOperationsInput | string | null
+    performanceNote?: NullableStringFieldUpdateOperationsInput | string | null
+    dimensionFeedback?: NullableJsonNullValueInput | InputJsonValue
+    gateFeedback?: NullableJsonNullValueInput | InputJsonValue
+    comments?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CalibrationNoteCreateManySessionInput = {
@@ -21805,9 +31175,17 @@ export namespace Prisma {
      */
     export type UserCountOutputTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = UserCountOutputTypeDefaultArgs<ExtArgs>
     /**
+     * @deprecated Use CandidateCountOutputTypeDefaultArgs instead
+     */
+    export type CandidateCountOutputTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = CandidateCountOutputTypeDefaultArgs<ExtArgs>
+    /**
      * @deprecated Use InterviewSessionCountOutputTypeDefaultArgs instead
      */
     export type InterviewSessionCountOutputTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = InterviewSessionCountOutputTypeDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use ReportCountOutputTypeDefaultArgs instead
+     */
+    export type ReportCountOutputTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = ReportCountOutputTypeDefaultArgs<ExtArgs>
     /**
      * @deprecated Use CalibrationSessionCountOutputTypeDefaultArgs instead
      */
@@ -21828,6 +31206,26 @@ export namespace Prisma {
      * @deprecated Use ActivityLogDefaultArgs instead
      */
     export type ActivityLogArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = ActivityLogDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use CandidateDefaultArgs instead
+     */
+    export type CandidateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = CandidateDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use CandidateDocumentDefaultArgs instead
+     */
+    export type CandidateDocumentArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = CandidateDocumentDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use CandidateIntelligenceDefaultArgs instead
+     */
+    export type CandidateIntelligenceArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = CandidateIntelligenceDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use CandidateNoteDefaultArgs instead
+     */
+    export type CandidateNoteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = CandidateNoteDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use CandidateReferenceDefaultArgs instead
+     */
+    export type CandidateReferenceArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = CandidateReferenceDefaultArgs<ExtArgs>
     /**
      * @deprecated Use InterviewSessionDefaultArgs instead
      */

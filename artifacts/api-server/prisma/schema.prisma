@@ -42,14 +42,15 @@ model User {
 }
 
 model Invitation {
-  id          String    @id @default(uuid())
-  email       String
-  role        String    @default("interviewer")
-  token       String    @unique
-  invitedById String    @map("invited_by")
-  expiresAt   DateTime  @map("expires_at")
-  acceptedAt  DateTime? @map("accepted_at")
-  createdAt   DateTime  @default(now()) @map("created_at")
+  id             String    @id @default(uuid())
+  email          String
+  role           String    @default("interviewer")
+  token          String    @unique
+  invitedById    String    @map("invited_by")
+  organizationId String?   @map("organization_id")
+  expiresAt      DateTime  @map("expires_at")
+  acceptedAt     DateTime? @map("accepted_at")
+  createdAt      DateTime  @default(now()) @map("created_at")
 
   invitedBy User @relation("InvitedBy", fields: [invitedById], references: [id], onDelete: Cascade)
 
@@ -248,7 +249,8 @@ model Report {
   coachingReport  Json?    @map("coaching_report")
   createdAt       DateTime @default(now()) @map("created_at")
 
-  session InterviewSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  session  InterviewSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  feedback ReportFeedback[]
 
   @@map("reports")
 }
@@ -266,6 +268,7 @@ model InterviewInvite {
   interviewMode  String    @default("active") @map("interview_mode")
   status         String    @default("pending")
   sessionId      String?   @map("session_id")
+  organizationId String?   @map("organization_id")
   expiresAt      DateTime  @map("expires_at")
   createdAt      DateTime  @default(now()) @map("created_at")
 
@@ -273,11 +276,12 @@ model InterviewInvite {
 }
 
 model CalibrationSession {
-  id        String   @id @default(uuid())
-  reportId  String   @map("report_id")
-  title     String
-  status    String   @default("active")
-  createdAt DateTime @default(now()) @map("created_at")
+  id             String   @id @default(uuid())
+  reportId       String   @map("report_id")
+  title          String
+  status         String   @default("active")
+  organizationId String?  @map("organization_id")
+  createdAt      DateTime @default(now()) @map("created_at")
 
   notes CalibrationNote[]
 
@@ -311,6 +315,8 @@ model ReportFeedback {
   comments        String?
   createdAt       DateTime @default(now()) @map("created_at")
   updatedAt       DateTime @updatedAt @map("updated_at")
+
+  report Report @relation(fields: [reportId], references: [id], onDelete: Cascade)
 
   @@unique([reportId, userId])
   @@map("report_feedback")

@@ -42,13 +42,25 @@ export function CandidateProfilePage() {
   const [resumeText, setResumeText] = useState('');
   const [analyzing, setAnalyzing] = useState('');
   const [refForm, setRefForm] = useState({ refereeName: '', refereeEmail: '', refereeRelation: 'manager', refereeCompany: '' });
+  const [fetchError, setFetchError] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
+  const [referenceLink, setReferenceLink] = useState<string | null>(null);
 
   const fetchCandidate = async () => {
     if (!candidateId) return;
     try {
+      setFetchError(null);
       const res = await fetch(apiUrl(`candidates/${candidateId}`), { credentials: 'include' });
-      if (res.ok) setCandidate(await res.json());
+      if (res.status === 404) {
+        setFetchError('not_found');
+        setCandidate(null);
+      } else if (!res.ok) {
+        setFetchError('network');
+      } else {
+        setCandidate(await res.json());
+      }
     } catch (err) {
+      setFetchError('network');
       console.warn('Failed to load candidate:', err);
     } finally {
       setLoading(false);
@@ -58,13 +70,20 @@ export function CandidateProfilePage() {
   useEffect(() => { fetchCandidate(); }, [candidateId]);
 
   const moveStage = async (stage: string) => {
-    await fetch(apiUrl(`candidates/${candidateId}/stage`), {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify({ stage }),
-    });
-    fetchCandidate();
+    try {
+      setActionError(null);
+      const res = await fetch(apiUrl(`candidates/${candidateId}/stage`), {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ stage }),
+      });
+      if (!res.ok) throw new Error('Failed to update stage');
+      fetchCandidate();
+    } catch (err) {
+      setActionError('Failed to update pipeline stage. Please try again.');
+      console.warn('Failed to move candidate:', err);
+    }
   };
 
   const analyzeLinkedIn = async () => {
@@ -107,45 +126,73 @@ export function CandidateProfilePage() {
 
   const addNote = async () => {
     if (!noteText.trim()) return;
-    await fetch(apiUrl(`candidates/${candidateId}/notes`), {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify({ content: noteText }),
-    });
-    setNoteText('');
-    fetchCandidate();
+    try {
+      setActionError(null);
+      const res = await fetch(apiUrl(`candidates/${candidateId}/notes`), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ content: noteText }),
+      });
+      if (!res.ok) throw new Error('Failed to add note');
+      setNoteText('');
+      fetchCandidate();
+    } catch (err) {
+      setActionError('Failed to add note. Please try again.');
+      console.warn('Failed to add note:', err);
+    }
   };
 
   const addReference = async () => {
     if (!refForm.refereeName.trim()) return;
-    await fetch(apiUrl(`candidates/${candidateId}/references`), {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify(refForm),
-    });
-    setRefForm({ refereeName: '', refereeEmail: '', refereeRelation: 'manager', refereeCompany: '' });
-    fetchCandidate();
+    try {
+      setActionError(null);
+      const res = await fetch(apiUrl(`candidates/${candidateId}/references`), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(refForm),
+      });
+      if (!res.ok) throw new Error('Failed to add reference');
+      setRefForm({ refereeName: '', refereeEmail: '', refereeRelation: 'manager', refereeCompany: '' });
+      fetchCandidate();
+    } catch (err) {
+      setActionError('Failed to add reference. Please try again.');
+      console.warn('Failed to add reference:', err);
+    }
   };
 
   const sendReference = async (refId: string) => {
-    const res = await fetch(apiUrl(`candidates/${candidateId}/references/${refId}/send`), {
-      method: 'POST',
-      credentials: 'include',
-    });
-    if (res.ok) {
+    try {
+      setActionError(null);
+      setReferenceLink(null);
+      const res = await fetch(apiUrl(`candidates/${candidateId}/references/${refId}/send`), {
+        method: 'POST',
+        credentials: 'include',
+      });
+      if (!res.ok) throw new Error('Failed to send reference questionnaire');
       const data = await res.json();
-      alert(`Reference form link: ${window.location.origin}${data.referenceUrl}`);
+      setReferenceLink(`${window.location.origin}${data.referenceUrl}`);
       fetchCandidate();
+    } catch (err) {
+      setActionError('Failed to send reference questionnaire. Please try again.');
+      console.warn('Failed to send reference:', err);
     }
   };
 
   const analyzeReference = async (refId: string) => {
     setAnalyzing(`ref-${refId}`);
-    await fetch(apiUrl(`candidates/${candidateId}/references/${refId}/analyze`), { method: 'POST', credentials: 'include' });
-    setAnalyzing('');
-    fetchCandidate();
+    try {
+      setActionError(null);
+      const res = await fetch(apiUrl(`candidates/${candidateId}/references/${refId}/analyze`), { method: 'POST', credentials: 'include' });
+      if (!res.ok) throw new Error('Failed to analyze reference');
+      fetchCandidate();
+    } catch (err) {
+      setActionError('Failed to analyze reference. Please try again.');
+      console.warn('Failed to analyze reference:', err);
+    } finally {
+      setAnalyzing('');
+    }
   };
 
   const generateBriefing = async () => {
@@ -190,7 +237,23 @@ export function CandidateProfilePage() {
     return (
       <div className="bg-gradient-dark min-h-screen safe-top">
         <NavBar />
-        <div className="text-center py-20" style={{ color: 'var(--color-text-secondary)' }}>Candidate not found</div>
+        <div className="text-center py-20" style={{ color: 'var(--color-text-secondary)' }}>
+          {fetchError === 'not_found' ? (
+            <>
+              <p className="text-lg font-semibold mb-2" style={{ color: 'var(--color-text-primary)' }}>Candidate not found</p>
+              <p className="text-sm mb-4">This candidate may have been removed or the link is incorrect.</p>
+              <button onClick={() => navigate('/candidates')} className="btn btn-primary btn-sm">Back to Pipeline</button>
+            </>
+          ) : fetchError === 'network' ? (
+            <>
+              <p className="text-lg font-semibold mb-2" style={{ color: 'var(--color-text-primary)' }}>Connection error</p>
+              <p className="text-sm mb-4">Could not load candidate data. Please check your connection and try again.</p>
+              <button onClick={() => { setLoading(true); fetchCandidate(); }} className="btn btn-primary btn-sm">Retry</button>
+            </>
+          ) : (
+            <p>Candidate not found</p>
+          )}
+        </div>
       </div>
     );
   }
@@ -257,6 +320,32 @@ export function CandidateProfilePage() {
             {candidate.email && <span>{candidate.email}</span>}
             {candidate.phone && <span>{candidate.phone}</span>}
             {candidate.linkedinUrl && <a href={candidate.linkedinUrl} target="_blank" rel="noreferrer" className="text-blue-400 hover:underline">LinkedIn</a>}
+          </div>
+        )}
+
+        {/* Action Error Banner */}
+        {actionError && (
+          <div className="mb-4 rounded-xl p-4 flex items-center justify-between" style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)' }}>
+            <span className="text-sm" style={{ color: '#EF4444' }}>{actionError}</span>
+            <button onClick={() => setActionError(null)} className="text-xs font-semibold px-3 py-1.5 rounded-lg" style={{ background: 'rgba(239,68,68,0.15)', color: '#EF4444' }}>
+              Dismiss
+            </button>
+          </div>
+        )}
+
+        {/* Reference Link Banner */}
+        {referenceLink && (
+          <div className="mb-4 rounded-xl p-4" style={{ background: 'rgba(52,211,153,0.1)', border: '1px solid rgba(52,211,153,0.2)' }}>
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm font-semibold" style={{ color: '#34D399' }}>Reference form link generated</span>
+              <button onClick={() => setReferenceLink(null)} className="text-xs font-semibold px-3 py-1.5 rounded-lg" style={{ background: 'rgba(52,211,153,0.15)', color: '#34D399' }}>
+                Dismiss
+              </button>
+            </div>
+            <div className="flex items-center gap-2">
+              <input readOnly value={referenceLink} className="flex-1 text-xs px-3 py-2 rounded-lg" style={{ background: 'var(--color-surface)', color: 'var(--color-text-primary)', border: '1px solid rgba(255,255,255,0.06)' }} />
+              <button onClick={() => { navigator.clipboard.writeText(referenceLink); }} className="btn btn-primary btn-sm">Copy</button>
+            </div>
           </div>
         )}
 

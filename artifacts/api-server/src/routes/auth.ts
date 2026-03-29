@@ -5,6 +5,7 @@ import crypto from 'crypto';
 import { OAuth2Client } from 'google-auth-library';
 import prisma from '../db/prisma.js';
 import { signToken, authenticate, type AuthUser } from '../middleware/auth.js';
+import { qstr } from '../lib/queryHelpers.js';
 
 const router = Router();
 
@@ -36,7 +37,7 @@ function userToPayload(user: { id: string; email: string; name: string; role: st
 
 async function logActivity(action: string, details: Record<string, unknown>, actorId?: string, userId?: string) {
   try {
-    await prisma.activityLog.create({ data: { action, details, actorId: actorId ?? null, userId: userId ?? null } });
+    await prisma.activityLog.create({ data: { action, details: details as any, actorId: actorId ?? null, userId: userId ?? null } });
   } catch { /* non-critical */ }
 }
 
@@ -148,11 +149,12 @@ router.get('/auth/google', (_req: Request, res: Response) => {
 });
 
 router.get('/auth/google/callback', async (req: Request, res: Response) => {
-  const { code, error } = req.query;
+  const code = qstr(req.query.code);
+  const error = qstr(req.query.error);
   if (error || !code) return res.redirect(`${APP_URL}/login?error=google_denied`);
   try {
     const client = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, `${APP_URL}/api/auth/google/callback`);
-    const { tokens } = await client.getToken(code as string);
+    const { tokens } = await client.getToken(code);
     client.setCredentials(tokens);
     const ticket = await client.verifyIdToken({ idToken: tokens.id_token!, audience: GOOGLE_CLIENT_ID });
     const gPayload = ticket.getPayload();
@@ -186,7 +188,9 @@ router.get('/auth/google/callback', async (req: Request, res: Response) => {
 
 router.get('/auth/users', authenticate, async (req: Request, res: Response) => {
   if (!['owner', 'admin'].includes(req.user!.role)) return res.status(403).json({ error: 'Access denied' });
+  const orgId = req.user!.organizationId;
   const users = await prisma.user.findMany({
+    where: orgId ? { organizationId: orgId } : {},
     orderBy: { createdAt: 'asc' },
     select: { id: true, email: true, name: true, role: true, status: true, organizationId: true, createdAt: true, lastActiveAt: true, googleId: true, passwordHash: true },
   });
@@ -201,18 +205,23 @@ router.patch('/auth/users/:id', authenticate, async (req: Request, res: Response
   const { role, name, status } = req.body;
   if (role && !ALLOWED_ROLES.includes(role)) return res.status(400).json({ error: 'Invalid role' });
 
-  const target = await prisma.user.findUnique({ where: { id: req.params.id } });
+  const paramId = qstr(req.params.id)!;
+  const target = await prisma.user.findUnique({ where: { id: paramId } });
   if (!target) return res.status(404).json({ error: 'User not found' });
 
+  // Verify target belongs to same org
+  const orgId = req.user!.organizationId;
+  if (orgId && target.organizationId !== orgId) return res.status(404).json({ error: 'User not found' });
+
   if (req.user!.role !== 'owner' && target.role === 'owner') return res.status(403).json({ error: 'Cannot modify owner' });
-  if (req.params.id === req.user!.id && role && role !== req.user!.role) return res.status(400).json({ error: 'Cannot change your own role' });
+  if (paramId === req.user!.id && role && role !== req.user!.role) return res.status(400).json({ error: 'Cannot change your own role' });
 
   const updates: Record<string, unknown> = {};
   if (role) updates.role = role;
   if (name) updates.name = name;
   if (status && ['active', 'suspended'].includes(status)) updates.status = status;
 
-  const updated = await prisma.user.update({ where: { id: req.params.id }, data: updates, select: { id: true, email: true, name: true, role: true, status: true, organizationId: true, createdAt: true, lastActiveAt: true, passwordHash: true } });
+  const updated = await prisma.user.update({ where: { id: paramId }, data: updates as any, select: { id: true, email: true, name: true, role: true, status: true, organizationId: true, createdAt: true, lastActiveAt: true, passwordHash: true } });
 
   await logActivity('user.updated', { changes: updates, targetEmail: target.email }, req.user!.id, target.id);
   return res.json({ ...updated, hasPassword: !!updated.passwordHash, passwordHash: undefined });
@@ -221,14 +230,20 @@ router.patch('/auth/users/:id', authenticate, async (req: Request, res: Response
 // ── Delete User ───────────────────────────────────────────────────────────────
 
 router.delete('/auth/users/:id', authenticate, async (req: Request, res: Response) => {
+  const deleteId = qstr(req.params.id)!;
   if (req.user!.role !== 'owner') return res.status(403).json({ error: 'Only owners can delete users' });
-  if (req.params.id === req.user!.id) return res.status(400).json({ error: 'Cannot delete yourself' });
+  if (deleteId === req.user!.id) return res.status(400).json({ error: 'Cannot delete yourself' });
 
-  const target = await prisma.user.findUnique({ where: { id: req.params.id } });
+  const target = await prisma.user.findUnique({ where: { id: deleteId } });
   if (!target) return res.status(404).json({ error: 'User not found' });
+
+  // Verify target belongs to same org
+  const deleteOrgId = req.user!.organizationId;
+  if (deleteOrgId && target.organizationId !== deleteOrgId) return res.status(404).json({ error: 'User not found' });
+
   if (target.role === 'owner') return res.status(400).json({ error: 'Cannot delete another owner' });
 
-  await prisma.user.delete({ where: { id: req.params.id } });
+  await prisma.user.delete({ where: { id: deleteId } });
   await logActivity('user.deleted', { deletedEmail: target.email }, req.user!.id);
   return res.json({ success: true });
 });
@@ -237,7 +252,9 @@ router.delete('/auth/users/:id', authenticate, async (req: Request, res: Respons
 
 router.get('/auth/invitations', authenticate, async (req: Request, res: Response) => {
   if (!['owner', 'admin'].includes(req.user!.role)) return res.status(403).json({ error: 'Access denied' });
+  const invOrgId = req.user!.organizationId;
   const invitations = await prisma.invitation.findMany({
+    where: invOrgId ? { organizationId: invOrgId } : {},
     orderBy: { createdAt: 'desc' },
     include: { invitedBy: { select: { id: true, name: true, email: true } } },
   });
@@ -262,7 +279,7 @@ router.post('/auth/invitations', authenticate, async (req: Request, res: Respons
   const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
 
   const invitation = await prisma.invitation.create({
-    data: { email, role, token, invitedById: req.user!.id, expiresAt },
+    data: { email, role, token, invitedById: req.user!.id, organizationId: req.user!.organizationId || null, expiresAt },
     include: { invitedBy: { select: { id: true, name: true, email: true } } },
   });
 
@@ -275,16 +292,23 @@ router.post('/auth/invitations', authenticate, async (req: Request, res: Respons
 router.delete('/auth/invitations/:id', authenticate, async (req: Request, res: Response) => {
   if (!['owner', 'admin'].includes(req.user!.role)) return res.status(403).json({ error: 'Access denied' });
 
-  const invitation = await prisma.invitation.findUnique({ where: { id: req.params.id } });
+  const invId = qstr(req.params.id)!;
+  const invitation = await prisma.invitation.findUnique({ where: { id: invId } });
   if (!invitation) return res.status(404).json({ error: 'Invitation not found' });
 
-  await prisma.invitation.delete({ where: { id: req.params.id } });
+  // Verify invitation belongs to same org
+  const delInvOrgId = req.user!.organizationId;
+  if (delInvOrgId && invitation.organizationId !== delInvOrgId) {
+    return res.status(404).json({ error: 'Invitation not found' });
+  }
+
+  await prisma.invitation.delete({ where: { id: invId } });
   await logActivity('invitation.cancelled', { email: invitation.email }, req.user!.id);
   return res.json({ success: true });
 });
 
 router.get('/auth/accept-invite/:token', async (req: Request, res: Response) => {
-  const invitation = await prisma.invitation.findUnique({ where: { token: req.params.token } });
+  const invitation = await prisma.invitation.findUnique({ where: { token: qstr(req.params.token)! } });
   if (!invitation) return res.status(404).json({ error: 'Invitation not found or already used' });
   if (invitation.acceptedAt) return res.status(410).json({ error: 'Invitation already accepted' });
   if (invitation.expiresAt < new Date()) return res.status(410).json({ error: 'Invitation has expired' });
@@ -296,11 +320,22 @@ router.get('/auth/accept-invite/:token', async (req: Request, res: Response) => 
 router.get('/auth/activity', authenticate, async (req: Request, res: Response) => {
   if (!['owner', 'admin'].includes(req.user!.role)) return res.status(403).json({ error: 'Access denied' });
 
-  const limit = Math.min(parseInt(req.query.limit as string) || 50, 200);
-  const userId = req.query.userId as string | undefined;
+  const limit = Math.min(parseInt(qstr(req.query.limit) || '50'), 200);
+  const userId = qstr(req.query.userId);
+  const actOrgId = req.user!.organizationId;
+
+  // Build where clause scoped to org users
+  let actWhere: any = userId ? { OR: [{ userId }, { actorId: userId }] } : undefined;
+  if (actOrgId) {
+    // Get user IDs in same org to scope activity logs
+    const orgUsers = await prisma.user.findMany({ where: { organizationId: actOrgId }, select: { id: true } });
+    const orgUserIds = orgUsers.map(u => u.id);
+    const orgFilter = { OR: [{ userId: { in: orgUserIds } }, { actorId: { in: orgUserIds } }] };
+    actWhere = actWhere ? { AND: [actWhere, orgFilter] } : orgFilter;
+  }
 
   const logs = await prisma.activityLog.findMany({
-    where: userId ? { OR: [{ userId }, { actorId: userId }] } : undefined,
+    where: actWhere,
     orderBy: { createdAt: 'desc' },
     take: limit,
     include: { user: { select: { id: true, name: true, email: true } } },

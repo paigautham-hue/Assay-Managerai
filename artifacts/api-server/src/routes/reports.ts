@@ -1,12 +1,15 @@
 import { Router } from 'express';
 import type { Request, Response } from 'express';
 import prisma from '../db/prisma.js';
+import { qstr } from '../lib/queryHelpers.js';
 
 const router = Router();
 
-router.get('/reports', async (_req: Request, res: Response) => {
+router.get('/reports', async (req: Request, res: Response) => {
   try {
+    const orgId = (req as any).user?.organizationId;
     const dbReports = await prisma.report.findMany({
+      where: { session: { organizationId: orgId || undefined } },
       orderBy: { createdAt: 'desc' },
       include: {
         session: { select: { id: true, status: true, voiceProvider: true } },
@@ -32,7 +35,7 @@ router.get('/reports', async (_req: Request, res: Response) => {
 router.get('/reports/:id', async (req: Request, res: Response) => {
   try {
     const dbReport = await prisma.report.findUnique({
-      where: { id: req.params.id },
+      where: { id: qstr(req.params.id)! },
       include: {
         session: {
           include: {
@@ -45,6 +48,12 @@ router.get('/reports/:id', async (req: Request, res: Response) => {
     });
 
     if (!dbReport) return res.status(404).json({ error: 'Report not found' });
+
+    // Verify org ownership
+    const orgId = (req as any).user?.organizationId;
+    if (orgId && dbReport.session?.organizationId !== orgId) {
+      return res.status(404).json({ error: 'Report not found' });
+    }
 
     const report = {
       ...(dbReport.reportData as object),
@@ -68,6 +77,15 @@ router.post('/reports', async (req: Request, res: Response) => {
 
     if (!sessionId || !candidateName || !roleName) {
       return res.status(400).json({ error: 'sessionId, candidateName, and roleName are required' });
+    }
+
+    // Verify the session belongs to the user's org
+    const orgId = (req as any).user?.organizationId;
+    if (orgId) {
+      const session = await prisma.interviewSession.findUnique({ where: { id: sessionId }, select: { organizationId: true } });
+      if (!session || session.organizationId !== orgId) {
+        return res.status(404).json({ error: 'Session not found' });
+      }
     }
 
     const dbReport = await prisma.report.upsert({
@@ -101,7 +119,18 @@ router.post('/reports', async (req: Request, res: Response) => {
 
 router.delete('/reports/:id', async (req: Request, res: Response) => {
   try {
-    await prisma.report.delete({ where: { id: req.params.id } });
+    const orgId = (req as any).user?.organizationId;
+    // Verify org ownership before deleting
+    const report = await prisma.report.findUnique({
+      where: { id: qstr(req.params.id)! },
+      include: { session: { select: { organizationId: true } } },
+    });
+    if (!report) return res.status(404).json({ error: 'Report not found' });
+    if (orgId && report.session?.organizationId !== orgId) {
+      return res.status(404).json({ error: 'Report not found' });
+    }
+
+    await prisma.report.delete({ where: { id: report.id } });
     return res.json({ success: true });
   } catch (error) {
     if ((error as any).code === 'P2025') return res.status(404).json({ error: 'Report not found' });

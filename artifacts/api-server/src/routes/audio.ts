@@ -1,6 +1,7 @@
 import { Router, json } from 'express';
 import type { Request, Response } from 'express';
 import prisma from '../db/prisma.js';
+import { qstr } from '../lib/queryHelpers.js';
 
 const router = Router();
 
@@ -24,7 +25,7 @@ router.post('/sessions/:id/audio', largeJsonParser, async (req: Request, res: Re
     const audioBuffer = Buffer.from(audio, 'base64');
 
     const session = await prisma.interviewSession.update({
-      where: { id: req.params.id },
+      where: { id: qstr(req.params.id)! },
       data: { audioData: audioBuffer },
       select: { id: true },
     });
@@ -46,7 +47,7 @@ router.post('/sessions/:id/audio', largeJsonParser, async (req: Request, res: Re
 router.get('/sessions/:id/audio', async (req: Request, res: Response) => {
   try {
     const session = await prisma.interviewSession.findUnique({
-      where: { id: req.params.id },
+      where: { id: qstr(req.params.id)! },
       select: { audioData: true },
     });
 
@@ -78,7 +79,7 @@ router.head('/sessions/:id/audio', async (req: Request, res: Response) => {
     const result = await prisma.$queryRaw<{ len: number }[]>`
       SELECT octet_length(audio_data) as len
       FROM interview_sessions
-      WHERE id = ${req.params.id} AND audio_data IS NOT NULL
+      WHERE id = ${qstr(req.params.id)!} AND audio_data IS NOT NULL
       LIMIT 1
     `;
 

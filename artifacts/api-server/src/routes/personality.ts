@@ -112,8 +112,8 @@ router.patch('/personality', async (req: Request, res: Response) => {
       data: {
         settings: {
           ...currentSettings,
-          aiPersonality: updatedPersonality,
-        },
+          aiPersonality: updatedPersonality as any,
+        } as any,
       },
     });
 

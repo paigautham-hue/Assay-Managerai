@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import type { Request, Response } from 'express';
 import prisma from '../db/prisma.js';
+import { qstr } from '../lib/queryHelpers.js';
 
 const router = Router();
 
@@ -30,9 +31,16 @@ router.post('/feedback', async (req: Request, res: Response) => {
       return res.status(400).json({ error: `hireOutcome must be one of: ${VALID_OUTCOMES.join(', ')}` });
     }
 
-    // Verify report exists
-    const report = await prisma.report.findUnique({ where: { id: reportId }, select: { id: true } });
+    // Verify report exists and belongs to user's org
+    const orgId = req.user?.organizationId;
+    const report = await prisma.report.findUnique({
+      where: { id: reportId },
+      include: { session: { select: { organizationId: true } } },
+    });
     if (!report) {
+      return res.status(404).json({ error: 'Report not found' });
+    }
+    if (orgId && report.session?.organizationId !== orgId) {
       return res.status(404).json({ error: 'Report not found' });
     }
 
@@ -76,7 +84,9 @@ router.get('/feedback/analytics/accuracy', async (req: Request, res: Response) =
       return res.status(403).json({ error: 'Admin access required' });
     }
 
+    const orgId = req.user?.organizationId;
     const feedback = await prisma.reportFeedback.findMany({
+      where: orgId ? { report: { session: { organizationId: orgId } } } : {},
       select: {
         overallAccuracy: true,
         hireOutcome: true,
@@ -119,8 +129,22 @@ router.get('/feedback/analytics/accuracy', async (req: Request, res: Response) =
  */
 router.get('/feedback/:reportId', async (req: Request, res: Response) => {
   try {
+    const reportId = qstr(req.params.reportId)!;
+
+    // Verify report belongs to user's org
+    const orgId = (req as any).user?.organizationId;
+    if (orgId) {
+      const report = await prisma.report.findUnique({
+        where: { id: reportId },
+        include: { session: { select: { organizationId: true } } },
+      });
+      if (!report || report.session?.organizationId !== orgId) {
+        return res.status(404).json({ error: 'Report not found' });
+      }
+    }
+
     const feedback = await prisma.reportFeedback.findMany({
-      where: { reportId: req.params.reportId },
+      where: { reportId },
       orderBy: { createdAt: 'desc' },
     });
     return res.json(feedback);

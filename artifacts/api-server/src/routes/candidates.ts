@@ -1,7 +1,8 @@
 import { Router } from 'express';
 import type { Request, Response } from 'express';
-import { prisma } from '../db/prisma.js';
+import prisma from '../db/prisma.js';
 import { compileDossier, formatDossierForPrompt } from '../lib/candidateIntelligenceEngine.js';
+import { qstr } from '../lib/queryHelpers.js';
 
 const router = Router();
 
@@ -43,19 +44,23 @@ router.post('/candidates', async (req: Request, res: Response) => {
 // List candidates with filters
 router.get('/candidates', async (req: Request, res: Response) => {
   try {
-    const { stage, search, source, limit = '50', offset = '0' } = req.query;
+    const stage = qstr(req.query.stage);
+    const search = qstr(req.query.search);
+    const source = qstr(req.query.source);
+    const limit = qstr(req.query.limit) || '50';
+    const offset = qstr(req.query.offset) || '0';
     const orgId = (req as any).user?.organizationId;
 
     const where: any = {};
     if (orgId) where.organizationId = orgId;
-    if (stage && stage !== 'all') where.pipelineStage = stage as string;
-    if (source) where.source = source as string;
+    if (stage && stage !== 'all') where.pipelineStage = stage;
+    if (source) where.source = source;
     if (search) {
       where.OR = [
-        { name: { contains: search as string, mode: 'insensitive' } },
-        { email: { contains: search as string, mode: 'insensitive' } },
-        { currentRole: { contains: search as string, mode: 'insensitive' } },
-        { currentCompany: { contains: search as string, mode: 'insensitive' } },
+        { name: { contains: search, mode: 'insensitive' } },
+        { email: { contains: search, mode: 'insensitive' } },
+        { currentRole: { contains: search, mode: 'insensitive' } },
+        { currentCompany: { contains: search, mode: 'insensitive' } },
       ];
     }
 
@@ -84,8 +89,9 @@ router.get('/candidates', async (req: Request, res: Response) => {
 // Get candidate with full profile
 router.get('/candidates/:id', async (req: Request, res: Response) => {
   try {
-    const candidate = await prisma.candidate.findUnique({
-      where: { id: req.params.id },
+    const orgId = (req as any).user?.organizationId;
+    const candidate = await prisma.candidate.findFirst({
+      where: { id: qstr(req.params.id)!, ...(orgId ? { organizationId: orgId } : {}) },
       include: {
         intelligence: { orderBy: { createdAt: 'desc' } },
         notes: { orderBy: { createdAt: 'desc' } },
@@ -110,11 +116,20 @@ router.get('/candidates/:id', async (req: Request, res: Response) => {
 // Update candidate
 router.patch('/candidates/:id', async (req: Request, res: Response) => {
   try {
+    const orgId = (req as any).user?.organizationId;
+    const candidateId = qstr(req.params.id)!;
+
+    // Verify org ownership before updating
+    if (orgId) {
+      const existing = await prisma.candidate.findFirst({ where: { id: candidateId, organizationId: orgId } });
+      if (!existing) return res.status(404).json({ error: 'Candidate not found' });
+    }
+
     const { name, email, phone, linkedinUrl, githubUrl, portfolioUrl, source, sourceDetail,
             currentRole, currentCompany, yearsExperience, salaryExpectation, noticePeriod, tags } = req.body;
 
     const candidate = await prisma.candidate.update({
-      where: { id: req.params.id },
+      where: { id: candidateId },
       data: {
         ...(name !== undefined && { name }),
         ...(email !== undefined && { email }),
@@ -143,14 +158,23 @@ router.patch('/candidates/:id', async (req: Request, res: Response) => {
 // Move pipeline stage
 router.patch('/candidates/:id/stage', async (req: Request, res: Response) => {
   try {
+    const orgId = (req as any).user?.organizationId;
+    const candidateId = qstr(req.params.id)!;
+
     const { stage, rejectionReason } = req.body;
     const validStages = ['applied', 'screening', 'interviewing', 'assessed', 'offer', 'hired', 'rejected', 'withdrawn'];
     if (!stage || !validStages.includes(stage)) {
       return res.status(400).json({ error: `stage must be one of: ${validStages.join(', ')}` });
     }
 
+    // Verify org ownership before updating
+    if (orgId) {
+      const existing = await prisma.candidate.findFirst({ where: { id: candidateId, organizationId: orgId } });
+      if (!existing) return res.status(404).json({ error: 'Candidate not found' });
+    }
+
     const candidate = await prisma.candidate.update({
-      where: { id: req.params.id },
+      where: { id: candidateId },
       data: {
         pipelineStage: stage,
         ...(rejectionReason !== undefined && { rejectionReason }),
@@ -167,7 +191,16 @@ router.patch('/candidates/:id/stage', async (req: Request, res: Response) => {
 // Get compiled dossier for AI consumption
 router.get('/candidates/:id/dossier', async (req: Request, res: Response) => {
   try {
-    const dossier = await compileDossier(prisma, req.params.id);
+    const orgId = (req as any).user?.organizationId;
+    const candidateId = qstr(req.params.id)!;
+
+    // Verify org ownership
+    if (orgId) {
+      const existing = await prisma.candidate.findFirst({ where: { id: candidateId, organizationId: orgId } });
+      if (!existing) return res.status(404).json({ error: 'Candidate not found' });
+    }
+
+    const dossier = await compileDossier(prisma, candidateId);
     const formatted = formatDossierForPrompt(dossier);
     return res.json({ dossier, formatted });
   } catch (error) {
@@ -179,11 +212,15 @@ router.get('/candidates/:id/dossier', async (req: Request, res: Response) => {
 // Compare candidates
 router.get('/candidates/compare', async (req: Request, res: Response) => {
   try {
-    const ids = (req.query.ids as string)?.split(',').filter(Boolean);
+    const orgId = (req as any).user?.organizationId;
+    const ids = qstr(req.query.ids)?.split(',').filter(Boolean);
     if (!ids || ids.length < 2) return res.status(400).json({ error: 'Provide at least 2 candidate IDs as ?ids=a,b' });
 
+    const where: any = { id: { in: ids } };
+    if (orgId) where.organizationId = orgId;
+
     const candidates = await prisma.candidate.findMany({
-      where: { id: { in: ids } },
+      where,
       include: {
         intelligence: { where: { type: { in: ['resume_analysis', 'fit_analysis'] } } },
         references: { where: { status: 'completed' } },

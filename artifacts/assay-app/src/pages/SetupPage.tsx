@@ -90,6 +90,7 @@ export function SetupPage() {
   const [showCandidateResults, setShowCandidateResults] = useState(false);
   const [briefingLoading, setBriefingLoading] = useState(false);
   const [briefingReady, setBriefingReady] = useState(false);
+  const [setupError, setSetupError] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
     candidateName: '',
@@ -139,6 +140,7 @@ export function SetupPage() {
   const generateBriefing = async () => {
     if (!selectedCandidateId) return;
     setBriefingLoading(true);
+    setSetupError(null);
     try {
       const res = await fetch(apiUrl(`candidates/${selectedCandidateId}/generate-briefing`), {
         method: 'POST',
@@ -150,8 +152,13 @@ export function SetupPage() {
         const data = await res.json();
         setCandidateBriefing(data.briefing);
         setBriefingReady(true);
+      } else {
+        setSetupError('Failed to generate AI briefing. Please try again.');
       }
-    } catch { /* ignore */ }
+    } catch (err) {
+      setSetupError('Failed to generate AI briefing. Please check your connection and try again.');
+      console.warn('Briefing generation failed:', err);
+    }
     setBriefingLoading(false);
   };
 
@@ -216,6 +223,7 @@ export function SetupPage() {
   const handleLaunch = async () => {
     if (!formData.candidateName || !formData.roleName) return;
     setIsLoading(true);
+    setSetupError(null);
     try {
       createSession({
         candidateName: formData.candidateName,
@@ -227,8 +235,9 @@ export function SetupPage() {
         activeGates: [...CORE_GATE_IDS, ...Array.from(optionalGates)],
       });
       navigate('/interview');
-    } catch {
-      alert('Failed to create interview session');
+    } catch (err) {
+      setSetupError('Failed to create interview session. Please try again.');
+      console.warn('Failed to create session:', err);
     } finally {
       setIsLoading(false);
     }
@@ -722,6 +731,14 @@ export function SetupPage() {
                     <span>&#10003;</span> AI Briefing Ready
                   </div>
                   <p className="text-xs mt-1" style={subStyle}>Intelligence will be injected into the AI interviewer and assessors.</p>
+                </div>
+              )}
+              {setupError && (
+                <div className="rounded-xl p-4 flex items-center justify-between" style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)' }}>
+                  <span className="text-sm" style={{ color: '#EF4444' }}>{setupError}</span>
+                  <button onClick={() => setSetupError(null)} className="text-xs font-semibold px-3 py-1.5 rounded-lg" style={{ background: 'rgba(239,68,68,0.15)', color: '#EF4444' }}>
+                    Dismiss
+                  </button>
                 </div>
               )}
               <p className="text-center text-sm" style={subStyle}>Estimated Duration: ~30-45 minutes</p>

@@ -1,10 +1,20 @@
 import { Router } from 'express';
 import type { Request, Response } from 'express';
-import { prisma } from '../db/prisma.js';
+import prisma from '../db/prisma.js';
 import { analyzeReference } from '../lib/candidateIntelligenceEngine.js';
 import crypto from 'crypto';
+import { qstr } from '../lib/queryHelpers.js';
 
 const router = Router();
+
+/** Verify candidate belongs to the user's organization. Returns the candidate or null. */
+async function verifyCandidateOrg(candidateId: string, req: Request): Promise<any> {
+  const orgId = (req as any).user?.organizationId;
+  if (orgId) {
+    return prisma.candidate.findFirst({ where: { id: candidateId, organizationId: orgId } });
+  }
+  return prisma.candidate.findUnique({ where: { id: candidateId } });
+}
 
 const REFERENCE_QUESTIONS = [
   { id: 'relationship', question: 'What was your working relationship with the candidate?', type: 'text' },
@@ -28,9 +38,12 @@ router.post('/candidates/:id/references', async (req: Request, res: Response) =>
       return res.status(400).json({ error: 'refereeName and refereeRelation are required' });
     }
 
+    const candidate = await verifyCandidateOrg(qstr(req.params.id)!, req);
+    if (!candidate) return res.status(404).json({ error: 'Candidate not found' });
+
     const reference = await prisma.candidateReference.create({
       data: {
-        candidateId: req.params.id,
+        candidateId: qstr(req.params.id)!,
         refereeName,
         refereeEmail: refereeEmail || null,
         refereePhone: refereePhone || null,
@@ -48,8 +61,12 @@ router.post('/candidates/:id/references', async (req: Request, res: Response) =>
 // List references
 router.get('/candidates/:id/references', async (req: Request, res: Response) => {
   try {
+    const refParamId = qstr(req.params.id)!;
+    const candidate = await verifyCandidateOrg(refParamId, req);
+    if (!candidate) return res.status(404).json({ error: 'Candidate not found' });
+
     const references = await prisma.candidateReference.findMany({
-      where: { candidateId: req.params.id },
+      where: { candidateId: refParamId },
       orderBy: { createdAt: 'desc' },
     });
     return res.json(references);
@@ -61,9 +78,12 @@ router.get('/candidates/:id/references', async (req: Request, res: Response) => 
 // Update reference
 router.patch('/candidates/:id/references/:refId', async (req: Request, res: Response) => {
   try {
+    const candidate = await verifyCandidateOrg(qstr(req.params.id)!, req);
+    if (!candidate) return res.status(404).json({ error: 'Candidate not found' });
+
     const { refereeName, refereeEmail, refereePhone, refereeRelation, refereeCompany, status } = req.body;
     const reference = await prisma.candidateReference.update({
-      where: { id: req.params.refId },
+      where: { id: qstr(req.params.refId)! },
       data: {
         ...(refereeName && { refereeName }),
         ...(refereeEmail !== undefined && { refereeEmail }),
@@ -82,9 +102,12 @@ router.patch('/candidates/:id/references/:refId', async (req: Request, res: Resp
 // Generate and "send" reference questionnaire (generates public token)
 router.post('/candidates/:id/references/:refId/send', async (req: Request, res: Response) => {
   try {
+    const candidate = await verifyCandidateOrg(qstr(req.params.id)!, req);
+    if (!candidate) return res.status(404).json({ error: 'Candidate not found' });
+
     const token = crypto.randomBytes(32).toString('hex');
     const reference = await prisma.candidateReference.update({
-      where: { id: req.params.refId },
+      where: { id: qstr(req.params.refId)! },
       data: { token, status: 'sent' },
     });
 
@@ -100,12 +123,12 @@ router.post('/candidates/:id/references/:refId/send', async (req: Request, res: 
 // AI analysis of completed reference
 router.post('/candidates/:id/references/:refId/analyze', async (req: Request, res: Response) => {
   try {
-    const reference = await prisma.candidateReference.findUnique({ where: { id: req.params.refId } });
+    const candidate = await verifyCandidateOrg(qstr(req.params.id)!, req);
+    if (!candidate) return res.status(404).json({ error: 'Candidate not found' });
+
+    const reference = await prisma.candidateReference.findUnique({ where: { id: qstr(req.params.refId)! } });
     if (!reference) return res.status(404).json({ error: 'Reference not found' });
     if (!reference.responses) return res.status(400).json({ error: 'No responses to analyze' });
-
-    const candidate = await prisma.candidate.findUnique({ where: { id: req.params.id } });
-    if (!candidate) return res.status(404).json({ error: 'Candidate not found' });
 
     const analysis = await analyzeReference(
       reference.refereeName,
@@ -115,7 +138,7 @@ router.post('/candidates/:id/references/:refId/analyze', async (req: Request, re
     );
 
     await prisma.candidateReference.update({
-      where: { id: req.params.refId },
+      where: { id: qstr(req.params.refId)! },
       data: { aiAnalysis: analysis as any },
     });
 
@@ -131,7 +154,7 @@ router.post('/candidates/:id/references/:refId/analyze', async (req: Request, re
 router.get('/public/reference/:token', async (req: Request, res: Response) => {
   try {
     const reference = await prisma.candidateReference.findUnique({
-      where: { token: req.params.token },
+      where: { token: qstr(req.params.token)! },
       include: { candidate: { select: { name: true } } },
     });
 
@@ -139,7 +162,7 @@ router.get('/public/reference/:token', async (req: Request, res: Response) => {
     if (reference.status === 'completed') return res.status(400).json({ error: 'This reference has already been submitted' });
 
     return res.json({
-      candidateName: reference.candidate.name,
+      candidateName: (reference as any).candidate.name,
       refereeName: reference.refereeName,
       questions: REFERENCE_QUESTIONS,
     });
@@ -154,12 +177,13 @@ router.post('/public/reference/:token', async (req: Request, res: Response) => {
     const { responses } = req.body;
     if (!responses) return res.status(400).json({ error: 'responses are required' });
 
-    const reference = await prisma.candidateReference.findUnique({ where: { token: req.params.token } });
+    const pubToken = qstr(req.params.token)!;
+    const reference = await prisma.candidateReference.findUnique({ where: { token: pubToken } });
     if (!reference) return res.status(404).json({ error: 'Reference form not found' });
     if (reference.status === 'completed') return res.status(400).json({ error: 'Already submitted' });
 
     await prisma.candidateReference.update({
-      where: { token: req.params.token },
+      where: { token: pubToken },
       data: {
         responses: responses as any,
         status: 'completed',

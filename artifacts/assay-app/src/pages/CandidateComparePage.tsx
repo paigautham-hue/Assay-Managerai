@@ -46,8 +46,16 @@ export function CandidateComparePage() {
         {loading ? (
           <div className="flex items-center justify-center py-20"><div className="spinner" /></div>
         ) : candidates.length === 0 ? (
-          <div className="text-center py-20 text-sm" style={{ color: 'var(--color-text-secondary)' }}>
-            No candidates selected for comparison. Add ?ids=id1,id2,id3 to the URL.
+          <div className="text-center py-20">
+            <p className="text-sm mb-4" style={{ color: 'var(--color-text-secondary)' }}>
+              Select candidates from the pipeline to compare them side by side.
+            </p>
+            <button
+              onClick={() => navigate('/candidates')}
+              className="btn btn-primary btn-sm"
+            >
+              Go to Pipeline
+            </button>
           </div>
         ) : (
           <div className="overflow-x-auto">

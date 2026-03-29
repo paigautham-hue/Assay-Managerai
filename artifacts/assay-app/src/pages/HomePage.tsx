@@ -12,7 +12,7 @@ const containerVariants = {
 
 const itemVariants = {
   hidden: { opacity: 0, y: 12 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as const } },
 };
 
 const BASE_URL = import.meta.env.BASE_URL || '/';
@@ -158,7 +158,7 @@ export function HomePage() {
           className="mb-14 sm:mb-20"
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] as const }}
         >
           <motion.div
             className="mb-5"
@@ -223,6 +223,21 @@ export function HomePage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
               </svg>
               <span>Create Invite Link</span>
+            </button>
+            <button
+              onClick={() => navigate('/candidates')}
+              className="group inline-flex items-center gap-2.5 font-semibold px-6 py-4 rounded-2xl transition-all active:scale-[0.97] min-h-[44px]"
+              style={{
+                background: 'rgba(255,255,255,0.04)',
+                border: '1px solid rgba(201,168,76,0.2)',
+                color: 'var(--color-gold)',
+                fontSize: '0.9375rem',
+              }}
+            >
+              <svg className="w-4.5 h-4.5 transition-transform duration-300 group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              <span>Candidate Pipeline</span>
             </button>
           </motion.div>
         </motion.div>

@@ -42,15 +42,21 @@ export function CandidatesPage() {
   const [viewMode, setViewMode] = useState<'board' | 'list'>('board');
   const [showAddModal, setShowAddModal] = useState(false);
   const [newCandidate, setNewCandidate] = useState({ name: '', email: '', currentRole: '', currentCompany: '', source: '' });
+  const [error, setError] = useState<string | null>(null);
+  const [addingCandidate, setAddingCandidate] = useState(false);
 
   const fetchCandidates = useCallback(async () => {
     try {
+      setError(null);
       const params = new URLSearchParams();
       if (search) params.set('search', search);
       if (stageFilter !== 'all') params.set('stage', stageFilter);
       const res = await fetch(apiUrl(`candidates?${params}`), { credentials: 'include' });
-      if (res.ok) setCandidates(await res.json());
+      if (!res.ok) throw new Error(`Failed to load candidates (${res.status})`);
+      setCandidates(await res.json());
     } catch (err) {
+      const message = err instanceof Error ? err.message : 'Failed to load candidates. Please try again.';
+      setError(message);
       console.warn('Failed to load candidates:', err);
     } finally {
       setLoading(false);
@@ -60,7 +66,8 @@ export function CandidatesPage() {
   useEffect(() => { fetchCandidates(); }, [fetchCandidates]);
 
   const handleAddCandidate = async () => {
-    if (!newCandidate.name.trim()) return;
+    if (!newCandidate.name.trim() || addingCandidate) return;
+    setAddingCandidate(true);
     try {
       const res = await fetch(apiUrl('candidates'), {
         method: 'POST',
@@ -72,9 +79,14 @@ export function CandidatesPage() {
         setShowAddModal(false);
         setNewCandidate({ name: '', email: '', currentRole: '', currentCompany: '', source: '' });
         fetchCandidates();
+      } else {
+        setError('Failed to add candidate. Please try again.');
       }
     } catch (err) {
+      setError('Failed to add candidate. Please check your connection and try again.');
       console.warn('Failed to add candidate:', err);
+    } finally {
+      setAddingCandidate(false);
     }
   };
 
@@ -167,6 +179,15 @@ export function CandidatesPage() {
             ))}
           </select>
         </div>
+
+        {error && (
+          <div className="mb-6 rounded-xl p-4 flex items-center justify-between" style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)' }}>
+            <span className="text-sm" style={{ color: '#EF4444' }}>{error}</span>
+            <button onClick={() => { setError(null); fetchCandidates(); }} className="text-xs font-semibold px-3 py-1.5 rounded-lg" style={{ background: 'rgba(239,68,68,0.15)', color: '#EF4444' }}>
+              Retry
+            </button>
+          </div>
+        )}
 
         {loading ? (
           <div className="flex items-center justify-center py-20">
@@ -332,12 +353,12 @@ export function CandidatesPage() {
                 <button onClick={() => setShowAddModal(false)} className="btn btn-ghost flex-1">Cancel</button>
                 <motion.button
                   onClick={handleAddCandidate}
-                  disabled={!newCandidate.name.trim()}
+                  disabled={!newCandidate.name.trim() || addingCandidate}
                   className="btn btn-primary flex-1 disabled:opacity-50"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >
-                  Add Candidate
+                  {addingCandidate ? 'Adding...' : 'Add Candidate'}
                 </motion.button>
               </div>
             </motion.div>

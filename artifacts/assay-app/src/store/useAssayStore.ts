@@ -89,6 +89,7 @@ export const useAssayStore = create<AssayStore>()(persist((set, get) => ({
 
   createSession: async (setup) => {
     const id = uuidv4();
+    const candidateId = get().currentCandidateId;
     const session: InterviewSession = {
       id,
       setup: {
@@ -99,6 +100,7 @@ export const useAssayStore = create<AssayStore>()(persist((set, get) => ({
       transcript: [],
       observations: [],
       voiceProvider: 'gemini',
+      candidateId: candidateId ?? undefined,
     };
     set({ session, currentView: 'interview' });
 
@@ -107,6 +109,7 @@ export const useAssayStore = create<AssayStore>()(persist((set, get) => ({
       setup: session.setup,
       status: 'preparing',
       voiceProvider: 'gemini',
+      candidateId: candidateId ?? undefined,
     });
   },
 

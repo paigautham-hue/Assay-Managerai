@@ -20,9 +20,11 @@ interface ReportData {
   createdAt?: string;
 }
 
-router.get('/analytics/summary', async (_req: Request, res: Response) => {
+router.get('/analytics/summary', async (req: Request, res: Response) => {
   try {
+    const orgId = (req as any).user?.organizationId;
     const dbReports = await prisma.report.findMany({
+      where: { session: { organizationId: orgId || undefined } },
       orderBy: { createdAt: 'desc' },
       include: {
         session: { select: { id: true, status: true } },

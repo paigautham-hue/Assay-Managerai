@@ -2,12 +2,13 @@ import { Router } from 'express';
 import type { Request, Response } from 'express';
 import Anthropic from '@anthropic-ai/sdk';
 import prisma from '../db/prisma.js';
+import { qstr } from '../lib/queryHelpers.js';
 
 const router = Router();
 
 router.post('/reports/:id/coaching', async (req: Request, res: Response) => {
   try {
-    const report = await prisma.report.findUnique({ where: { id: req.params.id } });
+    const report = await prisma.report.findUnique({ where: { id: qstr(req.params.id)! } });
     if (!report) return res.status(404).json({ error: 'Report not found' });
     if (report.coachingReport) return res.json(report.coachingReport);
 
@@ -69,7 +70,7 @@ Respond with ONLY valid JSON (no markdown):
     }
 
     await prisma.report.update({
-      where: { id: req.params.id },
+      where: { id: qstr(req.params.id)! },
       data: { coachingReport: coaching },
     });
 
@@ -83,7 +84,7 @@ Respond with ONLY valid JSON (no markdown):
 router.get('/reports/:id/coaching', async (req: Request, res: Response) => {
   try {
     const report = await prisma.report.findUnique({
-      where: { id: req.params.id },
+      where: { id: qstr(req.params.id)! },
       select: { coachingReport: true },
     });
     if (!report) return res.status(404).json({ error: 'Report not found' });

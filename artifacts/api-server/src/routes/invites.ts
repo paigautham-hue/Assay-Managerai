@@ -2,6 +2,7 @@ import { Router } from 'express';
 import type { Request, Response } from 'express';
 import crypto from 'crypto';
 import prisma from '../db/prisma.js';
+import { qstr } from '../lib/queryHelpers.js';
 
 const router = Router();
 
@@ -27,6 +28,7 @@ router.post('/invites', async (req: Request, res: Response) => {
         jobDescription: jobDescription || null,
         activeGates: activeGates || [],
         interviewMode: interviewMode || 'active',
+        organizationId: (req as any).user?.organizationId || null,
         expiresAt,
       },
     });
@@ -42,9 +44,11 @@ router.post('/invites', async (req: Request, res: Response) => {
 });
 
 // List all invites
-router.get('/invites', async (_req: Request, res: Response) => {
+router.get('/invites', async (req: Request, res: Response) => {
   try {
+    const orgId = (req as any).user?.organizationId;
     const invites = await prisma.interviewInvite.findMany({
+      where: orgId ? { organizationId: orgId } : {},
       orderBy: { createdAt: 'desc' },
     });
     return res.json(invites);
@@ -57,9 +61,15 @@ router.get('/invites', async (_req: Request, res: Response) => {
 // Delete an invite
 router.delete('/invites/:id', async (req: Request, res: Response) => {
   try {
-    await prisma.interviewInvite.delete({
-      where: { id: req.params.id },
-    });
+    const orgId = (req as any).user?.organizationId;
+    // Verify org ownership before deleting
+    const invite = await prisma.interviewInvite.findUnique({ where: { id: qstr(req.params.id)! } });
+    if (!invite) return res.status(404).json({ error: 'Invite not found' });
+    if (orgId && invite.organizationId !== orgId) {
+      return res.status(404).json({ error: 'Invite not found' });
+    }
+
+    await prisma.interviewInvite.delete({ where: { id: invite.id } });
     return res.json({ success: true });
   } catch (error) {
     console.error('Delete invite error:', error);

@@ -51,7 +51,7 @@ ${text}`;
       return [];
     }
 
-    const data = await res.json();
+    const data: any = await res.json();
     const responseText: string = data.response ?? '';
 
     const match = responseText.match(/\[[\s\S]*\]/);

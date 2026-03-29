@@ -232,7 +232,7 @@ async function callAnthropic(config: AssessorConfig, transcriptText: string, set
     signal: createTimeoutSignal(),
   });
   if (!res.ok) { const err = await res.text(); throw new Error(`Anthropic API error ${res.status}: ${err.substring(0, 200)}`); }
-  const data = await res.json();
+  const data: any = await res.json();
   return extractJSON(data.content[0]?.text || '');
 }
 
@@ -246,7 +246,7 @@ async function callOpenAI(config: AssessorConfig, transcriptText: string, setupC
     signal: createTimeoutSignal(),
   });
   if (!res.ok) { const err = await res.text(); throw new Error(`OpenAI API error ${res.status}: ${err.substring(0, 200)}`); }
-  const data = await res.json();
+  const data: any = await res.json();
   return extractJSON(data.choices[0]?.message?.content || '');
 }
 
@@ -264,7 +264,7 @@ async function callGoogle(config: AssessorConfig, transcriptText: string, setupC
     }
   );
   if (!res.ok) { const err = await res.text(); throw new Error(`Google API error ${res.status}: ${err.substring(0, 200)}`); }
-  const data = await res.json();
+  const data: any = await res.json();
   return extractJSON(data.candidates?.[0]?.content?.parts?.[0]?.text || '');
 }
 
@@ -360,7 +360,7 @@ async function callChairman(verdicts: any[], transcriptText: string, setupContex
         body: JSON.stringify({ model: 'claude-sonnet-4-5-20250929', max_tokens: 4000, messages: [{ role: 'user', content: prompt }] }),
         signal: createTimeoutSignal(),
       });
-      if (res.ok) return extractJSON((await res.json()).content[0]?.text || '');
+      if (res.ok) return extractJSON(((await res.json()) as any).content[0]?.text || '');
     }
     if (process.env.OPENAI_API_KEY) {
       const res = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -369,9 +369,9 @@ async function callChairman(verdicts: any[], transcriptText: string, setupContex
         body: JSON.stringify({ model: 'gpt-5.4', max_tokens: 4000, messages: [{ role: 'user', content: prompt }] }),
         signal: createTimeoutSignal(),
       });
-      if (res.ok) return extractJSON((await res.json()).choices[0]?.message?.content || '');
+      if (res.ok) return extractJSON(((await res.json()) as any).choices[0]?.message?.content || '');
     }
-  } catch (err) { console.error('Chairman synthesis error:', err); }
+  } catch (err: any) { console.error('Chairman synthesis error:', err); }
 
   return {
     recommendation: verdicts.filter(v => v.recommendation === 'hire').length > verdicts.length / 2 ? 'hire' : 'no_hire',
@@ -397,15 +397,15 @@ Active Gates: ${setup.activeGates?.join(', ') || 'standard gates'}`;
   let dossierContext: string | undefined;
   if (sessionId) {
     try {
-      const session = await prisma.interviewSession.findUnique({
+      const session = await (prisma.interviewSession as any).findUnique({
         where: { id: sessionId },
         select: { candidateId: true },
-      });
+      }) as { candidateId: string | null } | null;
       if (session?.candidateId) {
         const dossier = await compileDossier(prisma, session.candidateId);
         dossierContext = formatDossierForPrompt(dossier);
       }
-    } catch (err) {
+    } catch (err: any) {
       console.warn('Failed to load candidate dossier for assessment:', err);
     }
   }

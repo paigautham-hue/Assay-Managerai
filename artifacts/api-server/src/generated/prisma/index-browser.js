@@ -149,6 +149,7 @@ exports.Prisma.InvitationScalarFieldEnum = {
   role: 'role',
   token: 'token',
   invitedById: 'invitedById',
+  organizationId: 'organizationId',
   expiresAt: 'expiresAt',
   acceptedAt: 'acceptedAt',
   createdAt: 'createdAt'
@@ -163,9 +164,79 @@ exports.Prisma.ActivityLogScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.CandidateScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  name: 'name',
+  email: 'email',
+  phone: 'phone',
+  linkedinUrl: 'linkedinUrl',
+  githubUrl: 'githubUrl',
+  portfolioUrl: 'portfolioUrl',
+  source: 'source',
+  sourceDetail: 'sourceDetail',
+  currentRole: 'currentRole',
+  currentCompany: 'currentCompany',
+  yearsExperience: 'yearsExperience',
+  salaryExpectation: 'salaryExpectation',
+  noticePeriod: 'noticePeriod',
+  pipelineStage: 'pipelineStage',
+  rejectionReason: 'rejectionReason',
+  tags: 'tags',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.CandidateDocumentScalarFieldEnum = {
+  id: 'id',
+  candidateId: 'candidateId',
+  type: 'type',
+  filename: 'filename',
+  mimeType: 'mimeType',
+  content: 'content',
+  rawData: 'rawData',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.CandidateIntelligenceScalarFieldEnum = {
+  id: 'id',
+  candidateId: 'candidateId',
+  type: 'type',
+  data: 'data',
+  sourceText: 'sourceText',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.CandidateNoteScalarFieldEnum = {
+  id: 'id',
+  candidateId: 'candidateId',
+  userId: 'userId',
+  userName: 'userName',
+  content: 'content',
+  type: 'type',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.CandidateReferenceScalarFieldEnum = {
+  id: 'id',
+  candidateId: 'candidateId',
+  refereeName: 'refereeName',
+  refereeEmail: 'refereeEmail',
+  refereePhone: 'refereePhone',
+  refereeRelation: 'refereeRelation',
+  refereeCompany: 'refereeCompany',
+  status: 'status',
+  token: 'token',
+  responses: 'responses',
+  aiAnalysis: 'aiAnalysis',
+  completedAt: 'completedAt',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.InterviewSessionScalarFieldEnum = {
   id: 'id',
   organizationId: 'organizationId',
+  candidateId: 'candidateId',
   setup: 'setup',
   status: 'status',
   startedAt: 'startedAt',
@@ -225,6 +296,7 @@ exports.Prisma.ReportScalarFieldEnum = {
 exports.Prisma.InterviewInviteScalarFieldEnum = {
   id: 'id',
   token: 'token',
+  candidateId: 'candidateId',
   candidateName: 'candidateName',
   candidateEmail: 'candidateEmail',
   roleName: 'roleName',
@@ -234,6 +306,7 @@ exports.Prisma.InterviewInviteScalarFieldEnum = {
   interviewMode: 'interviewMode',
   status: 'status',
   sessionId: 'sessionId',
+  organizationId: 'organizationId',
   expiresAt: 'expiresAt',
   createdAt: 'createdAt'
 };
@@ -243,6 +316,7 @@ exports.Prisma.CalibrationSessionScalarFieldEnum = {
   reportId: 'reportId',
   title: 'title',
   status: 'status',
+  organizationId: 'organizationId',
   createdAt: 'createdAt'
 };
 
@@ -316,6 +390,11 @@ exports.Prisma.ModelName = {
   User: 'User',
   Invitation: 'Invitation',
   ActivityLog: 'ActivityLog',
+  Candidate: 'Candidate',
+  CandidateDocument: 'CandidateDocument',
+  CandidateIntelligence: 'CandidateIntelligence',
+  CandidateNote: 'CandidateNote',
+  CandidateReference: 'CandidateReference',
   InterviewSession: 'InterviewSession',
   TranscriptEntry: 'TranscriptEntry',
   Observation: 'Observation',
