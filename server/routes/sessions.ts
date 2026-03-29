@@ -1,12 +1,13 @@
 import { Router } from 'express';
 import type { Request, Response } from 'express';
 import prisma from '../db/prisma.js';
+import { qstr } from '../lib/queryHelpers.js';
 
 const router = Router();
 
 router.post('/sessions', async (req: Request, res: Response) => {
   try {
-    const { id, setup, status, voiceProvider, organizationId } = req.body;
+    const { id, setup, status, voiceProvider } = req.body;
 
     if (!setup) return res.status(400).json({ error: 'setup is required' });
 
@@ -16,7 +17,7 @@ router.post('/sessions', async (req: Request, res: Response) => {
         setup,
         status: status || 'preparing',
         voiceProvider: voiceProvider || 'gemini',
-        organizationId: organizationId || null,
+        organizationId: (req as any).user?.organizationId || null,
       },
     });
 
@@ -70,7 +71,7 @@ router.get('/sessions', async (req: Request, res: Response) => {
 router.get('/sessions/:id', async (req: Request, res: Response) => {
   try {
     const session = await prisma.interviewSession.findUnique({
-      where: { id: req.params.id },
+      where: { id: qstr(req.params.id)! },
       include: {
         transcripts: { orderBy: { timestamp: 'asc' } },
         observations: { orderBy: { timestamp: 'asc' } },
@@ -79,6 +80,13 @@ router.get('/sessions/:id', async (req: Request, res: Response) => {
       },
     });
     if (!session) return res.status(404).json({ error: 'Session not found' });
+
+    // Verify org ownership
+    const orgId = (req as any).user?.organizationId;
+    if (orgId && session.organizationId !== orgId) {
+      return res.status(404).json({ error: 'Session not found' });
+    }
+
     return res.json(session);
   } catch (error) {
     console.error('Get session error:', error);
@@ -88,6 +96,16 @@ router.get('/sessions/:id', async (req: Request, res: Response) => {
 
 router.patch('/sessions/:id', async (req: Request, res: Response) => {
   try {
+    const orgId = (req as any).user?.organizationId;
+    const sessionId = qstr(req.params.id)!;
+
+    // Verify org ownership before updating
+    const existing = await prisma.interviewSession.findUnique({ where: { id: sessionId }, select: { organizationId: true } });
+    if (!existing) return res.status(404).json({ error: 'Session not found' });
+    if (orgId && existing.organizationId !== orgId) {
+      return res.status(404).json({ error: 'Session not found' });
+    }
+
     const { status, startedAt, endedAt } = req.body;
 
     const data: Record<string, unknown> = {};
@@ -96,7 +114,7 @@ router.patch('/sessions/:id', async (req: Request, res: Response) => {
     if (endedAt) data.endedAt = new Date(endedAt);
 
     const session = await prisma.interviewSession.update({
-      where: { id: req.params.id },
+      where: { id: sessionId },
       data,
     });
     return res.json(session);
@@ -110,15 +128,23 @@ router.patch('/sessions/:id', async (req: Request, res: Response) => {
 router.post('/sessions/:id/transcript', async (req: Request, res: Response) => {
   try {
     const { id, speaker, text, timestamp, audioTimestamp } = req.body;
+    const sessionId = qstr(req.params.id)!;
 
     if (!speaker || !text || !timestamp) {
       return res.status(400).json({ error: 'speaker, text, and timestamp are required' });
     }
 
+    // Verify org ownership
+    const orgId = (req as any).user?.organizationId;
+    if (orgId) {
+      const session = await prisma.interviewSession.findUnique({ where: { id: sessionId }, select: { organizationId: true } });
+      if (!session || session.organizationId !== orgId) return res.status(404).json({ error: 'Session not found' });
+    }
+
     const entry = await prisma.transcriptEntry.create({
       data: {
         id: id || undefined,
-        sessionId: req.params.id,
+        sessionId,
         speaker,
         text,
         timestamp: new Date(timestamp),
@@ -137,10 +163,18 @@ router.post('/sessions/:id/transcript/bulk', async (req: Request, res: Response)
     const { entries } = req.body;
     if (!Array.isArray(entries)) return res.status(400).json({ error: 'entries array required' });
 
+    const bulkSessionId = qstr(req.params.id)!;
+
+    // Verify org ownership
+    const orgId = (req as any).user?.organizationId;
+    if (orgId) {
+      const session = await prisma.interviewSession.findUnique({ where: { id: bulkSessionId }, select: { organizationId: true } });
+      if (!session || session.organizationId !== orgId) return res.status(404).json({ error: 'Session not found' });
+    }
     const created = await prisma.transcriptEntry.createMany({
       data: entries.map((e: any) => ({
         id: e.id || undefined,
-        sessionId: req.params.id,
+        sessionId: bulkSessionId,
         speaker: e.speaker,
         text: e.text,
         timestamp: new Date(e.timestamp),
@@ -158,15 +192,23 @@ router.post('/sessions/:id/transcript/bulk', async (req: Request, res: Response)
 router.post('/sessions/:id/observations', async (req: Request, res: Response) => {
   try {
     const { id, type, dimension, gate, description, evidence, confidence, timestamp } = req.body;
+    const sessionId = qstr(req.params.id)!;
 
     if (!type || !description || !timestamp) {
       return res.status(400).json({ error: 'type, description, and timestamp are required' });
     }
 
+    // Verify org ownership
+    const orgId = (req as any).user?.organizationId;
+    if (orgId) {
+      const session = await prisma.interviewSession.findUnique({ where: { id: sessionId }, select: { organizationId: true } });
+      if (!session || session.organizationId !== orgId) return res.status(404).json({ error: 'Session not found' });
+    }
+
     const obs = await prisma.observation.create({
       data: {
         id: id || undefined,
-        sessionId: req.params.id,
+        sessionId,
         type,
         dimension: dimension ?? null,
         gate: gate ?? null,
@@ -186,14 +228,22 @@ router.post('/sessions/:id/observations', async (req: Request, res: Response) =>
 router.post('/sessions/:id/verdicts', async (req: Request, res: Response) => {
   try {
     const { role, recommendation, confidence, narrative, dimensionScores, deepSignalScores, psychologicalScreening, gateEvaluations, keyInsights, dissent } = req.body;
+    const sessionId = qstr(req.params.id)!;
 
     if (!role || !recommendation || !narrative) {
       return res.status(400).json({ error: 'role, recommendation, and narrative are required' });
     }
 
+    // Verify org ownership
+    const orgId = (req as any).user?.organizationId;
+    if (orgId) {
+      const session = await prisma.interviewSession.findUnique({ where: { id: sessionId }, select: { organizationId: true } });
+      if (!session || session.organizationId !== orgId) return res.status(404).json({ error: 'Session not found' });
+    }
+
     const verdict = await prisma.assessorVerdict.create({
       data: {
-        sessionId: req.params.id,
+        sessionId,
         role,
         recommendation,
         confidence: confidence ?? 0.5,

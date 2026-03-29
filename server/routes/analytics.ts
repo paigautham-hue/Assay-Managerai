@@ -20,9 +20,11 @@ interface ReportData {
   createdAt?: string;
 }
 
-router.get('/analytics/summary', async (_req: Request, res: Response) => {
+router.get('/analytics/summary', async (req: Request, res: Response) => {
   try {
+    const orgId = (req as any).user?.organizationId;
     const dbReports = await prisma.report.findMany({
+      where: { session: { organizationId: orgId || undefined } },
       orderBy: { createdAt: 'desc' },
       include: {
         session: { select: { id: true, status: true } },
@@ -53,14 +55,14 @@ router.get('/analytics/summary', async (_req: Request, res: Response) => {
 
     // Pass rate
     const passedCount = reports.filter(
-      (r: any) => r.data.gateBanner?.status === 'passed'
+      (r: { data: ReportData }) => r.data.gateBanner?.status === 'passed'
     ).length;
     const passRate = Math.round((passedCount / totalAssessments) * 100);
 
     // Average overall score
     const validScores = reports
-      .map((r: any) => r.data.pyramidScore?.overall)
-      .filter((s: any): s is number => typeof s === 'number');
+      .map((r: { data: ReportData }) => r.data.pyramidScore?.overall)
+      .filter((s: number | undefined): s is number => typeof s === 'number');
     const avgOverallScore =
       validScores.length > 0
         ? +(validScores.reduce((a: number, b: number) => a + b, 0) / validScores.length).toFixed(2)

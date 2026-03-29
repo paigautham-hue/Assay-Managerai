@@ -17,7 +17,7 @@ declare global {
   }
 }
 
-const JWT_SECRET = process.env.ASSAY_JWT_SECRET || process.env.JWT_SECRET || (() => {
+const JWT_SECRET = process.env.JWT_SECRET || (() => {
   if (process.env.NODE_ENV === 'production') {
     console.error('FATAL: JWT_SECRET must be set in production');
     process.exit(1);
@@ -104,8 +104,7 @@ export function requireRole(...roles: string[]) {
       res.status(401).json({ error: 'Invalid or expired token' });
       return;
     }
-    // 'owner' is a superuser that passes all role checks
-    if (roles.length > 0 && user.role !== 'owner' && !roles.includes(user.role)) {
+    if (roles.length > 0 && !roles.includes(user.role)) {
       res.status(403).json({ error: `Access denied. Required roles: ${roles.join(', ')}` });
       return;
     }

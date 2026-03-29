@@ -143,6 +143,7 @@ export interface InterviewSession {
   observations: Observation[];
   voiceProvider: VoiceProvider;
   prosodyData?: import('../lib/emotionEngine').ProsodyData;
+  candidateId?: string;
 }
 
 export interface TranscriptEntry {

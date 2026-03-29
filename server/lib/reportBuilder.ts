@@ -66,10 +66,19 @@ export interface BuildReportOptions {
   chairmanSynthesis: any;
   setup?: any;
   prosodyData?: any;
+  candidateIntelligence?: {
+    fitScore?: number;
+    resumeHighlights?: string[];
+    redFlags?: string[];
+    referencesSummary?: string;
+    crossReferenceFindings?: string[];
+    source?: string;
+    yearsExperience?: number;
+  };
 }
 
 export function buildReport(opts: BuildReportOptions) {
-  const { sessionId, candidateName, roleName, assessorVerdicts, chairmanSynthesis, setup, prosodyData } = opts;
+  const { sessionId, candidateName, roleName, assessorVerdicts, chairmanSynthesis, setup, prosodyData, candidateIntelligence } = opts;
 
   const { overallStatus: gateStatus, evaluations: gateEvaluations } = evaluateGates(assessorVerdicts);
 
@@ -205,5 +214,14 @@ export function buildReport(opts: BuildReportOptions) {
     comparison: undefined,
     psychologicalProfile: psychologicalProfile ?? undefined,
     prosodyData: prosodyData ?? undefined,
+    candidateIntelligence: candidateIntelligence ? {
+      fitScore: candidateIntelligence.fitScore,
+      resumeHighlights: candidateIntelligence.resumeHighlights || [],
+      redFlags: candidateIntelligence.redFlags || [],
+      referencesSummary: candidateIntelligence.referencesSummary,
+      crossReferenceFindings: candidateIntelligence.crossReferenceFindings || [],
+      source: candidateIntelligence.source,
+      yearsExperience: candidateIntelligence.yearsExperience,
+    } : undefined,
   };
 }

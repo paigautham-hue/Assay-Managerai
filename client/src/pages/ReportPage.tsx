@@ -9,6 +9,7 @@ import { GATE_DEFINITIONS } from '../lib/gates';
 import { generateExecutivePDF } from '../lib/pdfExport';
 import { InterviewReplay } from '../components/InterviewReplay';
 import { ReportFeedback } from '../components/ReportFeedback';
+import { NavBar } from '@/components/NavBar';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell,
   ResponsiveContainer, PieChart, Pie, Legend,
@@ -121,7 +122,7 @@ function ExpandableSection({ title, children, isExpandable = false, defaultOpen 
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] as const }}
             style={{ overflow: 'hidden' }}
           >
             <div className="px-8 pb-6" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
@@ -721,6 +722,7 @@ export function ReportPage() {
 
   return (
     <div className="bg-gradient-dark min-h-screen" style={{ paddingTop: 'calc(3rem + env(safe-area-inset-top, 0px))', paddingBottom: 'max(env(safe-area-inset-bottom, 0px), 5rem)' }}>
+      <NavBar />
       <div className="max-w-5xl mx-auto px-4 sm:px-6">
         <motion.div className="mb-12" initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
           <div className="flex items-start justify-between mb-6 flex-wrap gap-4">
@@ -852,7 +854,7 @@ export function ReportPage() {
             }}
             initial={{ clipPath: 'inset(0 100% 0 0)' }}
             animate={{ clipPath: 'inset(0 0 0 0)' }}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.4 }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] as const, delay: 0.4 }}
           />
           {/* Fill fade-in */}
           <motion.div

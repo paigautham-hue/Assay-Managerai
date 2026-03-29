@@ -2,6 +2,7 @@ import { Router } from 'express';
 import type { Request, Response } from 'express';
 import { EventEmitter } from 'events';
 import prisma from '../db/prisma.js';
+import { qstr } from '../lib/queryHelpers.js';
 
 const router = Router();
 
@@ -20,32 +21,36 @@ router.post('/calibration', async (req: Request, res: Response) => {
       return res.status(400).json({ error: 'reportId and title are required' });
     }
 
+    // Verify report exists
+    const report = await prisma.report.findUnique({ where: { id: reportId } });
+    if (!report) {
+      return res.status(404).json({ error: 'Report not found' });
+    }
+
     const session = await prisma.calibrationSession.create({
       data: { reportId, title },
     });
 
-    res.status(201).json(session);
+    return res.status(201).json(session);
   } catch (err: any) {
     console.error('[CALIBRATION] Create error:', err);
-    res.status(500).json({ error: 'Failed to create calibration session' });
+    return res.status(500).json({ error: 'Failed to create calibration session' });
   }
 });
 
 // ─── Get calibration sessions for a report ───────────────────────────────────
-// NOTE: This route MUST be registered before `/calibration/:id` to prevent
-// "by-report" from being captured as an :id parameter (route shadowing).
 router.get('/calibration/by-report/:reportId', async (req: Request, res: Response) => {
   try {
     const sessions = await prisma.calibrationSession.findMany({
-      where: { reportId: req.params.reportId },
+      where: { reportId: qstr(req.params.reportId)! },
       include: { notes: { orderBy: { createdAt: 'asc' } } },
       orderBy: { createdAt: 'desc' },
     });
 
-    res.json(sessions);
+    return res.json(sessions);
   } catch (err: any) {
     console.error('[CALIBRATION] Get by report error:', err);
-    res.status(500).json({ error: 'Failed to fetch calibration sessions' });
+    return res.status(500).json({ error: 'Failed to fetch calibration sessions' });
   }
 });
 
@@ -53,15 +58,15 @@ router.get('/calibration/by-report/:reportId', async (req: Request, res: Respons
 router.get('/calibration/:id', async (req: Request, res: Response) => {
   try {
     const session = await prisma.calibrationSession.findUnique({
-      where: { id: req.params.id },
+      where: { id: qstr(req.params.id)! },
       include: { notes: { orderBy: { createdAt: 'asc' } } },
     });
 
     if (!session) return res.status(404).json({ error: 'Session not found' });
-    res.json(session);
+    return res.json(session);
   } catch (err: any) {
     console.error('[CALIBRATION] Get error:', err);
-    res.status(500).json({ error: 'Failed to fetch calibration session' });
+    return res.status(500).json({ error: 'Failed to fetch calibration session' });
   }
 });
 
@@ -69,37 +74,43 @@ router.get('/calibration/:id', async (req: Request, res: Response) => {
 router.post('/calibration/:id/notes', async (req: Request, res: Response) => {
   try {
     const { content, sectionRef } = req.body;
+    const paramId = qstr(req.params.id)!;
     if (!content) return res.status(400).json({ error: 'content is required' });
     if (!req.user) return res.status(401).json({ error: 'Authentication required' });
 
     const session = await prisma.calibrationSession.findUnique({
-      where: { id: req.params.id },
+      where: { id: paramId },
     });
     if (!session) return res.status(404).json({ error: 'Session not found' });
 
     const note = await prisma.calibrationNote.create({
       data: {
-        calibrationSessionId: req.params.id,
-        userId: parseInt(req.user.id, 10),
-        userName: req.user.name || '',
+        calibrationSessionId: paramId,
+        userId: parseInt(req.user.id),
+        userName: req.user.name,
         content,
         sectionRef: sectionRef || null,
       },
     });
 
     // Broadcast to all SSE clients for this session
-    calibrationEmitter.emit(`note:${req.params.id}`, note);
+    calibrationEmitter.emit(`note:${paramId}`, note);
 
-    res.status(201).json(note);
+    return res.status(201).json(note);
   } catch (err: any) {
     console.error('[CALIBRATION] Add note error:', err);
-    res.status(500).json({ error: 'Failed to add note' });
+    return res.status(500).json({ error: 'Failed to add note' });
   }
 });
 
 // ─── SSE stream for real-time note updates ───────────────────────────────────
-router.get('/calibration/:id/stream', (req: Request, res: Response) => {
-  const sessionId = req.params.id;
+router.get('/calibration/:id/stream', async (req: Request, res: Response) => {
+  const sessionId = qstr(req.params.id)!;
+
+  const calSession = await prisma.calibrationSession.findUnique({ where: { id: sessionId } });
+  if (!calSession) {
+    return res.status(404).json({ error: 'Session not found' });
+  }
 
   res.writeHead(200, {
     'Content-Type': 'text/event-stream',
@@ -155,26 +166,29 @@ router.get('/calibration/:id/stream', (req: Request, res: Response) => {
     }
     broadcastViewerCount();
   });
+
+  return undefined as any;
 });
 
 // ─── Update session status (conclude) ────────────────────────────────────────
 router.patch('/calibration/:id', async (req: Request, res: Response) => {
   try {
     const { status } = req.body;
+    const paramId = qstr(req.params.id)!;
     if (!status) return res.status(400).json({ error: 'status is required' });
 
     const session = await prisma.calibrationSession.update({
-      where: { id: req.params.id },
+      where: { id: paramId },
       data: { status },
     });
 
     // Broadcast status change to SSE clients
-    calibrationEmitter.emit(`status:${req.params.id}`, { status: session.status });
+    calibrationEmitter.emit(`status:${paramId}`, { status: session.status });
 
-    res.json(session);
+    return res.json(session);
   } catch (err: any) {
     console.error('[CALIBRATION] Update error:', err);
-    res.status(500).json({ error: 'Failed to update calibration session' });
+    return res.status(500).json({ error: 'Failed to update calibration session' });
   }
 });
 

@@ -15,7 +15,8 @@ model Organization {
   createdAt DateTime @default(now()) @map("created_at")
 
   users    User[]
-  sessions InterviewSession[]
+  sessions   InterviewSession[]
+  candidates Candidate[]
 
   @@map("organizations")
 }
@@ -76,6 +77,7 @@ model ActivityLog {
 model InterviewSession {
   id             String    @id @default(uuid())
   organizationId String?   @map("organization_id")
+  candidateId    String?   @map("candidate_id")
   setup          Json
   status         String    @default("preparing")
   startedAt      DateTime? @map("started_at")
@@ -86,6 +88,7 @@ model InterviewSession {
   createdAt      DateTime  @default(now()) @map("created_at")
 
   organization Organization?    @relation(fields: [organizationId], references: [id])
+  candidate    Candidate?       @relation(fields: [candidateId], references: [id])
   transcripts  TranscriptEntry[]
   observations Observation[]
   verdicts     AssessorVerdict[]
@@ -215,6 +218,100 @@ model ReportFeedback {
 
   @@unique([reportId, userId])
   @@map("report_feedback")
+}
+
+model Candidate {
+  id               String    @id @default(uuid())
+  organizationId   String?   @map("organization_id")
+  name             String
+  email            String?
+  phone            String?
+  linkedinUrl      String?   @map("linkedin_url")
+  githubUrl        String?   @map("github_url")
+  portfolioUrl     String?   @map("portfolio_url")
+  source           String?
+  sourceDetail     String?   @map("source_detail")
+  currentRole      String?   @map("current_role")
+  currentCompany   String?   @map("current_company")
+  yearsExperience  Int?      @map("years_experience")
+  salaryExpectation String?  @map("salary_expectation")
+  noticePeriod     String?   @map("notice_period")
+  pipelineStage    String    @default("applied") @map("pipeline_stage")
+  rejectionReason  String?   @map("rejection_reason")
+  tags             Json      @default("[]")
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime  @updatedAt @map("updated_at")
+
+  organization  Organization?          @relation(fields: [organizationId], references: [id])
+  sessions      InterviewSession[]
+  intelligence  CandidateIntelligence[]
+  notes         CandidateNote[]
+  references    CandidateReference[]
+  documents     CandidateDocument[]
+
+  @@map("candidates")
+}
+
+model CandidateDocument {
+  id          String   @id @default(uuid())
+  candidateId String   @map("candidate_id")
+  type        String
+  filename    String
+  mimeType    String   @map("mime_type")
+  content     String   @db.Text
+  rawData     Bytes?   @map("raw_data") @db.MediumBlob
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  candidate Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+
+  @@map("candidate_documents")
+}
+
+model CandidateIntelligence {
+  id          String   @id @default(uuid())
+  candidateId String   @map("candidate_id")
+  type        String
+  data        Json
+  sourceText  String?  @map("source_text") @db.Text
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  candidate Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+
+  @@map("candidate_intelligence")
+}
+
+model CandidateNote {
+  id          String   @id @default(uuid())
+  candidateId String   @map("candidate_id")
+  userId      String   @map("user_id")
+  userName    String   @map("user_name")
+  content     String   @db.Text
+  type        String   @default("general")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  candidate Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+
+  @@map("candidate_notes")
+}
+
+model CandidateReference {
+  id              String    @id @default(uuid())
+  candidateId     String    @map("candidate_id")
+  refereeName     String    @map("referee_name")
+  refereeEmail    String?   @map("referee_email")
+  refereePhone    String?   @map("referee_phone")
+  refereeRelation String    @map("referee_relation")
+  refereeCompany  String?   @map("referee_company")
+  status          String    @default("pending")
+  token           String?   @unique
+  responses       Json?
+  aiAnalysis      Json?     @map("ai_analysis")
+  completedAt     DateTime? @map("completed_at")
+  createdAt       DateTime  @default(now()) @map("created_at")
+
+  candidate Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+
+  @@map("candidate_references")
 }
 
 model SystemPromptVersion {

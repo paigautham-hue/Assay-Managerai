@@ -2,6 +2,7 @@ import { Router } from 'express';
 import type { Request, Response } from 'express';
 import prisma from '../db/prisma.js';
 import { signToken } from '../middleware/auth.js';
+import { qstr } from '../lib/queryHelpers.js';
 
 const IS_PROD = process.env.NODE_ENV === 'production';
 const CANDIDATE_COOKIE_OPTS = {
@@ -18,7 +19,7 @@ const router = Router();
 router.get('/public/invite/:token', async (req: Request, res: Response) => {
   try {
     const invite = await prisma.interviewInvite.findUnique({
-      where: { token: req.params.token },
+      where: { token: qstr(req.params.token)! },
     });
 
     if (!invite) {
@@ -57,7 +58,7 @@ router.post('/public/invite/:token/start', async (req: Request, res: Response) =
     const { candidateName } = req.body;
 
     const invite = await prisma.interviewInvite.findUnique({
-      where: { token: req.params.token },
+      where: { token: qstr(req.params.token)! },
     });
 
     if (!invite) {

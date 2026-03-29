@@ -2,6 +2,7 @@ import { Router } from 'express';
 import type { Request, Response } from 'express';
 import prisma from '../db/prisma.js';
 import { buildReport } from '../lib/reportBuilder.js';
+import { compileDossier, formatDossierForPrompt } from '../lib/candidateIntelligenceEngine.js';
 
 const router = Router();
 
@@ -221,9 +222,9 @@ function createTimeoutSignal(): AbortSignal {
   return AbortSignal.timeout(LLM_TIMEOUT_MS);
 }
 
-async function callAnthropic(config: AssessorConfig, transcriptText: string, setupContext: string): Promise<any> {
+async function callAnthropic(config: AssessorConfig, transcriptText: string, setupContext: string, dossierContext?: string): Promise<any> {
   if (!process.env.ANTHROPIC_API_KEY) throw new Error('ANTHROPIC_API_KEY not configured');
-  const userPrompt = buildUserPrompt(config.displayName, transcriptText, setupContext);
+  const userPrompt = buildUserPrompt(config.displayName, transcriptText, setupContext, dossierContext);
   const res = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: { 'x-api-key': process.env.ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
@@ -231,13 +232,13 @@ async function callAnthropic(config: AssessorConfig, transcriptText: string, set
     signal: createTimeoutSignal(),
   });
   if (!res.ok) { const err = await res.text(); throw new Error(`Anthropic API error ${res.status}: ${err.substring(0, 200)}`); }
-  const data = await res.json();
+  const data: any = await res.json();
   return extractJSON(data.content[0]?.text || '');
 }
 
-async function callOpenAI(config: AssessorConfig, transcriptText: string, setupContext: string): Promise<any> {
+async function callOpenAI(config: AssessorConfig, transcriptText: string, setupContext: string, dossierContext?: string): Promise<any> {
   if (!process.env.OPENAI_API_KEY) throw new Error('OPENAI_API_KEY not configured');
-  const userPrompt = buildUserPrompt(config.displayName, transcriptText, setupContext);
+  const userPrompt = buildUserPrompt(config.displayName, transcriptText, setupContext, dossierContext);
   const res = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
     headers: { 'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`, 'Content-Type': 'application/json' },
@@ -245,13 +246,13 @@ async function callOpenAI(config: AssessorConfig, transcriptText: string, setupC
     signal: createTimeoutSignal(),
   });
   if (!res.ok) { const err = await res.text(); throw new Error(`OpenAI API error ${res.status}: ${err.substring(0, 200)}`); }
-  const data = await res.json();
+  const data: any = await res.json();
   return extractJSON(data.choices[0]?.message?.content || '');
 }
 
-async function callGoogle(config: AssessorConfig, transcriptText: string, setupContext: string): Promise<any> {
+async function callGoogle(config: AssessorConfig, transcriptText: string, setupContext: string, dossierContext?: string): Promise<any> {
   if (!process.env.GOOGLE_API_KEY) throw new Error('GOOGLE_API_KEY not configured');
-  const userPrompt = buildUserPrompt(config.displayName, transcriptText, setupContext);
+  const userPrompt = buildUserPrompt(config.displayName, transcriptText, setupContext, dossierContext);
   // Use x-goog-api-key header instead of putting the key in URL query params
   const res = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/${config.model}:generateContent`,
@@ -263,12 +264,19 @@ async function callGoogle(config: AssessorConfig, transcriptText: string, setupC
     }
   );
   if (!res.ok) { const err = await res.text(); throw new Error(`Google API error ${res.status}: ${err.substring(0, 200)}`); }
-  const data = await res.json();
+  const data: any = await res.json();
   return extractJSON(data.candidates?.[0]?.content?.parts?.[0]?.text || '');
 }
 
-function buildUserPrompt(displayName: string, transcriptText: string, setupContext: string): string {
-  return `## Interview Transcript\n${transcriptText}\n\n## Interview Setup\n${setupContext}\n\n## Your Task\nAnalyze this interview transcript as ${displayName}. Evaluate the candidate across all 7 Pyramid dimensions and relevant Non-Negotiable Gates.\n\nReturn your assessment as valid JSON ONLY (no markdown, no explanation) matching this structure:\n${ASSESSOR_JSON_SCHEMA}\n\nIMPORTANT: Score ALL 7 pyramid dimensions. Be rigorous. Be honest. Base all scores on evidence from the transcript.`;
+function buildUserPrompt(displayName: string, transcriptText: string, setupContext: string, dossierContext?: string): string {
+  let prompt = `## Interview Transcript\n${transcriptText}\n\n## Interview Setup\n${setupContext}`;
+
+  if (dossierContext) {
+    prompt += `\n\n## Pre-Interview Candidate Intelligence\n${dossierContext}\n\nIMPORTANT: Cross-reference what the candidate said in the interview against their resume, LinkedIn, and reference data above. Flag any inconsistencies, exaggerations, or contradictions. Also note where claims are validated by external evidence.`;
+  }
+
+  prompt += `\n\n## Your Task\nAnalyze this interview transcript as ${displayName}. Evaluate the candidate across all 7 Pyramid dimensions and relevant Non-Negotiable Gates.\n\nReturn your assessment as valid JSON ONLY (no markdown, no explanation) matching this structure:\n${ASSESSOR_JSON_SCHEMA}\n\nIMPORTANT: Score ALL 7 pyramid dimensions. Be rigorous. Be honest. Base all scores on evidence from the transcript.`;
+  return prompt;
 }
 
 function extractJSON(text: string): any {
@@ -288,17 +296,18 @@ function extractJSON(text: string): any {
   throw new Error('No complete JSON object found in response');
 }
 
-async function callAssessor(config: AssessorConfig, transcriptText: string, setupContext: string): Promise<any> {
-  if (config.provider === 'anthropic') return callAnthropic(config, transcriptText, setupContext);
-  if (config.provider === 'openai') return callOpenAI(config, transcriptText, setupContext);
-  if (config.provider === 'google') return callGoogle(config, transcriptText, setupContext);
+async function callAssessor(config: AssessorConfig, transcriptText: string, setupContext: string, dossierContext?: string): Promise<any> {
+  if (config.provider === 'anthropic') return callAnthropic(config, transcriptText, setupContext, dossierContext);
+  if (config.provider === 'openai') return callOpenAI(config, transcriptText, setupContext, dossierContext);
+  if (config.provider === 'google') return callGoogle(config, transcriptText, setupContext, dossierContext);
   throw new Error(`Unknown provider: ${config.provider}`);
 }
 
 async function callAssessorWithFallback(
   config: AssessorConfig,
   transcriptText: string,
-  setupContext: string
+  setupContext: string,
+  dossierContext?: string
 ): Promise<{ verdict: any } | { error: string }> {
   const fallbacks: AssessorConfig[] = [
     config,
@@ -308,7 +317,7 @@ async function callAssessorWithFallback(
   let lastError = '';
   for (const fallbackConfig of fallbacks) {
     try {
-      const response = await callAssessor(fallbackConfig, transcriptText, setupContext);
+      const response = await callAssessor(fallbackConfig, transcriptText, setupContext, dossierContext);
       const verdict = {
         role: config.role,
         recommendation: response.recommendation || 'insufficient_data',
@@ -351,7 +360,7 @@ async function callChairman(verdicts: any[], transcriptText: string, setupContex
         body: JSON.stringify({ model: 'claude-sonnet-4-5-20250929', max_tokens: 4000, messages: [{ role: 'user', content: prompt }] }),
         signal: createTimeoutSignal(),
       });
-      if (res.ok) return extractJSON((await res.json()).content[0]?.text || '');
+      if (res.ok) return extractJSON(((await res.json()) as any).content[0]?.text || '');
     }
     if (process.env.OPENAI_API_KEY) {
       const res = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -360,9 +369,9 @@ async function callChairman(verdicts: any[], transcriptText: string, setupContex
         body: JSON.stringify({ model: 'gpt-5.4', max_tokens: 4000, messages: [{ role: 'user', content: prompt }] }),
         signal: createTimeoutSignal(),
       });
-      if (res.ok) return extractJSON((await res.json()).choices[0]?.message?.content || '');
+      if (res.ok) return extractJSON(((await res.json()) as any).choices[0]?.message?.content || '');
     }
-  } catch (err) { console.error('Chairman synthesis error:', err); }
+  } catch (err: any) { console.error('Chairman synthesis error:', err); }
 
   return {
     recommendation: verdicts.filter(v => v.recommendation === 'hire').length > verdicts.length / 2 ? 'hire' : 'no_hire',
@@ -372,7 +381,7 @@ async function callChairman(verdicts: any[], transcriptText: string, setupContex
   };
 }
 
-function prepareTranscriptContext(transcript: any[], setup: any) {
+async function prepareTranscriptContext(transcript: any[], setup: any, sessionId?: string) {
   const transcriptText = transcript.length > 0
     ? transcript.map((e: any) => `[${e.timestamp}] ${e.speaker.toUpperCase()}: ${e.text}`).join('\n')
     : '[No transcript recorded - candidate may not have spoken during interview]';
@@ -384,7 +393,24 @@ CV Summary: ${setup.cvSummary || 'Not provided'}
 Interview Mode: ${setup.interviewMode}
 Active Gates: ${setup.activeGates?.join(', ') || 'standard gates'}`;
 
-  return { transcriptText, setupContext };
+  // Load candidate intelligence dossier if a candidateId is linked
+  let dossierContext: string | undefined;
+  if (sessionId) {
+    try {
+      const session = await (prisma.interviewSession as any).findUnique({
+        where: { id: sessionId },
+        select: { candidateId: true },
+      }) as { candidateId: string | null } | null;
+      if (session?.candidateId) {
+        const dossier = await compileDossier(prisma, session.candidateId);
+        dossierContext = formatDossierForPrompt(dossier);
+      }
+    } catch (err: any) {
+      console.warn('Failed to load candidate dossier for assessment:', err);
+    }
+  }
+
+  return { transcriptText, setupContext, dossierContext };
 }
 
 // Legacy synchronous endpoint (kept for backward compat)
@@ -402,13 +428,13 @@ router.post('/assess', async (req: Request, res: Response) => {
       }
     }
 
-    const { transcriptText, setupContext } = prepareTranscriptContext(transcript, setup);
+    const { transcriptText, setupContext, dossierContext } = await prepareTranscriptContext(transcript, setup, sessionId);
 
     if (!transcriptText || transcriptText.length < 200) {
       return res.status(400).json({ error: 'Insufficient interview data. The transcript must contain at least 200 characters for a reliable assessment.' });
     }
 
-    const results = await Promise.allSettled(ASSESSOR_CONFIGS.map(config => callAssessorWithFallback(config, transcriptText, setupContext)));
+    const results = await Promise.allSettled(ASSESSOR_CONFIGS.map(config => callAssessorWithFallback(config, transcriptText, setupContext, dossierContext)));
     const verdicts: any[] = [];
     const failures: string[] = [];
 
@@ -469,7 +495,7 @@ router.post('/assess/stream', async (req: Request, res: Response) => {
       return;
     }
 
-    const { transcriptText, setupContext } = prepareTranscriptContext(transcript, setup);
+    const { transcriptText, setupContext, dossierContext } = await prepareTranscriptContext(transcript, setup, sessionId);
 
     if (!transcriptText || transcriptText.length < 200) {
       sendEvent('error', { message: 'Insufficient interview data. The transcript must contain at least 200 characters for a reliable assessment.' });
@@ -490,7 +516,7 @@ router.post('/assess/stream', async (req: Request, res: Response) => {
       const startedAt = Date.now();
       sendEvent('assessor_start', { role: config.role, displayName: config.displayName, index });
 
-      const result = await callAssessorWithFallback(config, transcriptText, setupContext);
+      const result = await callAssessorWithFallback(config, transcriptText, setupContext, dossierContext);
 
       // Check again after the (potentially long) API call returns
       if (clientDisconnected) return;
@@ -515,7 +541,7 @@ router.post('/assess/stream', async (req: Request, res: Response) => {
               keyInsights: result.verdict.keyInsights,
               dissent: result.verdict.dissent ?? null,
             },
-          }).catch((err: any) => console.warn('Failed to save verdict to DB:', err));
+          }).catch((err: unknown) => console.warn('Failed to save verdict to DB:', err));
         }
 
         sendEvent('assessor_complete', { role: config.role, displayName: config.displayName, index, duration });
@@ -564,7 +590,7 @@ router.post('/assess/stream', async (req: Request, res: Response) => {
         where: { id: report.id },
         create: { id: report.id, sessionId, candidateName: setup.candidateName, roleName: setup.roleName, reportData: report as any },
         update: { reportData: report as any },
-      }).catch((err: any) => console.warn('Failed to save report to DB:', err));
+      }).catch((err: unknown) => console.warn('Failed to save report to DB:', err));
     }
 
     sendEvent('report_complete', { reportId: report.id, report });

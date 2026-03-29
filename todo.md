@@ -31,3 +31,18 @@
 - [x] Externalize Prisma from esbuild bundle — verified import stays as ESM external in dist/index.js
 - [x] Verify production build starts correctly — health check + login both pass on port 4000
 - [x] Save checkpoint and re-publish
+
+## GitHub Pull & Republish
+
+- [x] Pull latest Claude Code fixes from GitHub
+- [x] Fix TypeScript errors from schema mismatches (Int vs String IDs, missing organizationId)
+- [x] Fix invites.ts - remove organizationId references
+- [x] Fix feedback.ts - remove nested report relation filter, fix userId int conversion
+- [x] Fix calibration.ts - remove organizationId, fix userId parseInt
+- [x] Fix analytics.ts, assess.ts, reports.ts - add explicit type annotations
+- [x] Sync Prisma schema to database (prisma db push with SSL)
+- [x] Verify production build compiles with zero errors
+- [x] Verify all API endpoints work (healthz, auth, sessions, reports, candidates, invites)
+- [x] Write and pass vitest tests (13 tests, 2 files)
+- [ ] Save checkpoint and republish
+- [ ] Push changes to GitHub manus-deploy branch

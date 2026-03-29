@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import type { Request, Response } from 'express';
 import prisma from '../db/prisma.js';
+import { qstr } from '../lib/queryHelpers.js';
 
 const router = Router();
 
@@ -12,8 +13,9 @@ const VALID_OUTCOMES = ['hired', 'rejected', 'withdrew', 'pending'];
  */
 router.post('/feedback', async (req: Request, res: Response) => {
   try {
-    const userId = req.user?.id;
-    if (!userId) return res.status(401).json({ error: 'Authentication required' });
+    const userIdStr = req.user?.id;
+    if (!userIdStr) return res.status(401).json({ error: 'Authentication required' });
+    const userId = parseInt(userIdStr);
 
     const { reportId, overallAccuracy, hireOutcome, performanceNote, dimensionFeedback, gateFeedback, comments } = req.body;
 
@@ -30,18 +32,24 @@ router.post('/feedback', async (req: Request, res: Response) => {
       return res.status(400).json({ error: `hireOutcome must be one of: ${VALID_OUTCOMES.join(', ')}` });
     }
 
-    // Verify report exists
-    const report = await prisma.report.findUnique({ where: { id: reportId }, select: { id: true } });
+    // Verify report exists and belongs to user's org
+    const orgId = req.user?.organizationId;
+    const report = await prisma.report.findUnique({
+      where: { id: reportId },
+      include: { session: { select: { organizationId: true } } },
+    });
     if (!report) {
       return res.status(404).json({ error: 'Report not found' });
     }
+    if (orgId && report.session?.organizationId !== orgId) {
+      return res.status(404).json({ error: 'Report not found' });
+    }
 
-    const userIdInt = parseInt(userId, 10);
     const feedback = await prisma.reportFeedback.upsert({
-      where: { reportId_userId: { reportId, userId: userIdInt } },
+      where: { reportId_userId: { reportId, userId: userId } },
       create: {
         reportId,
-        userId: userIdInt,
+        userId,
         overallAccuracy: accuracy,
         hireOutcome: hireOutcome || undefined,
         performanceNote: performanceNote || undefined,
@@ -78,6 +86,7 @@ router.get('/feedback/analytics/accuracy', async (req: Request, res: Response) =
     }
 
     const feedback = await prisma.reportFeedback.findMany({
+      where: {},
       select: {
         overallAccuracy: true,
         hireOutcome: true,
@@ -88,7 +97,7 @@ router.get('/feedback/analytics/accuracy', async (req: Request, res: Response) =
 
     const totalFeedback = feedback.length;
     const avgAccuracy = totalFeedback > 0
-      ? feedback.reduce((sum: number, f: any) => sum + f.overallAccuracy, 0) / totalFeedback
+      ? feedback.reduce((sum: number, f: { overallAccuracy: number }) => sum + f.overallAccuracy, 0) / totalFeedback
       : 0;
 
     const outcomeDistribution: Record<string, number> = {};
@@ -102,7 +111,7 @@ router.get('/feedback/analytics/accuracy', async (req: Request, res: Response) =
       totalFeedback,
       avgAccuracy: Math.round(avgAccuracy * 100) / 100,
       outcomeDistribution,
-      recentTrend: feedback.slice(0, 20).map((f: any) => ({
+      recentTrend: feedback.slice(0, 20).map((f: { overallAccuracy: number; createdAt: Date }) => ({
         accuracy: f.overallAccuracy,
         date: f.createdAt,
       })),
@@ -120,8 +129,22 @@ router.get('/feedback/analytics/accuracy', async (req: Request, res: Response) =
  */
 router.get('/feedback/:reportId', async (req: Request, res: Response) => {
   try {
+    const reportId = qstr(req.params.reportId)!;
+
+    // Verify report belongs to user's org
+    const orgId = (req as any).user?.organizationId;
+    if (orgId) {
+      const report = await prisma.report.findUnique({
+        where: { id: reportId },
+        include: { session: { select: { organizationId: true } } },
+      });
+      if (!report || report.session?.organizationId !== orgId) {
+        return res.status(404).json({ error: 'Report not found' });
+      }
+    }
+
     const feedback = await prisma.reportFeedback.findMany({
-      where: { reportId: req.params.reportId },
+      where: { reportId },
       orderBy: { createdAt: 'desc' },
     });
     return res.json(feedback);
